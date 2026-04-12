@@ -27,3 +27,6 @@ export type { AffixProps } from './Affix'
 
 export { BackTop } from './BackTop'
 export type { BackTopProps } from './BackTop'
+
+export { FloatButton } from './FloatButton'
+export type { FloatButtonProps } from './FloatButton'

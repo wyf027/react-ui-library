@@ -48,3 +48,12 @@ export type { SegmentedProps, SegmentedOption } from './Segmented'
 
 export { Mentions } from './Mentions'
 export type { MentionsProps, MentionsOption } from './Mentions'
+
+export { AutoComplete } from './AutoComplete'
+export type { AutoCompleteProps, AutoCompleteOption } from './AutoComplete'
+
+export { InputNumber } from './InputNumber'
+export type { InputNumberProps } from './InputNumber'
+
+export { TimePicker } from './TimePicker'
+export type { TimePickerProps } from './TimePicker'
