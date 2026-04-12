@@ -1,93 +1,49 @@
-# 表单组件
+# Form 表单
+
+表单组件，配合 FormItem 使用，提供验证、布局与提交能力。
+
+## 示例
 
 <LivePlayground :code="`
 () => {
   return (
-    <Space direction='vertical' size={10}>
-      <Input label='Name' placeholder='Input name' />
-      <Select label='Role' options={[{label:'Admin',value:'admin'},{label:'Editor',value:'editor'}]} />
-      <Space>
-        <Checkbox label='Remember me' />
-        <Radio name='lang' label='中文' value='zh' />
-        <Switch defaultChecked />
-      </Space>
-      <DatePicker />
-      <Form
-        initialValues={{ username: '', password: '', confirm: '' }}
-        onSubmit={(values) => alert(JSON.stringify(values))}
+    <Form
+      initialValues={{ username: '', password: '' }}
+      onSubmit={(values) => alert(JSON.stringify(values))}
+    >
+      <FormItem name='username' label='用户名' rules={[{ required: true, message: '请输入用户名' }]}>
+        <Input placeholder='请输入用户名' />
+      </FormItem>
+      <FormItem
+        name='password'
+        label='密码'
+        rules={[
+          { required: true, message: '请输入密码' },
+          { minLength: 6, message: '至少6个字符' },
+        ]}
       >
-        <FormItem name='username' label='Username' rules={[{ required: true, message: 'Required' }]}>
-          <Input placeholder='Input username' />
-        </FormItem>
-        <FormItem
-          name='password'
-          label='Password'
-          rules={[
-            { required: true, message: 'Password required' },
-            { minLength: 6, message: 'At least 6 chars' },
-          ]}
-        >
-          <Input type='password' placeholder='Input password' />
-        </FormItem>
-        <FormItem
-          name='confirm'
-          label='Confirm'
-          dependencies={['password']}
-          rules={[
-            { required: true, message: 'Confirm required' },
-            { validator: (v, values) => (v === values.password ? null : 'Password mismatch') },
-          ]}
-        >
-          <Input type='password' placeholder='Confirm password' />
-        </FormItem>
-        <Button type='submit'>Submit Form</Button>
-      </Form>
-      <Upload onChange={(files) => console.log(files)} />
-      <Slider defaultValue={30} />
-      <Rate defaultValue={3} />
-      <Calendar />
-      <Transfer
-        dataSource={[
-          { key: '1', title: 'Option A' },
-          { key: '2', title: 'Option B' },
-        ]}
-      />
-      <Cascader
-        options={[
-          { value: 'zj', label: 'Zhejiang', children: [{ value: 'hz', label: 'Hangzhou' }] },
-        ]}
-      />
-      <TreeSelect
-        data={[
-          { key: 'root', title: 'Root', children: [{ key: 'child', title: 'Child Node' }] },
-        ]}
-      />
-      <ColorPicker />
-      <Segmented options={[{ label: 'Daily', value: 'd' }, { label: 'Weekly', value: 'w' }]} defaultValue='d' />
-      <Mentions options={[{ value: 'alice' }, { value: 'bob' }]} />
-    </Space>
+        <Input type='password' placeholder='请输入密码' />
+      </FormItem>
+      <Button type='submit'>提交</Button>
+    </Form>
   )
 }
 `" />
 
 ## API
 
-| 组件 | 关键属性 |
-| --- | --- |
-| Input | `value/defaultValue`, `onValueChange`, `prefix/suffix`, `size` |
-| Select | `options`, `value/defaultValue`, `onChange` |
-| Checkbox | `checked/defaultChecked`, `onChange` |
-| Radio | `value`, `name`, `onChange` |
-| Switch | `checked/defaultChecked`, `onChange` |
-| DatePicker | `value/defaultValue`, `onChange` |
-| Form / FormItem | `initialValues`, `rules(minLength/maxLength/pattern/when/validator)`, `dependencies`, `onSubmit` |
-| Upload | `accept`, `multiple`, `fileList`, `onChange` |
-| Slider | `min/max/step`, `value/defaultValue`, `onChange` |
-| Rate | `count`, `value/defaultValue`, `allowClear`, `onChange` |
-| Calendar | `year/month`, `value`, `onChange` |
-| Transfer | `dataSource`, `targetKeys/defaultTargetKeys`, `onChange` |
-| Cascader | `options`, `value/defaultValue`, `onChange` |
-| TreeSelect | `data`, `value/defaultValue`, `onChange` |
-| ColorPicker | `value/defaultValue`, `onChange`, `showValue` |
-| Segmented | `options`, `value/defaultValue`, `onChange` |
-| Mentions | `options`, `value/defaultValue`, `onChange` |
+### Form
+
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| initialValues | 初始值 | `Record<string, any>` | - |
+| onSubmit | 提交回调 | `(values) => void` | - |
+
+### FormItem
+
+| 属性 | 说明 | 类型 | 默认值 |
+| --- | --- | --- | --- |
+| name | 字段名 | `string` | - |
+| label | 标签 | `string` | - |
+| rules | 验证规则 | `FormRule[]` | - |
+| dependencies | 依赖字段 | `string[]` | - |

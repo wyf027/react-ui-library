@@ -18,3 +18,6 @@ export type { DividerProps } from './Divider'
 
 export { SplitPane } from './SplitPane'
 export type { SplitPaneProps } from './SplitPane'
+
+export { Flex } from './Flex'
+export type { FlexProps } from './Flex'
