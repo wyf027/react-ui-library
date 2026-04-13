@@ -14,6 +14,12 @@ No databases, Docker, or backend services are required. Only Node.js 20+ and npm
 ### Key commands
 
 All commands run from the workspace root. See `package.json` for the full list.
+This is an npm workspaces monorepo with two packages:
+
+- `packages/ui` — publishable React component library (`@wuyangfan/nova-ui`)
+- `docs` — VitePress documentation site with interactive playground
+
+### Key commands (run from workspace root)
 
 | Task | Command |
 |---|---|
@@ -31,3 +37,14 @@ All commands run from the workspace root. See `package.json` for the full list.
 - **No test framework**: there are currently no automated tests (no Jest, Vitest, or testing-library). Lint (`npm run lint:ui`) and typecheck (`npm run typecheck:ui`) are the primary code-quality checks.
 - The docs dev server runs at `http://localhost:5173/react-ui-library/` (note the base path).
 - The standalone UI dev server at `packages/ui` uses Vite and serves at `http://localhost:5174/` (or the next available port).
+| Lint UI | `npm run lint:ui` |
+| Typecheck UI | `npm run typecheck:ui` |
+| Dev docs server | `npm run dev:docs` |
+| Build docs | `npm run build:docs` |
+| Build all | `npm run build` |
+
+### Caveats
+
+- You must run `npm run build:ui` before `npm run dev:docs` so the docs package can resolve `@wuyangfan/nova-ui` (it uses a `file:` reference to the local build output).
+- The docs dev server runs at `http://localhost:5173/react-ui-library/` (note the base path).
+- No databases, Docker, or external services are required.

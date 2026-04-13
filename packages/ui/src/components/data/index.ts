@@ -42,3 +42,12 @@ export type { ImagePreviewProps } from './ImagePreview'
 
 export { VirtualList } from './VirtualList'
 export type { VirtualListProps } from './VirtualList'
+
+export { List } from './List'
+export type { ListProps, ListItem } from './List'
+
+export { Carousel } from './Carousel'
+export type { CarouselProps } from './Carousel'
+
+export { Image } from './Image'
+export type { ImageProps } from './Image'
