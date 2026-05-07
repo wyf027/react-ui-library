@@ -11,7 +11,6 @@ import {
   useMemo,
   useState,
 } from 'react'
-import type { ChangeEvent } from 'react'
 import { cn } from '../../utils/cn'
 
 export type FormValues = Record<string, unknown>
@@ -166,9 +165,21 @@ export function FormItem({
   const childNode = isValidElement(children)
     ? (children as ReactElement<{
         value?: unknown
-        onChange?: (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void
+        onChange?: (arg: unknown) => void
       }>)
     : null
+
+  const extractValue = (arg: unknown) => {
+    if (arg && typeof arg === 'object' && 'target' in arg) {
+      const target = (arg as { target?: { type?: string; value?: unknown; checked?: unknown } }).target
+      if (target?.type === 'checkbox') {
+        return target.checked
+      }
+      return target?.value
+    }
+
+    return arg
+  }
 
   return (
     <div className="space-y-1.5">
@@ -181,17 +192,11 @@ export function FormItem({
       {childNode
         ? (cloneElement(childNode, {
             value: value as never,
-            onChange: (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-              const nextValue =
-                event?.target?.type === 'checkbox'
-                  ? (event.target as HTMLInputElement).checked
-                  : event?.target?.value
+            onChange: (arg: unknown) => {
+              const nextValue = extractValue(arg)
               ctx.setFieldValue(name, nextValue)
-              const originOnChange =
-                childNode.props.onChange as
-                  | ((event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void)
-                  | undefined
-              originOnChange?.(event)
+              const originOnChange = childNode.props.onChange as ((arg: unknown) => void) | undefined
+              originOnChange?.(arg)
             },
           }) as ReactElement)
         : children}
