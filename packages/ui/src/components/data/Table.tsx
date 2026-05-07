@@ -121,11 +121,15 @@ export const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unkn
               {visibleColumns.map((column) => {
                 const key = String(column.key)
                 const sorted = sortKey === key
+                const columnTitleText = String(column.title)
+                const ariaSortValue = column.sorter ? (sorted ? (sortOrder === 'asc' ? 'ascending' : 'descending') : 'none') : undefined
+                const sortActionLabel = !sorted || sortOrder === 'desc' ? `按 ${columnTitleText} 升序排序` : `按 ${columnTitleText} 降序排序`
                 return (
                   <th
                     key={key}
                     scope="col"
                     style={{ width: column.width }}
+                    aria-sort={ariaSortValue}
                     className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500"
                   >
                     <div className="flex items-center gap-1">
@@ -141,6 +145,7 @@ export const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unkn
                               setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')
                             }
                           }}
+                          aria-label={sortActionLabel}
                           className="rounded px-1 text-[10px] text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-700"
                         >
                           {sorted ? (sortOrder === 'asc' ? '↑' : '↓') : '↕'}
@@ -156,6 +161,7 @@ export const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unkn
                             [key]: event.target.value,
                           }))
                         }
+                        aria-label={`筛选 ${columnTitleText}`}
                         className="mt-1 h-6 rounded border border-slate-300 bg-white px-1 text-[10px] dark:border-slate-700 dark:bg-slate-900"
                       >
                         <option value="">All</option>
