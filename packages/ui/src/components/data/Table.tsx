@@ -1,13 +1,24 @@
-import { forwardRef, type ReactNode, type TableHTMLAttributes, useMemo, useState } from 'react'
+import {
+  forwardRef,
+  type ForwardedRef,
+  type ReactElement,
+  type ReactNode,
+  type RefAttributes,
+  type TableHTMLAttributes,
+  useMemo,
+  useState,
+} from 'react'
 import { cn } from '../../utils/cn'
 
-export interface TableColumn<T> {
-  key: keyof T | string
+type TableKey<T> = Extract<keyof T, string>
+
+export interface TableColumn<T, K extends TableKey<T> = TableKey<T>> {
+  key: K
   title: ReactNode
   width?: number | string
   sorter?: (a: T, b: T) => number
   filters?: { text: string; value: string }[]
-  render?: (value: unknown, record: T, index: number) => ReactNode
+  render?: (value: T[K], record: T, index: number) => ReactNode
 }
 
 export interface TableProps<T extends Record<string, unknown>>
@@ -17,109 +28,112 @@ export interface TableProps<T extends Record<string, unknown>>
   title?: ReactNode
   searchable?: boolean
   columnConfigurable?: boolean
-  rowKey?: keyof T | ((record: T, index: number) => string)
+  rowKey?: TableKey<T> | ((record: T, index: number) => string)
   emptyText?: ReactNode
 }
 
-export const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unknown>>>(
-  function Table(
-    {
-      className,
-      columns,
-      dataSource,
-      title,
-      searchable = false,
-      columnConfigurable = false,
-      rowKey,
-      emptyText = 'No data',
-      ...props
-    },
-    ref,
-  ) {
-    const [search, setSearch] = useState('')
-    const [sortKey, setSortKey] = useState<string>('')
-    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
-    const [filterMap, setFilterMap] = useState<Record<string, string>>({})
-    const [visibleMap, setVisibleMap] = useState<Record<string, boolean>>({})
+function TableInner<T extends Record<string, unknown>>(
+  {
+    className,
+    columns,
+    dataSource,
+    title,
+    searchable = false,
+    columnConfigurable = false,
+    rowKey,
+    emptyText = 'No data',
+    ...props
+  }: TableProps<T>,
+  ref: ForwardedRef<HTMLTableElement>,
+) {
+  const [search, setSearch] = useState('')
+  const [sortKey, setSortKey] = useState<TableKey<T> | ''>('')
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
+  const [filterMap, setFilterMap] = useState<Partial<Record<TableKey<T>, string>>>({})
+  const [visibleMap, setVisibleMap] = useState<Partial<Record<TableKey<T>, boolean>>>({})
 
-    const visibleColumns = useMemo(
-      () => columns.filter((column) => visibleMap[String(column.key)] !== false),
-      [columns, visibleMap],
-    )
+  const visibleColumns = useMemo(
+    () => columns.filter((column) => visibleMap[column.key] !== false),
+    [columns, visibleMap],
+  )
 
-    const processedRows = useMemo(() => {
-      let rows = [...dataSource]
+  const processedRows = useMemo(() => {
+    let rows = [...dataSource]
 
-      if (searchable && search.trim()) {
-        const keyword = search.trim().toLowerCase()
-        rows = rows.filter((record) =>
-          Object.values(record).some((value) => String(value ?? '').toLowerCase().includes(keyword)),
-        )
+    if (searchable && search.trim()) {
+      const keyword = search.trim().toLowerCase()
+      rows = rows.filter((record) =>
+        Object.values(record).some((value) => String(value ?? '').toLowerCase().includes(keyword)),
+      )
+    }
+
+    for (const [key, filterVal] of Object.entries(filterMap) as [TableKey<T>, string | undefined][]) {
+      if (!filterVal) continue
+      rows = rows.filter((record) => String(record[key]) === filterVal)
+    }
+
+    if (sortKey) {
+      const column = columns.find((col) => col.key === sortKey)
+      const sorter = column?.sorter
+      if (sorter) {
+        rows.sort((a, b) => (sortOrder === 'asc' ? sorter(a, b) : sorter(b, a)))
       }
+    }
 
-      Object.entries(filterMap).forEach(([key, filterVal]) => {
-        if (!filterVal) return
-        rows = rows.filter((record) => String(record[key as keyof typeof record]) === filterVal)
-      })
+    return rows
+  }, [columns, dataSource, filterMap, search, searchable, sortKey, sortOrder])
 
-      if (sortKey) {
-        const column = columns.find((col) => String(col.key) === sortKey)
-        if (column?.sorter) {
-          rows.sort((a, b) => (sortOrder === 'asc' ? column.sorter!(a, b) : column.sorter!(b, a)))
-        }
-      }
-
-      return rows
-    }, [columns, dataSource, filterMap, search, searchable, sortKey, sortOrder])
-
-    return (
-      <div className="space-y-2">
-        {(title || searchable || columnConfigurable) && (
-          <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-slate-200 bg-white p-2 dark:border-slate-700 dark:bg-slate-900">
-            <div className="text-sm font-medium text-slate-800 dark:text-slate-200">{title}</div>
-            <div className="flex flex-wrap items-center gap-2">
-              {searchable ? (
-                <input
-                  value={search}
-                  onChange={(event) => setSearch(event.target.value)}
-                  placeholder="Search..."
-                  className="h-8 rounded-md border border-slate-300 px-2 text-sm dark:border-slate-700 dark:bg-slate-950"
-                />
-              ) : null}
-              {columnConfigurable ? (
-                <details className="relative">
-                  <summary className="cursor-pointer rounded border border-slate-300 px-2 py-1 text-xs dark:border-slate-700">
-                    Columns
-                  </summary>
-                  <div className="absolute right-0 z-20 mt-1 min-w-40 rounded border border-slate-200 bg-white p-2 shadow dark:border-slate-700 dark:bg-slate-900">
-                    {columns.map((column) => {
-                      const key = String(column.key)
-                      const checked = visibleMap[key] !== false
-                      return (
-                        <label key={key} className="flex items-center gap-2 py-1 text-xs">
-                          <input
-                            type="checkbox"
-                            checked={checked}
-                            onChange={(event) =>
-                              setVisibleMap((prev) => ({ ...prev, [key]: event.target.checked }))
-                            }
-                          />
-                          <span>{String(column.title)}</span>
-                        </label>
-                      )
-                    })}
-                  </div>
-                </details>
-              ) : null}
-            </div>
+  return (
+    <div className="space-y-2">
+      {(title || searchable || columnConfigurable) && (
+        <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-slate-200 bg-white p-2 dark:border-slate-700 dark:bg-slate-900">
+          <div className="text-sm font-medium text-slate-800 dark:text-slate-200">{title}</div>
+          <div className="flex flex-wrap items-center gap-2">
+            {searchable ? (
+              <input
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                placeholder="Search..."
+                className="h-8 rounded-md border border-slate-300 px-2 text-sm dark:border-slate-700 dark:bg-slate-950"
+              />
+            ) : null}
+            {columnConfigurable ? (
+              <details className="relative">
+                <summary className="cursor-pointer rounded border border-slate-300 px-2 py-1 text-xs dark:border-slate-700">
+                  Columns
+                </summary>
+                <div className="absolute right-0 z-20 mt-1 min-w-40 rounded border border-slate-200 bg-white p-2 shadow dark:border-slate-700 dark:bg-slate-900">
+                  {columns.map((column) => {
+                    const checked = visibleMap[column.key] !== false
+                    return (
+                      <label key={column.key} className="flex items-center gap-2 py-1 text-xs">
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={(event) =>
+                            setVisibleMap((prev) => ({ ...prev, [column.key]: event.target.checked }))
+                          }
+                        />
+                        <span>{String(column.title)}</span>
+                      </label>
+                    )
+                  })}
+                </div>
+              </details>
+            ) : null}
           </div>
-        )}
-        <div className="nova-scrollbar overflow-auto rounded-lg border border-slate-200 dark:border-slate-700">
-        <table ref={ref} className={cn('min-w-full divide-y divide-slate-200 dark:divide-slate-700', className)} {...props}>
+        </div>
+      )}
+      <div className="nova-scrollbar overflow-auto rounded-lg border border-slate-200 dark:border-slate-700">
+        <table
+          ref={ref}
+          className={cn('min-w-full divide-y divide-slate-200 dark:divide-slate-700', className)}
+          {...props}
+        >
           <thead className="bg-slate-50 dark:bg-slate-900/50">
             <tr>
               {visibleColumns.map((column) => {
-                const key = String(column.key)
+                const key = column.key
                 const sorted = sortKey === key
                 return (
                   <th
@@ -181,18 +195,14 @@ export const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unkn
             ) : (
               processedRows.map((record, index) => {
                 const key =
-                  typeof rowKey === 'function'
-                    ? rowKey(record, index)
-                    : rowKey
-                      ? String(record[rowKey])
-                      : String(index)
+                  typeof rowKey === 'function' ? rowKey(record, index) : rowKey ? String(record[rowKey]) : String(index)
 
                 return (
                   <tr key={key} className="text-sm text-slate-700 dark:text-slate-200">
                     {visibleColumns.map((column) => {
-                      const value = record[column.key as keyof typeof record]
+                      const value = record[column.key]
                       return (
-                        <td key={String(column.key)} className="px-4 py-3">
+                        <td key={column.key} className="px-4 py-3">
                           {column.render ? column.render(value, record, index) : (value as ReactNode)}
                         </td>
                       )
@@ -204,7 +214,12 @@ export const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unkn
           </tbody>
         </table>
       </div>
-      </div>
-    )
-  },
-)
+    </div>
+  )
+}
+
+type TableComponent = <T extends Record<string, unknown>>(
+  props: TableProps<T> & RefAttributes<HTMLTableElement>,
+) => ReactElement | null
+
+export const Table = forwardRef(TableInner) as TableComponent
