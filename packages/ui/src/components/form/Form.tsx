@@ -8,6 +8,7 @@ import {
   type ReactNode,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from 'react'
@@ -153,11 +154,14 @@ export function FormItem({
     throw new Error('FormItem must be used inside Form')
   }
 
-  ctx.setFieldRules(name, rules)
+  const dependencyValues = useMemo(
+    () => dependencies.map((dep) => ctx.values[dep]),
+    [dependencies, ctx.values],
+  )
 
-  dependencies.forEach((dep) => {
-    void ctx.values[dep]
-  })
+  useEffect(() => {
+    ctx.setFieldRules(name, rules)
+  }, [ctx, name, rules, dependencyValues])
 
   const value = ctx.values[name]
   const error = ctx.errors[name]
