@@ -8,13 +8,14 @@ import {
   type ReactNode,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from 'react'
-import type { ChangeEvent } from 'react'
 import { cn } from '../../utils/cn'
 
 export type FormValues = Record<string, unknown>
+export type ValidateTrigger = 'onSubmit' | 'onChange' | 'onBlur'
 
 export interface FormRule {
   required?: boolean
@@ -30,14 +31,17 @@ export interface FormRule {
 interface FormContextValue {
   values: FormValues
   errors: Record<string, string>
+  validateTrigger: ValidateTrigger
   setFieldValue: (name: string, value: unknown) => void
   setFieldRules: (name: string, rules: FormRule[]) => void
+  validateField: (name: string) => boolean
 }
 
 const FormContext = createContext<FormContextValue | null>(null)
 
 export interface FormProps extends Omit<FormHTMLAttributes<HTMLFormElement>, 'onSubmit'> {
   initialValues?: FormValues
+  validateTrigger?: ValidateTrigger
   onSubmit?: (values: FormValues) => void
 }
 
@@ -48,10 +52,36 @@ export interface FormItemProps {
   dependencies?: string[]
   children: ReactNode
   requiredMark?: boolean
+  help?: ReactNode
+  extra?: ReactNode
+  validateStatus?: 'error' | 'success' | 'warning'
+}
+
+const getRuleError = (name: string, value: unknown, values: FormValues, rules: FormRule[]) => {
+  for (const rule of rules) {
+    if (rule.when && !rule.when(values)) continue
+    if (rule.required && (value === undefined || value === null || value === '')) {
+      return rule.message ?? `${name} is required`
+    }
+    if (typeof value === 'string' && rule.minLength !== undefined && value.length < rule.minLength) {
+      return rule.message ?? `${name} length must be >= ${rule.minLength}`
+    }
+    if (typeof value === 'string' && rule.maxLength !== undefined && value.length > rule.maxLength) {
+      return rule.message ?? `${name} length must be <= ${rule.maxLength}`
+    }
+    if (typeof value === 'string' && rule.pattern && !rule.pattern.test(value)) {
+      return rule.message ?? `${name} format is invalid`
+    }
+    if (rule.validator) {
+      const message = rule.validator(value, values)
+      if (message) return message
+    }
+  }
+  return ''
 }
 
 export const Form = forwardRef<HTMLFormElement, FormProps>(function Form(
-  { className, initialValues = {}, onSubmit, children, ...props },
+  { className, initialValues = {}, validateTrigger = 'onSubmit', onSubmit, children, ...props },
   ref,
 ) {
   const [values, setValues] = useState<FormValues>(initialValues)
@@ -71,39 +101,27 @@ export const Form = forwardRef<HTMLFormElement, FormProps>(function Form(
     setRulesMap((prev) => ({ ...prev, [name]: rules }))
   }, [])
 
+  const validateField = useCallback(
+    (name: string) => {
+      const fieldRules = rulesMap[name] ?? []
+      const nextMessage = getRuleError(name, values[name], values, fieldRules)
+      setErrors((prev) => {
+        const next = { ...prev }
+        if (nextMessage) next[name] = nextMessage
+        else delete next[name]
+        return next
+      })
+      return !nextMessage
+    },
+    [rulesMap, values],
+  )
+
   const validate = useCallback(() => {
     const nextErrors: Record<string, string> = {}
 
     Object.entries(rulesMap).forEach(([name, rules]) => {
-      const value = values[name]
-      rules.forEach((rule) => {
-        if (nextErrors[name]) return
-        if (rule.required && (value === undefined || value === null || value === '')) {
-          nextErrors[name] = rule.message ?? `${name} is required`
-          return
-        }
-        if (rule.when && !rule.when(values)) {
-          return
-        }
-        if (typeof value === 'string' && rule.minLength !== undefined && value.length < rule.minLength) {
-          nextErrors[name] = rule.message ?? `${name} length must be >= ${rule.minLength}`
-          return
-        }
-        if (typeof value === 'string' && rule.maxLength !== undefined && value.length > rule.maxLength) {
-          nextErrors[name] = rule.message ?? `${name} length must be <= ${rule.maxLength}`
-          return
-        }
-        if (typeof value === 'string' && rule.pattern && !rule.pattern.test(value)) {
-          nextErrors[name] = rule.message ?? `${name} format is invalid`
-          return
-        }
-        if (rule.validator) {
-          const message = rule.validator(value, values)
-          if (message) {
-            nextErrors[name] = message
-          }
-        }
-      })
+      const message = getRuleError(name, values[name], values, rules)
+      if (message) nextErrors[name] = message
     })
 
     setErrors(nextErrors)
@@ -114,10 +132,12 @@ export const Form = forwardRef<HTMLFormElement, FormProps>(function Form(
     () => ({
       values,
       errors,
+      validateTrigger,
       setFieldValue,
       setFieldRules,
+      validateField,
     }),
-    [errors, setFieldRules, setFieldValue, values],
+    [errors, setFieldRules, setFieldValue, validateField, validateTrigger, values],
   )
 
   return (
@@ -146,6 +166,9 @@ export function FormItem({
   dependencies = [],
   children,
   requiredMark = true,
+  help,
+  extra,
+  validateStatus,
 }: FormItemProps) {
   const ctx = useContext(FormContext)
 
@@ -153,7 +176,9 @@ export function FormItem({
     throw new Error('FormItem must be used inside Form')
   }
 
-  ctx.setFieldRules(name, rules)
+  useEffect(() => {
+    ctx.setFieldRules(name, rules)
+  }, [ctx, name, rules])
 
   dependencies.forEach((dep) => {
     void ctx.values[dep]
@@ -166,9 +191,21 @@ export function FormItem({
   const childNode = isValidElement(children)
     ? (children as ReactElement<{
         value?: unknown
-        onChange?: (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void
+        onChange?: (arg: unknown) => void
+        onBlur?: (arg: unknown) => void
       }>)
     : null
+
+  const extractFieldValue = (arg: unknown) => {
+    if (arg && typeof arg === 'object' && 'target' in arg) {
+      const eventTarget = (arg as { target?: { type?: string; value?: unknown; checked?: boolean } }).target
+      if (eventTarget?.type === 'checkbox') {
+        return eventTarget.checked
+      }
+      return eventTarget?.value
+    }
+    return arg
+  }
 
   return (
     <div className="space-y-1.5">
@@ -181,21 +218,26 @@ export function FormItem({
       {childNode
         ? (cloneElement(childNode, {
             value: value as never,
-            onChange: (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-              const nextValue =
-                event?.target?.type === 'checkbox'
-                  ? (event.target as HTMLInputElement).checked
-                  : event?.target?.value
+            onChange: (arg: unknown) => {
+              const nextValue = extractFieldValue(arg)
               ctx.setFieldValue(name, nextValue)
-              const originOnChange =
-                childNode.props.onChange as
-                  | ((event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void)
-                  | undefined
-              originOnChange?.(event)
+              if (ctx.validateTrigger === 'onChange') {
+                ctx.validateField(name)
+              }
+              childNode.props.onChange?.(arg)
+            },
+            onBlur: (arg: unknown) => {
+              if (ctx.validateTrigger === 'onBlur') {
+                ctx.validateField(name)
+              }
+              childNode.props.onBlur?.(arg)
             },
           }) as ReactElement)
         : children}
-      {error ? <p className="text-xs text-red-600">{error}</p> : null}
+      {error || help ? <p className={cn('text-xs', error ? 'text-red-600' : 'text-slate-500')}>{error ?? help}</p> : null}
+      {extra ? <div className="text-xs text-slate-500">{extra}</div> : null}
+      {validateStatus === 'success' ? <div className="text-xs text-emerald-600">Looks good</div> : null}
+      {validateStatus === 'warning' ? <div className="text-xs text-amber-600">Please review this field</div> : null}
     </div>
   )
 }
