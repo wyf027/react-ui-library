@@ -6,7 +6,11 @@ export default defineConfig({
   title: 'Nova UI',
   description: 'Enterprise React component library with TypeScript and Tailwind CSS',
   lang: 'zh-CN',
+  appearance: true,
   themeConfig: {
+    darkModeSwitchLabel: '主题',
+    lightModeSwitchTitle: '切换到浅色模式',
+    darkModeSwitchTitle: '切换到深色模式',
     logo: '/favicon.svg',
     nav: [
       { text: '指南', link: '/guide/introduction' },
@@ -20,6 +24,7 @@ export default defineConfig({
           items: [
             { text: '项目介绍', link: '/guide/introduction' },
             { text: '快速开始', link: '/guide/getting-started' },
+            { text: '文档优化 TODO', link: '/guide/docs-optimization-todo' },
           ],
         },
       ],
