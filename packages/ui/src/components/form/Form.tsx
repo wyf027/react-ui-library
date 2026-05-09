@@ -8,7 +8,9 @@ import {
   type ReactNode,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react'
 import type { ChangeEvent } from 'react'
@@ -31,6 +33,7 @@ interface FormContextValue {
   values: FormValues
   errors: Record<string, string>
   setFieldValue: (name: string, value: unknown) => void
+  triggerFieldValidation: (name: string, trigger: FormValidateTrigger, nextValue?: unknown) => void
   setFieldRules: (name: string, rules: FormRule[]) => void
 }
 
@@ -39,7 +42,10 @@ const FormContext = createContext<FormContextValue | null>(null)
 export interface FormProps extends Omit<FormHTMLAttributes<HTMLFormElement>, 'onSubmit'> {
   initialValues?: FormValues
   onSubmit?: (values: FormValues) => void
+  validateTrigger?: FormValidateTrigger
 }
+
+export type FormValidateTrigger = 'onSubmit' | 'onChange' | 'onBlur'
 
 export interface FormItemProps {
   name: string
@@ -51,73 +57,124 @@ export interface FormItemProps {
 }
 
 export const Form = forwardRef<HTMLFormElement, FormProps>(function Form(
-  { className, initialValues = {}, onSubmit, children, ...props },
+  { className, initialValues = {}, onSubmit, validateTrigger = 'onSubmit', children, ...props },
   ref,
 ) {
   const [values, setValues] = useState<FormValues>(initialValues)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [rulesMap, setRulesMap] = useState<Record<string, FormRule[]>>({})
+  const errorUpdateTimerRef = useRef<number | null>(null)
+
+  const scheduleErrorsUpdate = useCallback((updater: (prev: Record<string, string>) => Record<string, string>) => {
+    if (errorUpdateTimerRef.current !== null) {
+      window.clearTimeout(errorUpdateTimerRef.current)
+    }
+    errorUpdateTimerRef.current = window.setTimeout(() => {
+      setErrors((prev) => updater(prev))
+      errorUpdateTimerRef.current = null
+    }, 120)
+  }, [])
+
+  useEffect(
+    () => () => {
+      if (errorUpdateTimerRef.current !== null) {
+        window.clearTimeout(errorUpdateTimerRef.current)
+      }
+    },
+    [],
+  )
+
+  const getFieldError = useCallback((name: string, nextValues: FormValues) => {
+    const rules = rulesMap[name] ?? []
+    const value = nextValues[name]
+
+    for (const rule of rules) {
+      if (rule.required && (value === undefined || value === null || value === '')) {
+        return rule.message ?? `${name} is required`
+      }
+      if (rule.when && !rule.when(nextValues)) {
+        continue
+      }
+      if (typeof value === 'string' && rule.minLength !== undefined && value.length < rule.minLength) {
+        return rule.message ?? `${name} length must be >= ${rule.minLength}`
+      }
+      if (typeof value === 'string' && rule.maxLength !== undefined && value.length > rule.maxLength) {
+        return rule.message ?? `${name} length must be <= ${rule.maxLength}`
+      }
+      if (typeof value === 'string' && rule.pattern && !rule.pattern.test(value)) {
+        return rule.message ?? `${name} format is invalid`
+      }
+      if (rule.validator) {
+        const message = rule.validator(value, nextValues)
+        if (message) return message
+      }
+    }
+
+    return ''
+  }, [rulesMap])
 
   const setFieldValue = useCallback((name: string, value: unknown) => {
     setValues((prev) => ({ ...prev, [name]: value }))
-    setErrors((prev) => {
-      const next = { ...prev }
-      delete next[name]
-      return next
-    })
-  }, [])
+    if (validateTrigger === 'onSubmit') {
+      setErrors((prev) => {
+        const next = { ...prev }
+        delete next[name]
+        return next
+      })
+    }
+  }, [validateTrigger])
 
   const setFieldRules = useCallback((name: string, rules: FormRule[]) => {
-    setRulesMap((prev) => ({ ...prev, [name]: rules }))
+    setRulesMap((prev) => (prev[name] === rules ? prev : { ...prev, [name]: rules }))
   }, [])
+
+  const triggerFieldValidation = useCallback((name: string, trigger: FormValidateTrigger, nextValue?: unknown) => {
+    if (validateTrigger !== trigger) return
+    setValues((prevValues) => {
+      const nextValues = nextValue === undefined ? prevValues : { ...prevValues, [name]: nextValue }
+      const relatedFields = Object.keys(rulesMap).filter((field) => {
+        if (field === name) return true
+        return (rulesMap[field] ?? []).some((rule) => rule.deps?.includes(name))
+      })
+
+      scheduleErrorsUpdate((prevErrors) => {
+        const nextErrors = { ...prevErrors }
+        relatedFields.forEach((field) => {
+          const message = getFieldError(field, nextValues)
+          if (message) {
+            nextErrors[field] = message
+          } else {
+            delete nextErrors[field]
+          }
+        })
+        return nextErrors
+      })
+
+      return prevValues
+    })
+  }, [getFieldError, rulesMap, scheduleErrorsUpdate, validateTrigger])
 
   const validate = useCallback(() => {
     const nextErrors: Record<string, string> = {}
 
-    Object.entries(rulesMap).forEach(([name, rules]) => {
-      const value = values[name]
-      rules.forEach((rule) => {
-        if (nextErrors[name]) return
-        if (rule.required && (value === undefined || value === null || value === '')) {
-          nextErrors[name] = rule.message ?? `${name} is required`
-          return
-        }
-        if (rule.when && !rule.when(values)) {
-          return
-        }
-        if (typeof value === 'string' && rule.minLength !== undefined && value.length < rule.minLength) {
-          nextErrors[name] = rule.message ?? `${name} length must be >= ${rule.minLength}`
-          return
-        }
-        if (typeof value === 'string' && rule.maxLength !== undefined && value.length > rule.maxLength) {
-          nextErrors[name] = rule.message ?? `${name} length must be <= ${rule.maxLength}`
-          return
-        }
-        if (typeof value === 'string' && rule.pattern && !rule.pattern.test(value)) {
-          nextErrors[name] = rule.message ?? `${name} format is invalid`
-          return
-        }
-        if (rule.validator) {
-          const message = rule.validator(value, values)
-          if (message) {
-            nextErrors[name] = message
-          }
-        }
-      })
+    Object.keys(rulesMap).forEach((name) => {
+      const message = getFieldError(name, values)
+      if (message) nextErrors[name] = message
     })
 
     setErrors(nextErrors)
     return Object.keys(nextErrors).length === 0
-  }, [rulesMap, values])
+  }, [getFieldError, rulesMap, values])
 
   const contextValue = useMemo<FormContextValue>(
     () => ({
       values,
       errors,
       setFieldValue,
+      triggerFieldValidation,
       setFieldRules,
     }),
-    [errors, setFieldRules, setFieldValue, values],
+    [errors, setFieldRules, setFieldValue, triggerFieldValidation, values],
   )
 
   return (
@@ -153,7 +210,9 @@ export function FormItem({
     throw new Error('FormItem must be used inside Form')
   }
 
-  ctx.setFieldRules(name, rules)
+  useEffect(() => {
+    ctx.setFieldRules(name, rules)
+  }, [ctx, name, rules])
 
   dependencies.forEach((dep) => {
     void ctx.values[dep]
@@ -167,6 +226,7 @@ export function FormItem({
     ? (children as ReactElement<{
         value?: unknown
         onChange?: (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void
+        onBlur?: (event: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => void
       }>)
     : null
 
@@ -187,11 +247,20 @@ export function FormItem({
                   ? (event.target as HTMLInputElement).checked
                   : event?.target?.value
               ctx.setFieldValue(name, nextValue)
+              ctx.triggerFieldValidation(name, 'onChange', nextValue)
               const originOnChange =
                 childNode.props.onChange as
                   | ((event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void)
                   | undefined
               originOnChange?.(event)
+            },
+            onBlur: (event: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
+              ctx.triggerFieldValidation(name, 'onBlur')
+              const originOnBlur =
+                childNode.props.onBlur as
+                  | ((event: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => void)
+                  | undefined
+              originOnBlur?.(event)
             },
           }) as ReactElement)
         : children}
