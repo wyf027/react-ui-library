@@ -10,6 +10,12 @@ export interface TableColumn<T> {
   render?: (value: unknown, record: T, index: number) => ReactNode
 }
 
+export interface TableRowSelection<T extends Record<string, unknown>> {
+  selectedRowKeys?: string[]
+  defaultSelectedRowKeys?: string[]
+  onChange?: (selectedRowKeys: string[], selectedRows: T[]) => void
+}
+
 export interface TableProps<T extends Record<string, unknown>>
   extends Omit<TableHTMLAttributes<HTMLTableElement>, 'children' | 'title'> {
   columns: TableColumn<T>[]
@@ -19,6 +25,7 @@ export interface TableProps<T extends Record<string, unknown>>
   columnConfigurable?: boolean
   rowKey?: keyof T | ((record: T, index: number) => string)
   emptyText?: ReactNode
+  rowSelection?: TableRowSelection<T>
 }
 
 export const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unknown>>>(
@@ -32,6 +39,7 @@ export const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unkn
       columnConfigurable = false,
       rowKey,
       emptyText = 'No data',
+      rowSelection,
       ...props
     },
     ref,
@@ -41,6 +49,7 @@ export const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unkn
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
     const [filterMap, setFilterMap] = useState<Record<string, string>>({})
     const [visibleMap, setVisibleMap] = useState<Record<string, boolean>>({})
+    const [innerSelectedRowKeys, setInnerSelectedRowKeys] = useState<string[]>(rowSelection?.defaultSelectedRowKeys ?? [])
 
     const visibleColumns = useMemo(
       () => columns.filter((column) => visibleMap[String(column.key)] !== false),
@@ -71,6 +80,33 @@ export const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unkn
 
       return rows
     }, [columns, dataSource, filterMap, search, searchable, sortKey, sortOrder])
+
+    const rowKeys = useMemo(
+      () =>
+        processedRows.map((record, index) =>
+          typeof rowKey === 'function' ? rowKey(record, index) : rowKey ? String(record[rowKey]) : String(index),
+        ),
+      [processedRows, rowKey],
+    )
+
+    const selectedRowKeys = rowSelection?.selectedRowKeys ?? innerSelectedRowKeys
+    const selectedKeySet = useMemo(() => new Set(selectedRowKeys), [selectedRowKeys])
+    const allChecked = rowKeys.length > 0 && rowKeys.every((key) => selectedKeySet.has(key))
+
+    const emitSelectionChange = (nextSelectedRowKeys: string[]) => {
+      if (!rowSelection) return
+
+      if (rowSelection.selectedRowKeys === undefined) {
+        setInnerSelectedRowKeys(nextSelectedRowKeys)
+      }
+
+      const nextSelectedRows = processedRows.filter((record, index) => {
+        const key = typeof rowKey === 'function' ? rowKey(record, index) : rowKey ? String(record[rowKey]) : String(index)
+        return nextSelectedRowKeys.includes(key)
+      })
+
+      rowSelection.onChange?.(nextSelectedRowKeys, nextSelectedRows)
+    }
 
     return (
       <div className="space-y-2">
@@ -115,95 +151,119 @@ export const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unkn
           </div>
         )}
         <div className="nova-scrollbar overflow-auto rounded-lg border border-slate-200 dark:border-slate-700">
-        <table ref={ref} className={cn('min-w-full divide-y divide-slate-200 dark:divide-slate-700', className)} {...props}>
-          <thead className="bg-slate-50 dark:bg-slate-900/50">
-            <tr>
-              {visibleColumns.map((column) => {
-                const key = String(column.key)
-                const sorted = sortKey === key
-                return (
-                  <th
-                    key={key}
-                    scope="col"
-                    style={{ width: column.width }}
-                    className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500"
-                  >
-                    <div className="flex items-center gap-1">
-                      <span>{column.title}</span>
-                      {column.sorter ? (
-                        <button
-                          type="button"
-                          onClick={() => {
-                            if (!sorted) {
-                              setSortKey(key)
-                              setSortOrder('asc')
-                            } else {
-                              setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')
-                            }
-                          }}
-                          className="rounded px-1 text-[10px] text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-700"
-                        >
-                          {sorted ? (sortOrder === 'asc' ? '↑' : '↓') : '↕'}
-                        </button>
-                      ) : null}
-                    </div>
-                    {column.filters?.length ? (
-                      <select
-                        value={filterMap[key] ?? ''}
-                        onChange={(event) =>
-                          setFilterMap((prev) => ({
-                            ...prev,
-                            [key]: event.target.value,
-                          }))
-                        }
-                        className="mt-1 h-6 rounded border border-slate-300 bg-white px-1 text-[10px] dark:border-slate-700 dark:bg-slate-900"
-                      >
-                        <option value="">All</option>
-                        {column.filters.map((filterItem) => (
-                          <option key={filterItem.value} value={filterItem.value}>
-                            {filterItem.text}
-                          </option>
-                        ))}
-                      </select>
-                    ) : null}
-                  </th>
-                )
-              })}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100 bg-white dark:divide-slate-800 dark:bg-slate-900">
-            {processedRows.length === 0 ? (
+          <table ref={ref} className={cn('min-w-full divide-y divide-slate-200 dark:divide-slate-700', className)} {...props}>
+            <thead className="bg-slate-50 dark:bg-slate-900/50">
               <tr>
-                <td className="px-4 py-6 text-center text-sm text-slate-500" colSpan={visibleColumns.length}>
-                  {emptyText}
-                </td>
+                {rowSelection ? (
+                  <th scope="col" className="w-12 px-4 py-3 text-left">
+                    <input
+                      type="checkbox"
+                      checked={allChecked}
+                      onChange={(event) => emitSelectionChange(event.target.checked ? [...rowKeys] : [])}
+                    />
+                  </th>
+                ) : null}
+                {visibleColumns.map((column) => {
+                  const key = String(column.key)
+                  const sorted = sortKey === key
+                  return (
+                    <th
+                      key={key}
+                      scope="col"
+                      style={{ width: column.width }}
+                      className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500"
+                    >
+                      <div className="flex items-center gap-1">
+                        <span>{column.title}</span>
+                        {column.sorter ? (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (!sorted) {
+                                setSortKey(key)
+                                setSortOrder('asc')
+                              } else {
+                                setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')
+                              }
+                            }}
+                            className="rounded px-1 text-[10px] text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-700"
+                          >
+                            {sorted ? (sortOrder === 'asc' ? '↑' : '↓') : '↕'}
+                          </button>
+                        ) : null}
+                      </div>
+                      {column.filters?.length ? (
+                        <select
+                          value={filterMap[key] ?? ''}
+                          onChange={(event) =>
+                            setFilterMap((prev) => ({
+                              ...prev,
+                              [key]: event.target.value,
+                            }))
+                          }
+                          className="mt-1 h-6 rounded border border-slate-300 bg-white px-1 text-[10px] dark:border-slate-700 dark:bg-slate-900"
+                        >
+                          <option value="">All</option>
+                          {column.filters.map((filterItem) => (
+                            <option key={filterItem.value} value={filterItem.value}>
+                              {filterItem.text}
+                            </option>
+                          ))}
+                        </select>
+                      ) : null}
+                    </th>
+                  )
+                })}
               </tr>
-            ) : (
-              processedRows.map((record, index) => {
-                const key =
-                  typeof rowKey === 'function'
-                    ? rowKey(record, index)
-                    : rowKey
-                      ? String(record[rowKey])
-                      : String(index)
+            </thead>
+            <tbody className="divide-y divide-slate-100 bg-white dark:divide-slate-800 dark:bg-slate-900">
+              {processedRows.length === 0 ? (
+                <tr>
+                  <td className="px-4 py-6 text-center text-sm text-slate-500" colSpan={visibleColumns.length + (rowSelection ? 1 : 0)}>
+                    {emptyText}
+                  </td>
+                </tr>
+              ) : (
+                processedRows.map((record, index) => {
+                  const key =
+                    typeof rowKey === 'function'
+                      ? rowKey(record, index)
+                      : rowKey
+                        ? String(record[rowKey])
+                        : String(index)
 
-                return (
-                  <tr key={key} className="text-sm text-slate-700 dark:text-slate-200">
-                    {visibleColumns.map((column) => {
-                      const value = record[column.key as keyof typeof record]
-                      return (
-                        <td key={String(column.key)} className="px-4 py-3">
-                          {column.render ? column.render(value, record, index) : (value as ReactNode)}
+                  return (
+                    <tr key={key} className="text-sm text-slate-700 dark:text-slate-200">
+                      {rowSelection ? (
+                        <td className="px-4 py-3">
+                          <input
+                            type="checkbox"
+                            checked={selectedKeySet.has(key)}
+                            onChange={(event) => {
+                              if (event.target.checked) {
+                                emitSelectionChange([...selectedRowKeys, key])
+                              } else {
+                                emitSelectionChange(selectedRowKeys.filter((item) => item !== key))
+                              }
+                            }}
+                          />
                         </td>
-                      )
-                    })}
-                  </tr>
-                )
-              })
-            )}
-          </tbody>
-        </table>
-      </div>
+                      ) : null}
+                      {visibleColumns.map((column) => {
+                        const value = record[column.key as keyof typeof record]
+                        return (
+                          <td key={String(column.key)} className="px-4 py-3">
+                            {column.render ? column.render(value, record, index) : (value as ReactNode)}
+                          </td>
+                        )
+                      })}
+                    </tr>
+                  )
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     )
   },
