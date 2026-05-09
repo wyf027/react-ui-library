@@ -125,6 +125,7 @@ export const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unkn
                   <th
                     key={key}
                     scope="col"
+                    aria-sort={column.sorter ? (sorted ? (sortOrder === 'asc' ? 'ascending' : 'descending') : 'none') : undefined}
                     style={{ width: column.width }}
                     className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500"
                   >
@@ -141,6 +142,7 @@ export const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unkn
                               setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')
                             }
                           }}
+                          aria-label={`Sort by ${String(column.title)} ${sorted && sortOrder === 'asc' ? 'descending' : 'ascending'}`}
                           className="rounded px-1 text-[10px] text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-700"
                         >
                           {sorted ? (sortOrder === 'asc' ? '↑' : '↓') : '↕'}
@@ -149,6 +151,7 @@ export const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unkn
                     </div>
                     {column.filters?.length ? (
                       <select
+                        aria-label={`Filter ${String(column.title)}`}
                         value={filterMap[key] ?? ''}
                         onChange={(event) =>
                           setFilterMap((prev) => ({
