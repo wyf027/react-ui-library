@@ -31,3 +31,9 @@ export function App() {
   )
 }
 ```
+
+## API 设计规范
+
+`packages/ui` 组件 API 需遵循统一协议，详见：
+
+- [API Conventions](./API_CONVENTIONS.md)
