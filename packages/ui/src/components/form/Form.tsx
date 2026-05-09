@@ -8,6 +8,7 @@ import {
   type ReactNode,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from 'react'
@@ -32,6 +33,7 @@ interface FormContextValue {
   errors: Record<string, string>
   setFieldValue: (name: string, value: unknown) => void
   setFieldRules: (name: string, rules: FormRule[]) => void
+  clearFieldRules: (name: string) => void
 }
 
 const FormContext = createContext<FormContextValue | null>(null)
@@ -49,6 +51,8 @@ export interface FormItemProps {
   children: ReactNode
   requiredMark?: boolean
 }
+
+const EMPTY_RULES: FormRule[] = []
 
 export const Form = forwardRef<HTMLFormElement, FormProps>(function Form(
   { className, initialValues = {}, onSubmit, children, ...props },
@@ -68,7 +72,23 @@ export const Form = forwardRef<HTMLFormElement, FormProps>(function Form(
   }, [])
 
   const setFieldRules = useCallback((name: string, rules: FormRule[]) => {
-    setRulesMap((prev) => ({ ...prev, [name]: rules }))
+    setRulesMap((prev) => {
+      if (prev[name] === rules) {
+        return prev
+      }
+      return { ...prev, [name]: rules }
+    })
+  }, [])
+
+  const clearFieldRules = useCallback((name: string) => {
+    setRulesMap((prev) => {
+      if (!(name in prev)) {
+        return prev
+      }
+      const next = { ...prev }
+      delete next[name]
+      return next
+    })
   }, [])
 
   const validate = useCallback(() => {
@@ -116,8 +136,9 @@ export const Form = forwardRef<HTMLFormElement, FormProps>(function Form(
       errors,
       setFieldValue,
       setFieldRules,
+      clearFieldRules,
     }),
-    [errors, setFieldRules, setFieldValue, values],
+    [clearFieldRules, errors, setFieldRules, setFieldValue, values],
   )
 
   return (
@@ -142,7 +163,7 @@ export const Form = forwardRef<HTMLFormElement, FormProps>(function Form(
 export function FormItem({
   name,
   label,
-  rules = [],
+  rules = EMPTY_RULES,
   dependencies = [],
   children,
   requiredMark = true,
@@ -153,7 +174,13 @@ export function FormItem({
     throw new Error('FormItem must be used inside Form')
   }
 
-  ctx.setFieldRules(name, rules)
+  useEffect(() => {
+    ctx.setFieldRules(name, rules)
+
+    return () => {
+      ctx.clearFieldRules(name)
+    }
+  }, [ctx, name, rules])
 
   dependencies.forEach((dep) => {
     void ctx.values[dep]
