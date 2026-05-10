@@ -17,7 +17,7 @@ export { DatePicker } from './DatePicker'
 export type { DatePickerProps } from './DatePicker'
 
 export { Form, FormItem } from './Form'
-export type { FormProps, FormItemProps, FormRule, FormValues } from './Form'
+export type { FormProps, FormItemProps, FormRule, FormValues, FormValidateTrigger } from './Form'
 
 export { Upload } from './Upload'
 export type { UploadProps, UploadFileItem } from './Upload'
