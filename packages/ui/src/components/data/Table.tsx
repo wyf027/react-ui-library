@@ -55,6 +55,7 @@ export const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unkn
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
     const [filterMap, setFilterMap] = useState<Record<string, string>>({})
     const [visibleMap, setVisibleMap] = useState<Record<string, boolean>>({})
+    const [innerSelectedRowKeys, setInnerSelectedRowKeys] = useState<string[]>(rowSelection?.defaultSelectedRowKeys ?? [])
 
     const controlledSortColumn = useMemo(() => columns.find((column) => column.sortOrder !== undefined), [columns])
     const effectiveSortKey = controlledSortColumn ? String(controlledSortColumn.key) : sortKey
@@ -116,6 +117,33 @@ export const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unkn
     const totalPages = pagination ? Math.max(1, Math.ceil(pagination.total / pagination.pageSize)) : 1
     const canGoPrev = Boolean(pagination && pagination.current > 1)
     const canGoNext = Boolean(pagination && pagination.current < totalPages)
+
+    const rowKeys = useMemo(
+      () =>
+        processedRows.map((record, index) =>
+          typeof rowKey === 'function' ? rowKey(record, index) : rowKey ? String(record[rowKey]) : String(index),
+        ),
+      [processedRows, rowKey],
+    )
+
+    const selectedRowKeys = rowSelection?.selectedRowKeys ?? innerSelectedRowKeys
+    const selectedKeySet = useMemo(() => new Set(selectedRowKeys), [selectedRowKeys])
+    const allChecked = rowKeys.length > 0 && rowKeys.every((key) => selectedKeySet.has(key))
+
+    const emitSelectionChange = (nextSelectedRowKeys: string[]) => {
+      if (!rowSelection) return
+
+      if (rowSelection.selectedRowKeys === undefined) {
+        setInnerSelectedRowKeys(nextSelectedRowKeys)
+      }
+
+      const nextSelectedRows = processedRows.filter((record, index) => {
+        const key = typeof rowKey === 'function' ? rowKey(record, index) : rowKey ? String(record[rowKey]) : String(index)
+        return nextSelectedRowKeys.includes(key)
+      })
+
+      rowSelection.onChange?.(nextSelectedRowKeys, nextSelectedRows)
+    }
 
     return (
       <div className="space-y-2">
