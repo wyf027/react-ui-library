@@ -35,6 +35,7 @@ interface FormContextValue {
   setFieldValue: (name: string, value: unknown) => void
   triggerFieldValidation: (name: string, trigger: FormValidateTrigger, nextValue?: unknown) => void
   setFieldRules: (name: string, rules: FormRule[]) => void
+  clearFieldRules: (name: string) => void
 }
 
 const FormContext = createContext<FormContextValue | null>(null)
@@ -73,6 +74,8 @@ export interface FormItemProps {
   children: ReactNode
   requiredMark?: boolean
 }
+
+const EMPTY_RULES: FormRule[] = []
 
 export const Form = forwardRef<HTMLFormElement, FormProps>(function Form(
   { className, initialValues = {}, onSubmit, validateTrigger = 'onSubmit', children, ...props },
@@ -191,6 +194,7 @@ export const Form = forwardRef<HTMLFormElement, FormProps>(function Form(
       setFieldValue,
       triggerFieldValidation,
       setFieldRules,
+      clearFieldRules,
     }),
     [errors, setFieldRules, setFieldValue, triggerFieldValidation, values],
   )
@@ -217,7 +221,7 @@ export const Form = forwardRef<HTMLFormElement, FormProps>(function Form(
 export function FormItem({
   name,
   label,
-  rules = [],
+  rules = EMPTY_RULES,
   dependencies = [],
   children,
   requiredMark = true,
