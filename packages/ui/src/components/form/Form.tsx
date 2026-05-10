@@ -268,9 +268,9 @@ export function FormItem({
     ctx.setFieldRules(name, rules)
   }, [ctx, name, rules])
 
-  dependencies.forEach((dep) => {
-    void ctx.values[dep]
-  })
+  useEffect(() => {
+    ctx.setFieldRules(name, rules)
+  }, [ctx, name, rules, dependencyValues])
 
   const value = ctx.values[name]
   const error = ctx.errors[name]
