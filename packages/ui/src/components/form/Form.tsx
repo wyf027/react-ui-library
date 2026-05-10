@@ -13,10 +13,10 @@ import {
   useRef,
   useState,
 } from 'react'
-import type { ChangeEvent } from 'react'
 import { cn } from '../../utils/cn'
 
 export type FormValues = Record<string, unknown>
+export type ValidateTrigger = 'onSubmit' | 'onChange' | 'onBlur'
 
 export interface FormRule {
   required?: boolean
@@ -32,6 +32,7 @@ export interface FormRule {
 interface FormContextValue {
   values: FormValues
   errors: Record<string, string>
+  validateTrigger: ValidateTrigger
   setFieldValue: (name: string, value: unknown) => void
   triggerFieldValidation: (name: string, trigger: FormValidateTrigger, nextValue?: unknown) => void
   setFieldRules: (name: string, rules: FormRule[]) => void
@@ -60,6 +61,7 @@ export function extractFieldValue(input: unknown) {
 
 export interface FormProps extends Omit<FormHTMLAttributes<HTMLFormElement>, 'onSubmit'> {
   initialValues?: FormValues
+  validateTrigger?: ValidateTrigger
   onSubmit?: (values: FormValues) => void
   validateTrigger?: FormValidateTrigger
 }
@@ -73,6 +75,32 @@ export interface FormItemProps {
   dependencies?: string[]
   children: ReactNode
   requiredMark?: boolean
+  help?: ReactNode
+  extra?: ReactNode
+  validateStatus?: 'error' | 'success' | 'warning'
+}
+
+const getRuleError = (name: string, value: unknown, values: FormValues, rules: FormRule[]) => {
+  for (const rule of rules) {
+    if (rule.when && !rule.when(values)) continue
+    if (rule.required && (value === undefined || value === null || value === '')) {
+      return rule.message ?? `${name} is required`
+    }
+    if (typeof value === 'string' && rule.minLength !== undefined && value.length < rule.minLength) {
+      return rule.message ?? `${name} length must be >= ${rule.minLength}`
+    }
+    if (typeof value === 'string' && rule.maxLength !== undefined && value.length > rule.maxLength) {
+      return rule.message ?? `${name} length must be <= ${rule.maxLength}`
+    }
+    if (typeof value === 'string' && rule.pattern && !rule.pattern.test(value)) {
+      return rule.message ?? `${name} format is invalid`
+    }
+    if (rule.validator) {
+      const message = rule.validator(value, values)
+      if (message) return message
+    }
+  }
+  return ''
 }
 
 const EMPTY_RULES: FormRule[] = []
@@ -191,6 +219,7 @@ export const Form = forwardRef<HTMLFormElement, FormProps>(function Form(
     () => ({
       values,
       errors,
+      validateTrigger,
       setFieldValue,
       triggerFieldValidation,
       setFieldRules,
@@ -225,6 +254,9 @@ export function FormItem({
   dependencies = [],
   children,
   requiredMark = true,
+  help,
+  extra,
+  validateStatus,
 }: FormItemProps) {
   const ctx = useContext(FormContext)
 
@@ -251,6 +283,17 @@ export function FormItem({
         onBlur?: (event: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => void
       }>)
     : null
+
+  const extractFieldValue = (arg: unknown) => {
+    if (arg && typeof arg === 'object' && 'target' in arg) {
+      const eventTarget = (arg as { target?: { type?: string; value?: unknown; checked?: boolean } }).target
+      if (eventTarget?.type === 'checkbox') {
+        return eventTarget.checked
+      }
+      return eventTarget?.value
+    }
+    return arg
+  }
 
   return (
     <div className="space-y-1.5">
@@ -281,7 +324,10 @@ export function FormItem({
             },
           }) as ReactElement)
         : children}
-      {error ? <p className="text-xs text-red-600">{error}</p> : null}
+      {error || help ? <p className={cn('text-xs', error ? 'text-red-600' : 'text-slate-500')}>{error ?? help}</p> : null}
+      {extra ? <div className="text-xs text-slate-500">{extra}</div> : null}
+      {validateStatus === 'success' ? <div className="text-xs text-emerald-600">Looks good</div> : null}
+      {validateStatus === 'warning' ? <div className="text-xs text-amber-600">Please review this field</div> : null}
     </div>
   )
 }

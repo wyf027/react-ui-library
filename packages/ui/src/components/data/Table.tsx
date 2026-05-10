@@ -83,12 +83,29 @@ export const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unkn
     const processedRows = useMemo(() => {
       let rows = [...dataSource]
 
-      if (searchable && search.trim()) {
-        const keyword = search.trim().toLowerCase()
-        rows = rows.filter((record) =>
-          Object.values(record).some((value) => String(value ?? '').toLowerCase().includes(keyword)),
-        )
+  const controlledSortColumn = columns.find((column) => column.sortOrder)
+  const sortKey = controlledSortColumn ? String(controlledSortColumn.key) : internalSortKey
+  const sortOrder = controlledSortColumn?.sortOrder ?? internalSortOrder
+
+  const filterMap = useMemo(() => {
+    const controlled: Record<string, string> = {}
+    columns.forEach((column) => {
+      if (column.filteredValue !== undefined) {
+        controlled[String(column.key)] = column.filteredValue
       }
+    })
+    return Object.keys(controlled).length > 0 ? controlled : internalFilterMap
+  }, [columns, internalFilterMap])
+
+  const rows = useMemo(() => {
+    let nextRows = [...dataSource]
+
+    if (searchable && search.trim()) {
+      const keyword = search.trim().toLowerCase()
+      nextRows = nextRows.filter((record) =>
+        Object.values(record).some((value) => String(value ?? '').toLowerCase().includes(keyword)),
+      )
+    }
 
       Object.entries(effectiveFilterMap).forEach(([key, filterVal]) => {
         if (!filterVal) return
@@ -101,6 +118,7 @@ export const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unkn
           rows.sort((a, b) => (effectiveSortOrder === 'asc' ? column.sorter!(a, b) : column.sorter!(b, a)))
         }
       }
+    }
 
       return rows
     }, [columns, dataSource, effectiveFilterMap, effectiveSortKey, effectiveSortOrder, search, searchable])
@@ -285,12 +303,11 @@ export const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unkn
                       <select
                         aria-label={`Filter ${String(column.title)}`}
                         value={filterMap[key] ?? ''}
-                        onChange={(event) =>
-                          setFilterMap((prev) => ({
-                            ...prev,
-                            [key]: event.target.value,
-                          }))
-                        }
+                        onChange={(event) => {
+                          const nextFilters = { ...filterMap, [key]: event.target.value }
+                          setInternalFilterMap(nextFilters)
+                          notifyChange(currentPage, pageSize, nextFilters)
+                        }}
                         className="mt-1 h-6 rounded border border-slate-300 bg-white px-1 text-[10px] dark:border-slate-700 dark:bg-slate-900"
                       >
                         <option value="">All</option>
@@ -309,7 +326,7 @@ export const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unkn
           <tbody className="divide-y divide-slate-100 bg-white dark:divide-slate-800 dark:bg-slate-900">
             {paginatedRows.length === 0 ? (
               <tr>
-                <td className="px-4 py-6 text-center text-sm text-slate-500" colSpan={visibleColumns.length}>
+                <td className="px-4 py-6 text-center text-sm text-slate-500" colSpan={visibleColumns.length + (rowSelection ? 1 : 0)}>
                   {emptyText}
                 </td>
               </tr>
@@ -325,8 +342,14 @@ export const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unkn
 
                 return (
                   <tr key={key} className="text-sm text-slate-700 dark:text-slate-200">
+                    {rowSelection ? <td className="px-4 py-3"><input type="checkbox" aria-label={`Select row ${rowIndex + 1}`} checked={selectedKeys.includes(key)} onChange={(event) => {
+                      const nextKeys = event.target.checked ? [...selectedKeys, key] : selectedKeys.filter((selectedKey) => selectedKey !== key)
+                      if (!rowSelection.selectedRowKeys) setInternalSelectedKeys(nextKeys)
+                      const selectedRows = rows.filter((rowRecord, rowKeyIndex) => nextKeys.includes(getRowKey(rowRecord, rowKeyIndex)))
+                      rowSelection.onChange?.(nextKeys, selectedRows)
+                    }} /></td> : null}
                     {visibleColumns.map((column) => {
-                      const value = record[column.key as keyof typeof record]
+                      const value = record[column.key as keyof T]
                       return (
                         <td key={String(column.key)} className="px-4 py-3">
                           {column.render ? column.render(value, record, rowIndex) : (value as ReactNode)}
