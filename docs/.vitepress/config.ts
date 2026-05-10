@@ -34,6 +34,7 @@ export default defineConfig({
           text: '布局',
           collapsed: false,
           items: [
+            { text: 'Layout 页面骨架', link: '/components/layout' },
             { text: 'Container 布局容器', link: '/components/container' },
             { text: 'Row 行', link: '/components/row' },
             { text: 'Col 列', link: '/components/col' },

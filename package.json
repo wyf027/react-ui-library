@@ -13,6 +13,9 @@
     "build:docs": "npm run build --workspace @wuyangfan/nova-ui-docs",
     "typecheck:ui": "npm run typecheck --workspace @wuyangfan/nova-ui",
     "lint:ui": "npm run lint --workspace @wuyangfan/nova-ui",
+    "test:ui": "npm run test --workspace @wuyangfan/nova-ui",
+    "test:coverage:ui": "npm run test:coverage --workspace @wuyangfan/nova-ui",
+    "new:component": "npm run new:component --workspace @wuyangfan/nova-ui --",
     "build": "npm run build:ui && npm run build:docs"
   }
 }

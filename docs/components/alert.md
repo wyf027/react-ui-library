@@ -1,6 +1,6 @@
 # Alert 警告提示
 
-警告提示组件，对齐 Ant Design Alert。
+警告提示组件，对齐 Ant Design Alert。`type` 对应的背景/边框/文字色由 `packages/ui/src/theme/componentTokens.ts` 中的 `alertTypeSurfaceClass` 统一维护，避免在组件内散落色板 class。
 
 ## 示例
 
