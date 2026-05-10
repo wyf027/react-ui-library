@@ -14,8 +14,26 @@
         <Button variant='ghost'>按钮 C</Button>
       </Flex>
       <Flex vertical gap={8}>
-        <div style={{background:'#dbeafe',padding:'8px',borderRadius:'4px'}}>垂直排列 1</div>
-        <div style={{background:'#bfdbfe',padding:'8px',borderRadius:'4px'}}>垂直排列 2</div>
+        <div
+          style={{
+            background: 'var(--vp-c-bg-soft)',
+            padding: '8px',
+            borderRadius: '4px',
+            border: '1px solid var(--vp-c-divider)',
+          }}
+        >
+          垂直排列 1
+        </div>
+        <div
+          style={{
+            background: 'var(--vp-c-bg-alt)',
+            padding: '8px',
+            borderRadius: '4px',
+            border: '1px solid var(--vp-c-divider)',
+          }}
+        >
+          垂直排列 2
+        </div>
       </Flex>
       <Flex justify='between' align='center'>
         <Text>左侧内容</Text>
@@ -36,3 +54,4 @@
 | justify | 主轴对齐 | `'start' \| 'center' \| 'end' \| 'between' \| 'around' \| 'evenly'` | - |
 | wrap | 是否换行 | `boolean` | `false` |
 | gap | 间距 | `number \| string` | - |
+| inline | 是否 `inline-flex` | `boolean` | `false` |

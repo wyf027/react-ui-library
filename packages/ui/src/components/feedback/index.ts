@@ -1,17 +1,17 @@
-export { Modal } from './Modal'
-export type { ModalProps } from './Modal'
+export { Modal } from './overlays/Modal'
+export type { ModalProps } from './overlays/Modal'
 
-export { Drawer } from './Drawer'
-export type { DrawerProps } from './Drawer'
+export { Drawer } from './overlays/Drawer'
+export type { DrawerProps } from './overlays/Drawer'
 
 export { Toast, Message } from './Toast'
 export type { ToastProps } from './Toast'
 
-export { Tooltip } from './Tooltip'
-export type { TooltipProps } from './Tooltip'
+export { Tooltip } from './overlays/Tooltip'
+export type { TooltipProps } from './overlays/Tooltip'
 
-export { Popover } from './Popover'
-export type { PopoverProps } from './Popover'
+export { Popover } from './overlays/Popover'
+export type { PopoverProps } from './overlays/Popover'
 
 export { Loading } from './Loading'
 export type { LoadingProps } from './Loading'

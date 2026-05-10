@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Lint UI
+        run: npm run lint:ui
+
+      - name: Typecheck UI
+        run: npm run typecheck:ui
+
+      - name: Test UI
+        run: npm run test:ui
+
+      - name: Build UI
+        run: npm run build:ui
+
+      - name: Build docs
+        run: npm run build:docs
