@@ -1,8 +1,19 @@
-import { forwardRef, type ReactNode, type TableHTMLAttributes, useMemo, useState } from 'react'
+import {
+  forwardRef,
+  type ForwardedRef,
+  type ReactElement,
+  type ReactNode,
+  type RefAttributes,
+  type TableHTMLAttributes,
+  useMemo,
+  useState,
+} from 'react'
 import { cn } from '../../utils/cn'
 
-export interface TableColumn<T> {
-  key: keyof T | string
+type TableKey<T> = Extract<keyof T, string>
+
+export interface TableColumn<T, K extends TableKey<T> = TableKey<T>> {
+  key: K
   title: ReactNode
   width?: number | string
   sorter?: (a: T, b: T) => number
@@ -24,7 +35,7 @@ export interface TableProps<T extends Record<string, unknown>>
   title?: ReactNode
   searchable?: boolean
   columnConfigurable?: boolean
-  rowKey?: keyof T | ((record: T, index: number) => string)
+  rowKey?: TableKey<T> | ((record: T, index: number) => string)
   emptyText?: ReactNode
   pagination?: {
     current: number
@@ -71,10 +82,10 @@ export const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unkn
       [columns, filterMap],
     )
 
-    const visibleColumns = useMemo(
-      () => columns.filter((column) => visibleMap[String(column.key)] !== false),
-      [columns, visibleMap],
-    )
+  const visibleColumns = useMemo(
+    () => columns.filter((column) => visibleMap[column.key] !== false),
+    [columns, visibleMap],
+  )
 
     const emitChange = (nextFilters: Record<string, string | undefined>, nextSorter: TableSorter<Record<string, unknown>>) => {
       onChange?.(undefined, nextFilters, nextSorter)
@@ -163,46 +174,44 @@ export const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unkn
       rowSelection.onChange?.(nextSelectedRowKeys, nextSelectedRows)
     }
 
-    return (
-      <div className="space-y-2">
-        {(title || searchable || columnConfigurable) && (
-          <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-slate-200 bg-white p-2 dark:border-slate-700 dark:bg-slate-900">
-            <div className="text-sm font-medium text-slate-800 dark:text-slate-200">{title}</div>
-            <div className="flex flex-wrap items-center gap-2">
-              {searchable ? (
-                <input
-                  value={search}
-                  onChange={(event) => setSearch(event.target.value)}
-                  placeholder="Search..."
-                  className="h-8 rounded-md border border-slate-300 px-2 text-sm dark:border-slate-700 dark:bg-slate-950"
-                />
-              ) : null}
-              {columnConfigurable ? (
-                <details className="relative">
-                  <summary className="cursor-pointer rounded border border-slate-300 px-2 py-1 text-xs dark:border-slate-700">
-                    Columns
-                  </summary>
-                  <div className="absolute right-0 z-20 mt-1 min-w-40 rounded border border-slate-200 bg-white p-2 shadow dark:border-slate-700 dark:bg-slate-900">
-                    {columns.map((column) => {
-                      const key = String(column.key)
-                      const checked = visibleMap[key] !== false
-                      return (
-                        <label key={key} className="flex items-center gap-2 py-1 text-xs">
-                          <input
-                            type="checkbox"
-                            checked={checked}
-                            onChange={(event) =>
-                              setVisibleMap((prev) => ({ ...prev, [key]: event.target.checked }))
-                            }
-                          />
-                          <span>{String(column.title)}</span>
-                        </label>
-                      )
-                    })}
-                  </div>
-                </details>
-              ) : null}
-            </div>
+  return (
+    <div className="space-y-2">
+      {(title || searchable || columnConfigurable) && (
+        <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-slate-200 bg-white p-2 dark:border-slate-700 dark:bg-slate-900">
+          <div className="text-sm font-medium text-slate-800 dark:text-slate-200">{title}</div>
+          <div className="flex flex-wrap items-center gap-2">
+            {searchable ? (
+              <input
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                placeholder="Search..."
+                className="h-8 rounded-md border border-slate-300 px-2 text-sm dark:border-slate-700 dark:bg-slate-950"
+              />
+            ) : null}
+            {columnConfigurable ? (
+              <details className="relative">
+                <summary className="cursor-pointer rounded border border-slate-300 px-2 py-1 text-xs dark:border-slate-700">
+                  Columns
+                </summary>
+                <div className="absolute right-0 z-20 mt-1 min-w-40 rounded border border-slate-200 bg-white p-2 shadow dark:border-slate-700 dark:bg-slate-900">
+                  {columns.map((column) => {
+                    const checked = visibleMap[column.key] !== false
+                    return (
+                      <label key={column.key} className="flex items-center gap-2 py-1 text-xs">
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={(event) =>
+                            setVisibleMap((prev) => ({ ...prev, [column.key]: event.target.checked }))
+                          }
+                        />
+                        <span>{String(column.title)}</span>
+                      </label>
+                    )
+                  })}
+                </div>
+              </details>
+            ) : null}
           </div>
         )}
         <div className="nova-scrollbar overflow-auto rounded-lg border border-slate-200 dark:border-slate-700">
