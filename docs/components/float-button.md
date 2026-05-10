@@ -7,7 +7,15 @@
 <LivePlayground :code="`
 () => {
   return (
-    <div style={{position:'relative',height:'120px',background:'#f8fafc',borderRadius:'8px'}}>
+    <div
+      style={{
+        position: 'relative',
+        height: '120px',
+        background: 'var(--vp-c-bg-soft)',
+        borderRadius: '8px',
+        border: '1px solid var(--vp-c-divider)',
+      }}
+    >
       <FloatButton
         tooltip='添加'
         style={{position:'absolute'}}
