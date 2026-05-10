@@ -36,6 +36,24 @@ interface FormContextValue {
 
 const FormContext = createContext<FormContextValue | null>(null)
 
+type MaybeNativeChangeEvent =
+  | ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  | { target?: { value?: unknown; checked?: unknown; type?: string } }
+
+export function extractFieldValue(input: unknown) {
+  if (typeof input === 'object' && input !== null && 'target' in input) {
+    const event = input as MaybeNativeChangeEvent
+    if (event.target?.type === 'checkbox') {
+      return Boolean(event.target.checked)
+    }
+    if (event.target && 'value' in event.target) {
+      return event.target.value
+    }
+  }
+
+  return input
+}
+
 export interface FormProps extends Omit<FormHTMLAttributes<HTMLFormElement>, 'onSubmit'> {
   initialValues?: FormValues
   onSubmit?: (values: FormValues) => void
@@ -166,7 +184,7 @@ export function FormItem({
   const childNode = isValidElement(children)
     ? (children as ReactElement<{
         value?: unknown
-        onChange?: (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void
+        onChange?: (eventOrValue: unknown) => void
       }>)
     : null
 
@@ -181,17 +199,12 @@ export function FormItem({
       {childNode
         ? (cloneElement(childNode, {
             value: value as never,
-            onChange: (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-              const nextValue =
-                event?.target?.type === 'checkbox'
-                  ? (event.target as HTMLInputElement).checked
-                  : event?.target?.value
+            onChange: (eventOrValue: unknown) => {
+              const nextValue = extractFieldValue(eventOrValue)
               ctx.setFieldValue(name, nextValue)
               const originOnChange =
-                childNode.props.onChange as
-                  | ((event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void)
-                  | undefined
-              originOnChange?.(event)
+                childNode.props.onChange as ((eventOrValue: unknown) => void) | undefined
+              originOnChange?.(eventOrValue)
             },
           }) as ReactElement)
         : children}

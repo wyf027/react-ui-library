@@ -26,11 +26,12 @@ export interface TableProps<T extends Record<string, unknown>>
   columnConfigurable?: boolean
   rowKey?: keyof T | ((record: T, index: number) => string)
   emptyText?: ReactNode
-  onChange?: (
-    pagination: undefined,
-    filters: Record<string, string | undefined>,
-    sorter: TableSorter<T>,
-  ) => void
+  pagination?: {
+    current: number
+    pageSize: number
+    total: number
+    onChange: (page: number, pageSize: number) => void
+  }
 }
 
 export const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unknown>>>(
@@ -44,7 +45,7 @@ export const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unkn
       columnConfigurable = false,
       rowKey,
       emptyText = 'No data',
-      onChange,
+      pagination,
       ...props
     },
     ref,
@@ -102,6 +103,19 @@ export const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unkn
 
       return rows
     }, [columns, dataSource, effectiveFilterMap, effectiveSortKey, effectiveSortOrder, search, searchable])
+
+    const paginatedRows = useMemo(() => {
+      if (!pagination) {
+        return processedRows
+      }
+      const start = (pagination.current - 1) * pagination.pageSize
+      const end = start + pagination.pageSize
+      return processedRows.slice(start, end)
+    }, [pagination, processedRows])
+
+    const totalPages = pagination ? Math.max(1, Math.ceil(pagination.total / pagination.pageSize)) : 1
+    const canGoPrev = Boolean(pagination && pagination.current > 1)
+    const canGoNext = Boolean(pagination && pagination.current < totalPages)
 
     return (
       <div className="space-y-2">
@@ -238,44 +252,88 @@ export const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unkn
                           ))}
                         </select>
                       ) : null}
-                    </th>
-                  )
-                })}
+                    </div>
+                    {column.filters?.length ? (
+                      <select
+                        value={filterMap[key] ?? ''}
+                        onChange={(event) =>
+                          setFilterMap((prev) => ({
+                            ...prev,
+                            [key]: event.target.value,
+                          }))
+                        }
+                        className="mt-1 h-6 rounded border border-slate-300 bg-white px-1 text-[10px] dark:border-slate-700 dark:bg-slate-900"
+                      >
+                        <option value="">All</option>
+                        {column.filters.map((filterItem) => (
+                          <option key={filterItem.value} value={filterItem.value}>
+                            {filterItem.text}
+                          </option>
+                        ))}
+                      </select>
+                    ) : null}
+                  </th>
+                )
+              })}
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100 bg-white dark:divide-slate-800 dark:bg-slate-900">
+            {paginatedRows.length === 0 ? (
+              <tr>
+                <td className="px-4 py-6 text-center text-sm text-slate-500" colSpan={visibleColumns.length}>
+                  {emptyText}
+                </td>
               </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 bg-white dark:divide-slate-800 dark:bg-slate-900">
-              {processedRows.length === 0 ? (
-                <tr>
-                  <td className="px-4 py-6 text-center text-sm text-slate-500" colSpan={visibleColumns.length}>
-                    {emptyText}
-                  </td>
-                </tr>
-              ) : (
-                processedRows.map((record, index) => {
-                  const key =
-                    typeof rowKey === 'function'
-                      ? rowKey(record, index)
-                      : rowKey
-                        ? String(record[rowKey])
-                        : String(index)
+            ) : (
+              paginatedRows.map((record, index) => {
+                const rowIndex = pagination ? (pagination.current - 1) * pagination.pageSize + index : index
+                const key =
+                  typeof rowKey === 'function'
+                    ? rowKey(record, rowIndex)
+                    : rowKey
+                      ? String(record[rowKey])
+                      : String(rowIndex)
 
-                  return (
-                    <tr key={key} className="text-sm text-slate-700 dark:text-slate-200">
-                      {visibleColumns.map((column) => {
-                        const value = record[column.key as keyof typeof record]
-                        return (
-                          <td key={String(column.key)} className="px-4 py-3">
-                            {column.render ? column.render(value, record, index) : (value as ReactNode)}
-                          </td>
-                        )
-                      })}
-                    </tr>
-                  )
-                })
-              )}
-            </tbody>
-          </table>
+                return (
+                  <tr key={key} className="text-sm text-slate-700 dark:text-slate-200">
+                    {visibleColumns.map((column) => {
+                      const value = record[column.key as keyof typeof record]
+                      return (
+                        <td key={String(column.key)} className="px-4 py-3">
+                          {column.render ? column.render(value, record, rowIndex) : (value as ReactNode)}
+                        </td>
+                      )
+                    })}
+                  </tr>
+                )
+              })
+            )}
+          </tbody>
+        </table>
+      </div>
+      {pagination ? (
+        <div className="flex items-center justify-end gap-2 text-xs text-slate-600 dark:text-slate-300">
+          <span>
+            Page {pagination.current} / {totalPages}
+          </span>
+          <button
+            type="button"
+            disabled={!canGoPrev}
+            onClick={() => pagination.onChange(pagination.current - 1, pagination.pageSize)}
+            className="rounded border border-slate-300 px-2 py-1 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700"
+          >
+            Prev
+          </button>
+          <button
+            type="button"
+            disabled={!canGoNext}
+            onClick={() => pagination.onChange(pagination.current + 1, pagination.pageSize)}
+            className="rounded border border-slate-300 px-2 py-1 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700"
+          >
+            Next
+          </button>
         </div>
+      ) : null}
       </div>
     )
   },
