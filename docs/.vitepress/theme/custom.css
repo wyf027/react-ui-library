@@ -43,3 +43,43 @@
   background: #7f1d1d;
   color: #fff;
 }
+
+.comp-overview-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  margin: 18px 0;
+}
+
+.comp-overview-card {
+  display: block;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 12px;
+  padding: 14px;
+  background: var(--vp-c-bg-soft);
+  text-decoration: none;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.comp-overview-card:hover {
+  border-color: var(--vp-c-brand-1);
+  transform: translateY(-1px);
+}
+
+.comp-overview-card h3 {
+  margin: 0 0 6px;
+  color: var(--vp-c-text-1);
+}
+
+.comp-overview-card p {
+  margin: 0 0 8px;
+  color: var(--vp-c-brand-1);
+  font-size: 13px;
+}
+
+.comp-overview-card code {
+  display: block;
+  white-space: normal;
+  line-height: 1.6;
+  color: var(--vp-c-text-2);
+}
