@@ -15,4 +15,4 @@ Shared logic used by multiple components belongs in `src/components/_internal/` 
 
 Files such as `layout/index.ts`, `form/index.ts`, etc. must import **only** from `./ComponentName` (the folder barrel), never from deep paths like `./Modal/Modal`.
 
-Internal cross-imports between components use relative paths (e.g. `../../feedback/Spin`), not the package root.
+Internal cross-imports between components use relative paths (e.g. `../../feedback/inline/Spin`), not the package root.

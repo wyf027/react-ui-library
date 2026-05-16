@@ -1,0 +1,48 @@
+.comp-overview-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  margin: 18px 0;
+}
+
+.comp-overview-card {
+  display: block;
+  border: 1px solid var(--nova-doc-border, #e5e7eb);
+  border-radius: 12px;
+  padding: 14px;
+  background: var(--nova-doc-muted-bg, #f9fafb);
+  text-decoration: none;
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.comp-overview-card:hover {
+  border-color: var(--nova-doc-accent, #2563eb);
+  transform: translateY(-1px);
+}
+
+.comp-overview-card h3 {
+  margin: 0 0 6px;
+  color: var(--nova-doc-text, #111827);
+}
+
+.comp-overview-card p {
+  margin: 0 0 8px;
+  color: var(--nova-doc-accent, #2563eb);
+  font-size: 13px;
+}
+
+.comp-overview-card code {
+  display: block;
+  white-space: normal;
+  line-height: 1.6;
+  color: var(--nova-doc-text-secondary, #6b7280);
+}
+
+html[data-prefers-color='dark'] .comp-overview-card {
+  --nova-doc-border: #374151;
+  --nova-doc-muted-bg: #111827;
+  --nova-doc-text: #f9fafb;
+  --nova-doc-text-secondary: #9ca3af;
+}

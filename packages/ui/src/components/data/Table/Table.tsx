@@ -1,9 +1,11 @@
 import { forwardRef, type ReactNode, useMemo, useState } from 'react'
 
+import { Spin } from '../../feedback/inline/Spin'
 import { cn } from '../../../utils/cn'
 
 import {
   tableBody,
+  tableCaption,
   tableEmptyTd,
   tableFilterSelect,
   tableHeadRow,
@@ -26,9 +28,11 @@ export const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unkn
     className,
     columns,
     dataSource,
+    caption,
     title,
     searchable = false,
     columnConfigurable = false,
+    loading = false,
     rowKey,
     emptyText = 'No data',
     pagination,
@@ -109,9 +113,11 @@ export const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unkn
           <div className="flex flex-wrap items-center gap-2">
             {searchable ? (
               <input
+                type="search"
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
                 placeholder="Search..."
+                aria-label="Search table"
                 className={tableSearchInput}
               />
             ) : null}
@@ -143,19 +149,28 @@ export const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unkn
         </div>
       )}
       <div className={tableScrollWrap}>
-        <table ref={ref} className={cn(tableRoot, className)} {...props}>
+        <table ref={ref} className={cn(tableRoot, className)} aria-busy={loading || undefined} {...props}>
+          {caption ? <caption className={tableCaption}>{caption}</caption> : null}
           <thead className={tableHeadRow}>
             <tr>
               {visibleColumns.map((column) => {
                 const key = String(column.key)
                 const sorted = effectiveSortKey === key
+                const ariaSort = column.sorter
+                  ? sorted
+                    ? effectiveSortOrder === 'asc'
+                      ? 'ascending'
+                      : 'descending'
+                    : 'none'
+                  : undefined
                 return (
-                  <th key={key} scope="col" style={{ width: column.width }} className={tableTh}>
+                  <th key={key} scope="col" style={{ width: column.width }} className={tableTh} aria-sort={ariaSort}>
                     <div className="flex items-center gap-1">
                       <span>{column.title}</span>
                       {column.sorter ? (
                         <button
                           type="button"
+                          aria-label={`Sort column ${key}`}
                           onClick={() => {
                             if (!sorted) {
                               if (!controlledSortColumn) {
@@ -177,6 +192,7 @@ export const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unkn
                     </div>
                     {column.filters?.length ? (
                       <select
+                        aria-label={`Filter column ${key}`}
                         value={effectiveFilterMap[key] ?? ''}
                         onChange={(event) => {
                           const nextValue = event.target.value
@@ -203,7 +219,15 @@ export const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unkn
             </tr>
           </thead>
           <tbody className={tableBody}>
-            {paginatedRows.length === 0 ? (
+            {loading ? (
+              <tr>
+                <td className={tableEmptyTd} colSpan={colSpan}>
+                  <div role="status" aria-live="polite" className="flex justify-center py-6">
+                    <Spin size="sm" />
+                  </div>
+                </td>
+              </tr>
+            ) : paginatedRows.length === 0 ? (
               <tr>
                 <td className={tableEmptyTd} colSpan={colSpan}>
                   {emptyText}
@@ -237,7 +261,7 @@ export const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unkn
         </table>
       </div>
       {pagination ? (
-        <div className={tablePaginationWrap}>
+        <nav className={tablePaginationWrap} aria-label="Table pagination">
           <span>
             Page {pagination.current} / {totalPages}
           </span>
@@ -257,7 +281,7 @@ export const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unkn
           >
             Next
           </button>
-        </div>
+        </nav>
       ) : null}
     </div>
   )

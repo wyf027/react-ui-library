@@ -82,6 +82,7 @@
 | 属性 | 说明 | 类型 | 默认值 | 备注 |
 | --- | --- | --- | --- | --- |
 | `level` | 标题级别，决定标签与字号 | `1 \| 2 \| 3 \| 4 \| 5` | `2` | 与 `h*` 一一对应 |
+| `ellipsis` | 单行省略 **`min-w-0 truncate`**；**`children` 为 string** 且未显式 **`title`** 时写入原生 **`title`** | `boolean` | `false` | |
 | `children` | 标题内容 | `ReactNode` | - | 必填（无 children 时为空标题，文档标注反模式） |
 | `className` | 根样式扩展 | `string` | - | 与 `cn` 合并于预设字阶之后 |
 | 其余 | 继承 `HTMLAttributes<HTMLHeadingElement>` | - | - | 如 `id`、`style`、`onClick`（不推荐用于大段可点区域） |
@@ -103,7 +104,6 @@
 | 属性 | 说明 | 优先级 |
 | --- | --- | --- |
 | `type` / `variant` | 主次标题色（如次要标题 `text-slate-600`） | P2 |
-| `ellipsis` | 单行截断 + `title` 全文提示 | P2 |
 | `underline` / `delete` | 与 Ant Typography 对齐的装饰（慎用） | P3 |
 | `Component` | 多态根元素（仅样式为标题时） | P3，a11y 需 `role="heading"` + `aria-level` |
 
@@ -113,7 +113,7 @@
 
 | 项 | 方案 |
 | --- | --- |
-| 接口 | `TitleProps extends HTMLAttributes<HTMLHeadingElement>`，扩展 `level`。 |
+| 接口 | **`TitleProps extends HTMLAttributes<HTMLHeadingElement>`**，扩展 **`level`**、**`ellipsis`**。 |
 | Ref | `forwardRef<HTMLHeadingElement, TitleProps>`；`ref` 指向实际 `h1`–`h5`。 |
 | 多态 `Tag` | 类型上 `level` 收窄保证 `Tag` 属于 `h1`|`h2`|…；避免 `level` 与非法字符串。 |
 

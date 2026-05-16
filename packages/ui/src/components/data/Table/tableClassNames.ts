@@ -7,6 +7,9 @@ export const tableToolbarTitle = 'text-sm font-medium text-slate-800 dark:text-s
 
 export const tableScrollWrap = 'nova-scrollbar overflow-auto rounded-lg border border-slate-200 dark:border-slate-700'
 
+export const tableCaption =
+  'caption-top border-b border-slate-200 px-4 py-2 text-left text-sm text-slate-600 dark:border-slate-700 dark:text-slate-400'
+
 export const tableRoot = 'min-w-full divide-y divide-slate-200 dark:divide-slate-700'
 
 export const tableHeadRow = 'bg-slate-50 dark:bg-slate-900/50'

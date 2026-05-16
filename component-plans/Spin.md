@@ -2,7 +2,7 @@
 
 > 本文档与 **Button 技术方案**采用同一套维度：职责、DOM/语义、状态与交互、数据与受控、API、类型与 Ref、无障碍、样式与主题、文档与验证、风险与演进。  
 > **基准组件**：`packages/ui/src/components/basic/Button/Button.tsx`  
-> **当前实现**：`packages/ui/src/components/feedback/Spin/Spin.tsx`
+> **当前实现**：`packages/ui/src/components/feedback/inline/Spin/Spin.tsx`
 
 ---
 
@@ -11,7 +11,7 @@
 | 项 | 内容 |
 | --- | --- |
 | 组件名 | `Spin` |
-| 包路径 | `@wuyangfan/nova-ui` → `packages/ui/src/components/feedback/Spin` |
+| 包路径 | `@wuyangfan/nova-ui` → `packages/ui/src/components/feedback/inline/Spin` |
 | 分类 | Feedback |
 | 依赖 | `cn` |
 | 关联组件 | **`Loading`**（行内、`border-current`、**无遮罩**）、**`Skeleton`**（结构占位） |
@@ -197,7 +197,7 @@
 
 ## 附录 B：参考实现片段（当前仓库）
 
-文件：`packages/ui/src/components/feedback/Spin/Spin.tsx`。
+文件：`packages/ui/src/components/feedback/inline/Spin/Spin.tsx`。
 
 要点：**`!children` 分支**、**`absolute inset-0` 遮罩**、**`border-brand-500`**。
 

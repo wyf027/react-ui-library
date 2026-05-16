@@ -2,7 +2,7 @@ import { forwardRef, type HTMLAttributes, type ReactNode } from 'react'
 
 import { cn } from '../../../utils/cn'
 
-import { Spin } from '../../feedback/Spin'
+import { Spin } from '../../feedback/inline/Spin'
 
 export interface CardProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title'> {
   title?: ReactNode

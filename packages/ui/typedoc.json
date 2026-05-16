@@ -1,0 +1,15 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["src/index.ts"],
+  "tsconfig": "tsconfig.typedoc.json",
+  "out": "../../docs-dumi/docs/develop/api-reference",
+  "plugin": ["typedoc-plugin-markdown"],
+  "readme": "none",
+  "hideGenerator": true,
+  "excludeExternals": true,
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "disableSources": true,
+  "sort": ["source-order"],
+  "name": "@wuyangfan/nova-ui"
+}

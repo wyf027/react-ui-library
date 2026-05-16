@@ -25,14 +25,14 @@ export type { TourProps, TourStep } from './Tour'
 export { Watermark } from './Watermark'
 export type { WatermarkProps } from './Watermark'
 
-export { Alert } from './Alert'
-export type { AlertProps } from './Alert'
+export { Alert } from './inline/Alert'
+export type { AlertProps } from './inline/Alert'
 
-export { Skeleton } from './Skeleton'
-export type { SkeletonProps } from './Skeleton'
+export { Skeleton } from './inline/Skeleton'
+export type { SkeletonProps } from './inline/Skeleton'
 
 export { Popconfirm } from './Popconfirm'
 export type { PopconfirmProps } from './Popconfirm'
 
-export { Spin } from './Spin'
-export type { SpinProps } from './Spin'
+export { Spin } from './inline/Spin'
+export type { SpinProps } from './inline/Spin'

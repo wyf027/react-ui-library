@@ -13,7 +13,7 @@
 | 组件名 | `Table` |
 | 包路径 | `@wuyangfan/nova-ui` → `packages/ui/src/components/data/Table` |
 | 分类 | Data |
-| 依赖 | `cn`、**`tableClassNames`**（布局/皮肤 **单文件 token**） |
+| 依赖 | `cn`、**`Spin`**（**`loading`**）、**`tableClassNames`**（布局/皮肤 **单文件 token**） |
 | 关联组件 | **`Pagination`**（若项目有独立分页器）、**`Input`**（搜索框形态）、**`Checkbox`**（列显隐） |
 
 ---
@@ -29,7 +29,8 @@
 5. **客户端分页切片**：**`pagination`** 存在时对 **`processedRows`** **`slice`**，**`onChange(page,pageSize)`** 由 **父组件更新 `current`**。  
 6. **空态**：无行时 **`colSpan={visibleColumns.length}`** 单格 **`emptyText`**（默认 **`'No data'`**）。  
 7. **样式集中**：**`tableRoot`/`tableTh`/…** 出自 **`tableClassNames.ts`**。  
-8. **语义表头**：**`<th scope="col">`**。
+8. **语义表头**：**`<th scope="col">`**；可排序列 **`aria-sort`**（**`none`/`ascending`/`descending`**）。  
+9. **可选 `<caption>` / `loading`**：**`caption`** prop；**`loading`** 时 **`aria-busy`** + **`Spin`** 占位行。
 
 ### 2.2 非目标
 
@@ -55,10 +56,10 @@
 | --- | --- |
 | 外层 | **`<div className="space-y-2">`** — **无 `ref`**（**`ref` 在 `<table>`**）。 |
 | 工具栏 | 条件：**`title \|\| searchable \|\| columnConfigurable`** → **`tableToolbarWrap`** 等。 |
-| 滚动 | **`tableScrollWrap`** 包 **`<table ref={ref} className={cn(tableRoot, className)} {...props}>`**。 |
-| 表头 | **`<thead>`** → **`<tr>`** → **`visibleColumns.map` → `<th scope="col">`** |
-| 表体 | **`<tbody>`**；空一行 **`td colSpan`**；否则 **`paginatedRows.map` → `<tr key={rowKey}>`** → **`td`**。 |
-| 分页 | **`tablePaginationWrap`**：**文案 + Prev/Next `button`**。 |
+| 滚动 | **`tableScrollWrap`** 包 **`<table ref={ref} aria-busy? className={cn(tableRoot, className)} {...props}>`**；可选 **`caption`** → **`<caption className={tableCaption}>`**。 |
+| 表头 | **`<thead>`** → **`<tr>`** → **`visibleColumns.map` → `<th scope="col" aria-sort?>`** |
+| 表体 | **`<tbody>`**；**`loading`** → **单格 `colSpan` + `role="status"` + `Spin`**；否则 **空一行 `emptyText`**；否则 **数据行**。 |
+| 分页 | **`<nav aria-label="Table pagination">`**：**文案 + Prev/Next `button`**（**`tablePaginationWrap`** 类名复用于 **`nav`**）。 |
 
 ---
 
@@ -106,9 +107,11 @@
 | --- | --- | --- | --- |
 | `columns` | `TableColumn<T>[]` | - | |
 | `dataSource` | `T[]` | - | |
+| `caption` | `ReactNode` | - | **`<caption>`**，表首子节点 |
 | `title` | `ReactNode` | - | 工具栏左侧；**与原生 `title` 属性分离**（**`Omit`**） |
 | `searchable` | `boolean` | `false` | |
 | `columnConfigurable` | `boolean` | `false` | |
+| `loading` | `boolean` | `false` | **`aria-busy`** + **`Spin`** 替换表体数据行 |
 | `rowKey` | `TableKey<T> \| ((record, index)=>string)` | - | **缺省** 用 **`String(rowIndex)`** |
 | `emptyText` | `ReactNode` | `'No data'` | |
 | `pagination` | `{ current, pageSize, total, onChange }` | - | **客户端 slice** |
@@ -145,10 +148,12 @@
 
 | 项 | 方案 |
 | --- | --- |
-| 表头 | **`scope="col"`** ✓ |
-| 排序钮 | **`type="button"`** + **符号 `↑↓↕`** — **建议** **`aria-sort`** / **`aria-label`** 演进。 |
-| 搜索 | **原生 `<input>`**，**`placeholder="Search..."`** **英文固定**。 |
-| 列配置 | **`<details>/<summary>`** — **键盘** 可展开；**`label`+`checkbox`** ✓ |
+| 表头 | **`scope="col"`** ✓；**`aria-sort`**（可排序列）。 |
+| 排序钮 | **`type="button"`** + **`aria-label`**（**`Sort column {key}`**）+ **符号 `↑↓↕`**。 |
+| 搜索 | **原生 `<input type="search">`**，**`aria-label="Search table"`**，**`placeholder="Search..."`**。 |
+| 筛选 | **`<select aria-label={`Filter column ${key}`}>`**。 |
+| 分页 | **`<nav aria-label="Table pagination">`**。 |
+| 加载 | **`aria-busy`**；**`role="status"`** **`aria-live="polite"`** 包裹 **`Spin`**。 |
 
 ---
 
@@ -174,14 +179,17 @@
 
 | 类型 | 用例（**`Table.test.tsx` 已覆盖**） |
 | --- | --- |
-| 渲染 | **列头**、**单元格值**。 |
+| 渲染 | **列头**、**单元格值**、**`<caption>`**。 |
 | 空 | **`emptyText`**。 |
 | 搜索 | **`searchable`** + **输入过滤** 行。 |
+| 排序 | **`aria-sort`** **none → ascending → descending**（非受控点击）。 |
+| 分页 | **`nav`** + **`onChange`**（Next）。 |
+| 加载 | **`loading`** → **`aria-busy`**、**`status`**、**无数据单元格**。 |
 
 | 类型 | 用例（**建议补测**） |
 | --- | --- |
-| 分页 | **Prev/Next**、**`onChange`**、**边界 `current`**。 |
-| 排序 | **非受控** 升/降；**受控** 父更新 **`sortOrder`**。 |
+| 分页 | **Prev**、**边界 `current`**、**`pageSize` 变化**。 |
+| 排序 | **受控** 父更新 **`sortOrder`**。 |
 | 筛选 | **`filters`**、**`filteredValue` 受控** 不更新内部 map。 |
 
 ---
@@ -190,8 +198,8 @@
 
 | 项 | 内容 |
 | --- | --- |
-| 示例 | **最小表**、**`pagination`**、**`searchable`**、**`columnConfigurable`**、**`sorter`+受控 `sortOrder`**。 |
-| 说明 | **数据全客户端**、**受控排序「首列」规则**、**`ref` 仅在 `table`**、**`TableSorter` 未接线**。 |
+| 示例 | **最小表**、**`caption`/`loading`**、**`pagination`**、**`searchable`**、**`columnConfigurable`**、**`sorter`+受控 `sortOrder`**。 |
+| 说明 | **数据全客户端**、**受控排序「首列」规则**、**`ref` 仅在 `table`**、**`TableSorter` 未接线**、**与 SPEC 边界（无行选择/虚拟滚动等）**。 |
 
 ---
 
@@ -222,7 +230,7 @@
 | 数据与受控 | columns sortOrder/filteredValue；pagination |
 | API | columns、dataSource、pagination… |
 | 类型与 Ref | HTMLTableElement |
-| 无障碍 | scope；排序符号弱 |
+| 无障碍 | **scope**、**aria-sort**、**caption**、搜索/筛选 **`aria-label`**、分页 **`nav`** |
 | 样式与主题 | tableClassNames、nova-scrollbar |
 | 文档与验证 | 受控排序、客户端假设 |
 

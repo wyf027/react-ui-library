@@ -6,3 +6,6 @@ packages/ui/dist
 packages/ui/coverage
 docs/.vitepress/dist
 docs/.vitepress/cache
+docs-dumi/dist
+docs-dumi/.dumi/tmp-production
+docs-dumi/docs/develop/api-reference

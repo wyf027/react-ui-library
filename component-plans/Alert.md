@@ -2,7 +2,7 @@
 
 > 本文档与 **Button 技术方案**采用同一套维度：职责、DOM/语义、状态与交互、数据与受控、API、类型与 Ref、无障碍、样式与主题、文档与验证、风险与演进。  
 > **基准组件**：`packages/ui/src/components/basic/Button/Button.tsx`  
-> **当前实现**：`packages/ui/src/components/feedback/Alert/Alert.tsx`；语义色来自 **`packages/ui/src/theme/componentTokens.ts`**（**`AlertType`**、**`alertTypeSurfaceClass`**）。
+> **当前实现**：`packages/ui/src/components/feedback/inline/Alert/Alert.tsx`；语义色来自 **`packages/ui/src/theme/componentTokens.ts`**（**`AlertType`**、**`alertTypeSurfaceClass`**）。
 
 ---
 
@@ -11,7 +11,7 @@
 | 项 | 内容 |
 | --- | --- |
 | 组件名 | `Alert` |
-| 包路径 | `@wuyangfan/nova-ui` → `packages/ui/src/components/feedback/Alert` |
+| 包路径 | `@wuyangfan/nova-ui` → `packages/ui/src/components/feedback/inline/Alert` |
 | 分类 | Feedback |
 | 依赖 | `cn`、**`alertTypeSurfaceClass`**、**`AlertType`**（**`theme/componentTokens`**） |
 | 关联组件 | **`Notification`**（卡片+默认 `open`、**`title`/`description` 为 string**）、**`Toast`**（角标短时） |

@@ -2,20 +2,26 @@
   "name": "nova-ui-workspace",
   "private": true,
   "version": "1.0.0",
-  "description": "Enterprise React component library and VitePress docs",
+  "description": "Enterprise React component library; dumi docs (primary)",
   "workspaces": [
     "packages/*",
-    "docs"
+    "docs-dumi"
   ],
+  "overrides": {
+    "esbuild": "0.21.4"
+  },
   "scripts": {
-    "dev:docs": "npm run dev --workspace @wuyangfan/nova-ui-docs",
+    "dev:docs": "npm run build:ui && npm run docs:api --workspace @wuyangfan/nova-ui && npm run dev --workspace @wuyangfan/nova-ui-docs-dumi",
     "build:ui": "npm run build --workspace @wuyangfan/nova-ui",
-    "build:docs": "npm run build --workspace @wuyangfan/nova-ui-docs",
+    "build:docs": "npm run docs:api --workspace @wuyangfan/nova-ui && npm run build --workspace @wuyangfan/nova-ui-docs-dumi",
+    "build:docs:dumi": "npm run docs:api --workspace @wuyangfan/nova-ui && npm run build --workspace @wuyangfan/nova-ui-docs-dumi",
+    "dev:docs:dumi": "npm run build:ui && npm run docs:api --workspace @wuyangfan/nova-ui && npm run dev --workspace @wuyangfan/nova-ui-docs-dumi",
     "typecheck:ui": "npm run typecheck --workspace @wuyangfan/nova-ui",
     "lint:ui": "npm run lint --workspace @wuyangfan/nova-ui",
     "test:ui": "npm run test --workspace @wuyangfan/nova-ui",
     "test:coverage:ui": "npm run test:coverage --workspace @wuyangfan/nova-ui",
     "new:component": "npm run new:component --workspace @wuyangfan/nova-ui --",
-    "build": "npm run build:ui && npm run build:docs"
+    "build": "npm run build:ui && npm run build:docs",
+    "docs:api": "npm run docs:api --workspace @wuyangfan/nova-ui"
   }
 }

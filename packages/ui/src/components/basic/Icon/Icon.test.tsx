@@ -39,4 +39,18 @@ describe('Icon', () => {
     const span = container.firstElementChild as HTMLSpanElement
     expect(span.getAttribute('data-icon')).toBe('check')
   })
+
+  it('adds animate-spin when spin is true', () => {
+    const { container } = render(<Icon spin />)
+    const span = container.firstElementChild as HTMLSpanElement
+    expect(span.className).toMatch(/animate-spin/)
+  })
+
+  it('uses role img and aria-label when decorative is false', () => {
+    const { container } = render(<Icon decorative={false} aria-label="Saved" />)
+    const span = container.firstElementChild as HTMLSpanElement
+    expect(span.getAttribute('aria-hidden')).not.toBe('true')
+    expect(span.getAttribute('role')).toBe('img')
+    expect(span.getAttribute('aria-label')).toBe('Saved')
+  })
 })

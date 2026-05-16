@@ -3,7 +3,8 @@
 企业级 React 组件库工程，包含：
 
 1. `packages/ui`：可发布的组件库包 `@wuyangfan/nova-ui`
-2. `docs`：基于 VitePress 的文档站与在线示例
+2. `docs-dumi`：**dumi** 文档站（默认：`npm run dev:docs` / `npm run build:docs`）
+3. `archive/vitepress-site`：迁移前的 **VitePress + react-live** 快照（非 npm workspace，按需本地运行；见该目录 README）
 
 ## 技术栈
 
@@ -11,7 +12,7 @@
 - Tailwind CSS v3
 - ESLint + Prettier
 - tsup（ESM/CJS + d.ts）
-- VitePress 文档
+- **dumi** 文档（默认）；旧版 VitePress 见 **`archive/vitepress-site/`**
 
 ## 本地开发
 
@@ -41,9 +42,9 @@ npm run build
 
 ## 发布文档到 GitHub Pages
 
-仓库已包含自动部署工作流 [`.github/workflows/docs-deploy.yml`](file:///Users/zhangbin/Desktop/project/other/react-ui-library/.github/workflows/docs-deploy.yml)。
+仓库已包含自动部署工作流 [`.github/workflows/docs-deploy.yml`](.github/workflows/docs-deploy.yml)。
 
-1. push 到 `main` 后会自动构建并发布 `docs`。
+1. push 到 `main` 后会自动构建并上传 **`docs-dumi/dist`**（dumi 产物）。
 2. 在 GitHub 仓库设置中打开 `Settings -> Pages -> Source: GitHub Actions`。
 3. 发布地址为：`https://leno23.github.io/react-ui-library/`。
 

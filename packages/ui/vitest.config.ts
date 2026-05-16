@@ -7,6 +7,8 @@ export default defineConfig({
     environment: 'jsdom',
     include: ['src/**/*.test.{ts,tsx}'],
     setupFiles: ['./vitest.setup.ts'],
+    /** Reduce parallel worker contention/timeouts in CI and busy dev machines. */
+    maxWorkers: 2,
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html'],

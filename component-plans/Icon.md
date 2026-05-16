@@ -43,7 +43,7 @@
 | Button 前缀/后缀图标 | `<Button icon={<Icon><Svg /></Icon>} />` 或与 Button 内置 `icon` 组合时保持同字号阶梯。 |
 | 列表/菜单项前缀 | `Menu`、`Dropdown` 选项左侧小图标。 |
 | 状态提示 | `Result`、`Empty`、Alert 内装饰图标。 |
-| 加载态 | 与 `Spin` 区分：`Icon` 可做静态指示；旋转动画建议由 `Spin` 或父级 `aria-busy` 表达。 |
+| 加载态 | **`spin`** 可做轻量旋转；完整加载区块仍推荐 **`Spin`** + **`aria-busy`**。 |
 | 占位 | 无 `children` 时当前实现为 `'•'`，文档需说明推荐始终传入真实图标。 |
 
 ---
@@ -54,7 +54,7 @@
 | --- | --- |
 | 根元素 | **`span`**（行内 flex 容器），与 `Button` 内嵌图标不破坏 `inline-flex` 布局。 |
 | 子内容 | `children` 为图标主体；无 children 时为占位符（实现细节见 §8）。 |
-| `role` | 默认**不**加 `role="img"`：装饰性图标用 `aria-hidden`；若未来支持「有意义图标」，通过 props 切换语义（见 §10 演进）。 |
+| `role` | **装饰**：默认不加 **`role`**，**`aria-hidden`**；**`decorative={false}`** 时 **`role="img"`** + **`aria-label`**（联合类型约束）。 |
 | `data-*` | `data-icon={name}`：便于测试与主题覆盖；`name` 可选。 |
 
 ---
@@ -64,7 +64,7 @@
 | 项 | 方案 |
 | --- | --- |
 | 交互状态 | 组件本身**无** hover/active/disabled 状态；颜色随父级 `color`/`opacity`（如 Button `disabled`）继承。 |
-| 旋转 / 脉冲 | 可选扩展：`spin?: boolean` 时在根或子元素上加 `animate-spin` 类（与 Button loading 小圆环视觉区分）。 |
+| 旋转 | **`spin`**：根节点 **`animate-spin`**（与 **`Spin`** 组件仍可并存：语义与尺寸不同）。 |
 | 指针事件 | 默认不设置 `pointer-events`；若置于可点击区域，由父级处理点击。 |
 
 ---
@@ -84,11 +84,13 @@
 
 | 属性 | 说明 | 类型 | 默认值 | 备注 |
 | --- | --- | --- | --- | --- |
+| `spin` | 加载旋转（**`animate-spin`**） | `boolean` | `false` | |
+| `decorative` | **`true`**：**`aria-hidden`**；**`false`**：须 **`aria-label`**，**`role="img"`** | `boolean` | `true` | **联合类型**：**`decorative: false` ⇒ `aria-label: string`** |
 | `size` | 宽高（px） | `number` | `16` | 与 Tailwind `h-4 w-4` 对齐；后续可对齐 `ComponentSize` 预设 |
 | `name` | 逻辑名称 / 测试标识 | `string` | - | 写入 `data-icon` |
 | `children` | 图标节点 | `ReactNode` | `'•'` | 建议文档推荐传入 SVG |
 | `className` | 根样式扩展 | `string` | - | 与 `cn` 合并 |
-| 其余 | 继承 `HTMLAttributes<HTMLSpanElement>` | - | - | 含 `style`、`title` 等 |
+| 其余 | 继承 `HTMLAttributes<HTMLSpanElement>`（**不含**根上显式处理的 **`aria-hidden`/`role`/`aria-label`** 组合） | - | - | 含 `style`、`title` 等 |
 
 ### 7.2 建议演进（与 Button 对齐的维度）
 
@@ -97,8 +99,6 @@
 | `sizePreset` | `'sm' \| 'md' \| 'lg'` 映射到与 Button 一致的像素 | P1 |
 | `color` / `tone` | 语义色：`primary` / `neutral` / `danger` 或 `text-slate-500` 类 | P2 |
 | `title` | 原生 tooltip；与「有意义图标」可读名配合 | P2 |
-| `decorative` | 默认 `true`：`aria-hidden`；`false` 时要求 `aria-label` 或 `title`（TS 联合约束） | P1 |
-| `spin` | 加载旋转 | P2 |
 
 ### 7.3 与 Button API 的对应关系
 
@@ -114,7 +114,7 @@
 
 | 项 | 方案 |
 | --- | --- |
-| 接口 | `IconProps extends HTMLAttributes<HTMLSpanElement>`，避免与原生 `name`（HTML name 多用于表单）冲突时考虑 **`iconName`** 重命名（破坏性变更需大版本）。 |
+| 接口 | **`IconProps`** 联合类型：**默认装饰** 或 **`decorative: false` + `aria-label`**；**`forwardRef<HTMLSpanElement, IconProps>`**。 |
 | Ref | `forwardRef<HTMLSpanElement, IconProps>`，转发到根 `span`。 |
 | 严格性 | 禁止无说明的 `any`；`children` 使用 `ReactNode`。 |
 
@@ -124,8 +124,8 @@
 
 | 项 | 方案 |
 | --- | --- |
-| 装饰性（默认） | **`aria-hidden="true"`**（当前实现），父级 `Button` 已有可访问名称时，图标不重复朗读。 |
-| 有意义图标单独存在 | 若图标传递唯一信息，应：使用 **`aria-label`** 包裹在带 `role="img"` 的节点上，或外层 `button` 提供 `aria-label`；**禁止**在装饰场景下误删 `aria-hidden`。 |
+| 装饰性（默认） | **`decorative`** 默认 **`true`**：**`aria-hidden="true"`**。 |
+| 有意义图标单独存在 | **`decorative={false}`** + **`aria-label`**：**`role="img"`**，**不**设 **`aria-hidden`**。 |
 | 焦点 | `span` 默认可聚焦性为 false；若产品需要「图标按钮」，使用 **`<Button variant="ghost" aria-label="…"><Icon /></Button>`**。 |
 | 对比度 | SVG 使用 `currentColor` 时，保证父级文字色满足 WCAG 对比度。 |
 
@@ -158,7 +158,8 @@
 | --- | --- |
 | 渲染 | 传入 SVG children，断言根 `span` 宽高为 `size`。 |
 | 默认占位 | 无 children 时渲染占位（当前为 `•`）。 |
-| a11y | 默认 `aria-hidden="true"`。 |
+| a11y | 默认 **`aria-hidden`**；**`decorative={false}`** + **`aria-label`** + **`role="img"`**。 |
+| `spin` | **`animate-spin`** 类名 |
 | Ref | `ref.current` 为 `HTMLSpanElement`。 |
 | `data-icon` | `name` 传入后存在于 DOM。 |
 
@@ -186,7 +187,7 @@
 
 ## 15. 结论
 
-`Icon` 定位为 **轻量、装饰优先、尺寸与布局可预测的图标容器**，与 **Button** 在尺寸阶梯与主题色继承上保持一致即可形成统一设计系统。当前实现已满足最小可用；按 §7.2、§14 分阶段演进可避免与表单 `name`、无障碍语义冲突。
+`Icon` 现为 **装饰默认安全 + 可选语义模式（`decorative`/`aria-label`/`role="img"`）+ `spin`**；其余 **`sizePreset`/`tone`** 等仍按 §7.2 演进。
 
 ---
 
@@ -195,12 +196,12 @@
 | 维度 | Icon 结论 |
 | --- | --- |
 | 职责 | 图标容器与尺寸统一，非交互入口 |
-| DOM/语义 | 根 `span`；装饰 `aria-hidden` |
-| 状态与交互 | 无内置；spin 可扩展 |
+| DOM/语义 | 根 `span`；装饰 **`aria-hidden`**；**`decorative={false}`** → **`role="img"`** |
+| 状态与交互 | **`spin`** → **`animate-spin`** |
 | 数据与受控 | 无 |
-| API | `size`、`name`、`children`、`className` + 原生 span 属性 |
-| 类型与 Ref | `HTMLSpanElement` |
-| 无障碍 | 默认隐藏于读屏；信息性场景由父级或后续 props 承担 |
+| API | `size`、`name`、`spin`、`decorative`、`children`、`className` + 原生 span（omit 冲突项） |
+| 类型与 Ref | **`IconProps` 联合类型**；**`HTMLSpanElement`** |
+| 无障碍 | 默认 **`aria-hidden`**；语义 **`aria-label`** |
 | 样式与主题 | `currentColor` + `cn` + 可选 token 类 |
 | 文档与验证 | 与 Button 组合示例 + a11y 说明 |
 
@@ -212,8 +213,8 @@
 
 要点摘要：
 
-- `forwardRef` + `HTMLSpanElement`。  
-- 默认 `aria-hidden="true"`。  
+- **`spin`**、**`decorative`** 与 **`IconProps`** 联合类型（**`decorative: false` ⇒ `aria-label`**）。  
+- 默认 **`aria-hidden`**（装饰）；语义模式 **`role="img"`**。  
 - `size` 默认 `16`，内联宽高。  
 - `data-icon={name}`。  
 - `children` 缺省为 `'•'`。

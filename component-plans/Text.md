@@ -81,10 +81,9 @@
 | 属性 | 说明 | 类型 | 默认值 | 备注 |
 | --- | --- | --- | --- | --- |
 | `className` | 样式扩展 | `string` | - | 与预设类通过 `cn` 合并 |
+| `ellipsis` | 单行省略；**string `children`** 且未传 **`title`** 时自动 **`title`** | `boolean` | `false` | |
 | `children` | 文本或行内节点 | `ReactNode` | - | 空 children 时 DOM 为空 span，文档标注尽量避免 |
 | 其余 | 继承 `HTMLAttributes<HTMLSpanElement>` | - | - | 如 `id`、`style`、`title`、`onClick` |
-
-当前类型导出：`export type TextProps = HTMLAttributes<HTMLSpanElement>`，无单独 `level`/`variant` 扩展字段。
 
 ### 7.2 当前样式（实现摘要）
 
@@ -99,7 +98,6 @@
 | --- | --- | --- |
 | `type` / `variant` | `secondary` / `danger` / `success` 等语义色 | P2 |
 | `strong` | 布尔简写，等价于内部 `font-semibold` | P3 |
-| `ellipsis` | 单行截断 + 可选 `title` | P2 |
 | `as` / `component` | 多态为 `p` 时需谨慎：与 `Paragraph` 职责重叠，文档需二选一指引 | P3 |
 
 ---
@@ -108,7 +106,7 @@
 
 | 项 | 方案 |
 | --- | --- |
-| 接口 | `TextProps` 等价 `HTMLAttributes<HTMLSpanElement>`（可显式 `extends` 便于 JSDoc）。 |
+| 接口 | **`export interface TextProps extends HTMLAttributes<HTMLSpanElement> { ellipsis?: boolean }`**。 |
 | Ref | `forwardRef<HTMLSpanElement, TextProps>`，指向根 `span`。 |
 
 ---
