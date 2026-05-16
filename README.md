@@ -6,6 +6,15 @@
 2. `docs-dumi`：**dumi** 文档站（默认：`npm run dev:docs` / `npm run build:docs`）
 3. `archive/vitepress-site`：迁移前的 **VitePress + react-live** 快照（非 npm workspace，按需本地运行；见该目录 README）
 
+## 规格驱动开发（OpenSpec + Spec Kit）
+
+| 工具 | 目录 | 典型入口 |
+| --- | --- | --- |
+| [OpenSpec](https://github.com/Fission-AI/OpenSpec) | `openspec/changes/` | Cursor：`/opsx:propose`、`/opsx:apply` |
+| [GitHub Spec Kit](https://github.com/github/spec-kit) | `.specify/`、功能产物 `specs/` | Cursor：`/speckit-specify` → plan → tasks → implement |
+
+项目章程：**`.specify/memory/constitution.md`**；OpenSpec 上下文：**`openspec/config.yaml`**。详见 **`AGENTS.md`** 与 **`specs/README.md`**。
+
 ## 技术栈
 
 - React 18 + TypeScript

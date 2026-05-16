@@ -1,5 +1,13 @@
 node_modules
-.cursor
+# Cursor：忽略本地计划；保留 commands / skills / rules 供团队共享
+.cursor/plans/
+.cursor/*
+!.cursor/commands/
+!.cursor/commands/**
+!.cursor/skills/
+!.cursor/skills/**
+!.cursor/rules/
+!.cursor/rules/**
 .DS_Store
 */node_modules
 packages/ui/dist

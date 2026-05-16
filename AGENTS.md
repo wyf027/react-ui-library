@@ -18,6 +18,14 @@ No databases, Docker, or backend services are required. Only Node.js 20+ and npm
 - 目录：`openspec/`（`specs/`、`changes/`、`config.yaml`）。首次迭代可从 **`/opsx:propose`** 开始； slash 命令定义在 `.cursor/commands/`，技能在 `.cursor/skills/`。
 - 官方文档与 CLI：<https://github.com/Fission-AI/OpenSpec>；本地更新模板可运行全局安装后的 `openspec update`，或使用 `npx @fission-ai/openspec@latest`。
 
+### GitHub Spec Kit（specify）
+
+- 已初始化 **Spec Kit v0.8.11**（`specify init --here`，集成 **cursor-agent**）；共享资产在 **`.specify/`**（模板、脚本、`memory/constitution.md`、工作流）。
+- Cursor 侧技能在 **`.cursor/skills/speckit-*`**（与 **`/opsx:*`** 命令一并纳入版本库；**`.cursor/plans/`** 仍本地忽略）。
+- 典型流程（在 Cursor Agent 中）：**`/speckit-constitution`** → **`/speckit-specify`** →（可选 **`/speckit-clarify`**）→ **`/speckit-plan`** → **`/speckit-tasks`** → **`/speckit-implement`**。
+- CLI（可选全局安装）：`uv tool install specify-cli --from git+https://github.com/github/spec-kit.git@v0.8.11`；文档：<https://github.com/github/spec-kit>。
+- 与 **OpenSpec** 并存：OpenSpec 管仓库级 **`openspec/changes/*`** 变更包；Spec Kit 管功能级 **`specs/`** 目录（由 `/speckit-specify` 等生成）。新功能可二选一或组合使用，避免同一需求两套并行文档。
+
 ### Key commands
 
 All commands run from the workspace root unless noted.

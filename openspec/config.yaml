@@ -1,20 +1,35 @@
 schema: spec-driven
 
-# Project context (optional)
-# This is shown to AI when creating artifacts.
-# Add your tech stack, conventions, style guides, domain knowledge, etc.
-# Example:
-#   context: |
-#     Tech stack: TypeScript, React, Node.js
-#     We use conventional commits
-#     Domain: e-commerce platform
+context: |
+  Nova UI monorepo — enterprise React component library @wuyangfan/nova-ui.
 
-# Per-artifact rules (optional)
-# Add custom rules for specific artifacts.
-# Example:
-#   rules:
-#     proposal:
-#       - Keep proposals under 500 words
-#       - Always include a "Non-goals" section
-#     tasks:
-#       - Break tasks into chunks of max 2 hours
+  Workspaces:
+  - packages/ui — publishable library (React 18, TypeScript, Tailwind v3, tsup)
+  - docs-dumi — dumi docs (base /react-ui-library/); build after build:ui
+
+  New components: npm run new:component -- <category[/subfolders]> <PascalName>
+  Spec dimensions: COMPONENT_SPECS.md; plans: component-plans/*.md
+
+  Quality gates (packages/ui changes):
+  npm run lint:ui && npm run typecheck:ui && npm run test:ui && npm run build:ui
+  If docs touched: npm run build:docs (includes docs:api)
+
+  Default: no BREAKING public API. A11y: roles, keyboard, aria-label on icon-only controls.
+  Tests colocated as *.test.tsx; prefer getByRole / getByLabelText.
+
+  Also using GitHub Spec Kit (.specify/, /speckit-*). Avoid duplicating the same feature
+  in both openspec/changes and specs/ unless explicitly coordinated.
+
+rules:
+  proposal:
+    - Include Non-goals and Impact sections
+    - State whether change is BREAKING for @wuyangfan/nova-ui consumers
+    - Reference COMPONENT_SPECS.md or component-plans when touching components
+  design:
+    - Prefer minimal diff; match existing component patterns in packages/ui
+    - Call out a11y, controlled/uncontrolled, and portal/focus for overlays
+  tasks:
+    - End each implementation slice with lint + typecheck + test + build:ui (and build:docs if docs)
+    - Use npm run new:component scaffold for new components; do not hand-roll folder layout
+  spec:
+    - Align with COMPONENT_SPECS template dimensions (DOM, API, a11y, theme, docs)

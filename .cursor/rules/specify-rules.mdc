@@ -1,0 +1,15 @@
+---
+alwaysApply: true
+---
+
+<!-- SPECKIT START -->
+Nova UI (@wuyangfan/nova-ui) monorepo. Read **AGENTS.md** for commands and **.specify/memory/constitution.md** for principles.
+
+Paths:
+- Library: `packages/ui/src/components/` (categories: basic, layout, form, feedback, data-display, navigation)
+- Docs: `docs-dumi/docs/components/*.md` + `docs-dumi/docs/demos/*.tsx`
+- Specs: `COMPONENT_SPECS.md`, `component-plans/`
+
+Before merge: `npm run lint:ui && npm run typecheck:ui && npm run test:ui && npm run build:ui` (+ `npm run build:docs` if docs changed).
+Default: no BREAKING exports; a11y and colocated Vitest tests required for behavior changes.
+<!-- SPECKIT END -->
