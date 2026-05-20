@@ -2,19 +2,10 @@ import React from 'react'
 
 import { Button, Flex, Space, Text } from '@wuyangfan/nova-ui'
 
-const boxSoft: React.CSSProperties = {
-  background: '#f9fafb',
-  padding: '8px',
-  borderRadius: '4px',
-  border: '1px solid #e5e7eb',
-}
+import { DEMO_BOX_CLASS } from './demoBox'
 
-const boxAlt: React.CSSProperties = {
-  background: '#f3f4f6',
-  padding: '8px',
-  borderRadius: '4px',
-  border: '1px solid #e5e7eb',
-}
+const compactBox = `${DEMO_BOX_CLASS} nova-doc-demo-box--compact`
+const mutedBox = `${compactBox} nova-doc-demo-box--muted`
 
 export default function FlexBasicDemo() {
   return (
@@ -25,8 +16,8 @@ export default function FlexBasicDemo() {
         <Button variant="ghost">按钮 C</Button>
       </Flex>
       <Flex vertical gap={8}>
-        <div style={boxSoft}>垂直排列 1</div>
-        <div style={boxAlt}>垂直排列 2</div>
+        <div className={mutedBox}>垂直排列 1</div>
+        <div className={compactBox}>垂直排列 2</div>
       </Flex>
       <Flex justify="between" align="center">
         <Text>左侧内容</Text>

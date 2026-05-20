@@ -1,5 +1,6 @@
 import '@wuyangfan/nova-ui/styles.css'
 import './comp-overview.css'
+import './doc-theme.css'
 
 import React, { useEffect, useLayoutEffect } from 'react'
 
@@ -14,7 +15,7 @@ function syncNovaDarkClassFromDumi() {
   root.classList.toggle('dark', isDark)
 }
 
-export default function AppRoot({ children }: { children: React.ReactNode }) {
+function NovaDarkModeSync() {
   useLayoutEffect(() => {
     syncNovaDarkClassFromDumi()
   }, [])
@@ -28,5 +29,15 @@ export default function AppRoot({ children }: { children: React.ReactNode }) {
     return () => observer.disconnect()
   }, [])
 
-  return <>{children}</>
+  return null
+}
+
+/** Umi 运行时插件：包裹根节点，勿使用 default 导出 React 组件 */
+export function rootContainer(container: React.ReactNode) {
+  return (
+    <>
+      <NovaDarkModeSync />
+      {container}
+    </>
+  )
 }

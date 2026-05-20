@@ -2,26 +2,16 @@ import React from 'react'
 
 import { SplitPane } from '@wuyangfan/nova-ui'
 
-const leftStyle: React.CSSProperties = {
-  background: '#f9fafb',
-  padding: '12px',
-  border: '1px solid #e5e7eb',
-  borderRadius: 8,
-}
+import { DEMO_BOX_CLASS } from './demoBox'
 
-const rightStyle: React.CSSProperties = {
-  background: '#f3f4f6',
-  padding: '12px',
-  border: '1px solid #e5e7eb',
-  borderRadius: 8,
-}
+const mutedBox = `${DEMO_BOX_CLASS} nova-doc-demo-box--compact nova-doc-demo-box--muted`
 
 export default function SplitPaneBasicDemo() {
   return (
     <SplitPane
-      left={<div style={leftStyle}>左侧面板</div>}
+      left={<div className={mutedBox}>左侧面板</div>}
       ratio="1fr 2fr"
-      right={<div style={rightStyle}>右侧面板</div>}
+      right={<div className={DEMO_BOX_CLASS}>右侧面板</div>}
     />
   )
 }

@@ -1,0 +1,52 @@
+/* 组件 demo 占位块：随 dumi 暗色切换 */
+.nova-doc-demo-box {
+  padding: 16px;
+  border-radius: 8px;
+  background: var(--nova-doc-demo-bg, #f3f4f6);
+  border: 1px solid var(--nova-doc-demo-border, #e5e7eb);
+  color: var(--nova-doc-demo-text, #111827);
+}
+
+.nova-doc-demo-box--compact {
+  padding: 8px 12px;
+}
+
+.nova-doc-demo-box--muted {
+  background: var(--nova-doc-demo-bg-muted, #f9fafb);
+}
+
+.nova-doc-demo-box--dashed {
+  border-style: dashed;
+  border-color: var(--nova-doc-demo-border-dashed, #d1d5db);
+}
+
+html[data-prefers-color='dark'] .nova-doc-demo-box,
+html.dark .nova-doc-demo-box {
+  --nova-doc-demo-bg: #1f2937;
+  --nova-doc-demo-bg-muted: #111827;
+  --nova-doc-demo-border: #374151;
+  --nova-doc-demo-border-dashed: #4b5563;
+  --nova-doc-demo-text: #f9fafb;
+}
+
+/* 预览区画布：暗色下与正文背景一致 */
+html[data-prefers-color='dark'] .dumi-default-previewer-demo,
+html.dark .dumi-default-previewer-demo {
+  background-color: #141414;
+}
+
+/* 代码块区域：强化暗色背景与可读性 */
+html[data-prefers-color='dark'] .dumi-default-source-code,
+html.dark .dumi-default-source-code {
+  background-color: #1a1a1a;
+}
+
+html[data-prefers-color='dark'] .dumi-default-source-code pre.prism-code,
+html.dark .dumi-default-source-code pre.prism-code {
+  color: #d4d4d4;
+}
+
+html[data-prefers-color='dark'] .dumi-default-source-code .token.comment,
+html.dark .dumi-default-source-code .token.comment {
+  color: #6a9955;
+}
