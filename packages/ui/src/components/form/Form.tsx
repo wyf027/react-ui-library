@@ -8,6 +8,7 @@ import {
   type ReactNode,
   useCallback,
   useContext,
+  useId,
   useMemo,
   useState,
 } from 'react'
@@ -180,7 +181,8 @@ export function FormItem({
   const value = ctx.values[name]
   const error = ctx.errors[name]
   const required = rules.some((rule) => rule.required)
-  const fieldId = `field-${name}`
+  const fieldIdPrefix = useId()
+  const fieldId = `${fieldIdPrefix}-field-${name}`
   const errorId = `${fieldId}-error`
 
   const childNode = isValidElement(children)

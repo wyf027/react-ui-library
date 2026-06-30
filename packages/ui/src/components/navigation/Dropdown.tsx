@@ -1,4 +1,4 @@
-import { forwardRef, type HTMLAttributes, type KeyboardEvent, type ReactNode, useEffect, useId, useRef, useState } from 'react'
+import { forwardRef, type HTMLAttributes, type KeyboardEvent, type ReactNode, useEffect, useId, useMemo, useRef, useState } from 'react'
 import { cn } from '../../utils/cn'
 import { useClickOutside } from '../../hooks/useClickOutside'
 
@@ -36,11 +36,10 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(function Dropd
   const [activeIndex, setActiveIndex] = useState(-1)
   const rootRef = useRef<HTMLDivElement | null>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
+  const optionRefs = useRef(new Map<string, HTMLButtonElement>())
   const menuId = useId()
   const open = controlledOpen ?? innerOpen
-  const enabledOptions = options.filter((item) => !item.disabled)
-
-  useClickOutside(rootRef, () => setOpen(false), open)
+  const enabledOptions = useMemo(() => options.filter((item) => !item.disabled), [options])
 
   const setOpen = (next: boolean) => {
     if (controlledOpen === undefined) {
@@ -52,6 +51,8 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(function Dropd
       onClose?.()
     }
   }
+
+  useClickOutside(rootRef, () => setOpen(false), open)
 
   const setCombinedRef = (node: HTMLDivElement | null) => {
     rootRef.current = node
@@ -76,6 +77,11 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(function Dropd
     if (event.key === 'ArrowDown' || event.key === 'Enter' || event.key === ' ') {
       event.preventDefault()
       setOpen(true)
+      if (enabledOptions[0]) {
+        requestAnimationFrame(() => {
+          optionRefs.current.get(enabledOptions[0].key)?.focus()
+        })
+      }
     }
   }
 
@@ -87,11 +93,27 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(function Dropd
     }
     if (event.key === 'ArrowDown') {
       event.preventDefault()
-      setActiveIndex((prev) => (prev + 1) % enabledOptions.length)
+      if (enabledOptions.length > 0) {
+        setActiveIndex((prev) => {
+          const next = (prev + 1) % enabledOptions.length
+          requestAnimationFrame(() => {
+            optionRefs.current.get(enabledOptions[next].key)?.focus()
+          })
+          return next
+        })
+      }
     }
     if (event.key === 'ArrowUp') {
       event.preventDefault()
-      setActiveIndex((prev) => (prev - 1 + enabledOptions.length) % enabledOptions.length)
+      if (enabledOptions.length > 0) {
+        setActiveIndex((prev) => {
+          const next = (prev - 1 + enabledOptions.length) % enabledOptions.length
+          requestAnimationFrame(() => {
+            optionRefs.current.get(enabledOptions[next].key)?.focus()
+          })
+          return next
+        })
+      }
     }
   }
 
@@ -107,6 +129,13 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(function Dropd
               <button
                 type="button"
                 role="menuitem"
+                ref={(node) => {
+                  if (node) {
+                    optionRefs.current.set(item.key, node)
+                  } else {
+                    optionRefs.current.delete(item.key)
+                  }
+                }}
                 tabIndex={enabledOptions[activeIndex]?.key === item.key ? 0 : -1}
                 disabled={item.disabled}
                 onClick={() => {
