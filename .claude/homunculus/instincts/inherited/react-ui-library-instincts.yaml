@@ -1,0 +1,520 @@
+# Instincts generated from https://github.com/wyf027/react-ui-library
+# Generated: 2026-06-30T10:54:30.106Z
+# Version: 2.0
+# NOTE: This file supplements (does not replace) any existing curated instincts.
+# High-confidence manually curated instincts should be preserved alongside these.
+
+---
+id: react-ui-library-commit-length
+trigger: "when writing a commit message"
+confidence: 0.6
+domain: git
+source: repo-analysis
+source_repo: https://github.com/wyf027/react-ui-library
+---
+
+# React Ui Library Commit Length
+
+## Action
+
+Write moderate-length commit messages (~65 characters)
+
+## Evidence
+
+- Average commit message length: 65 chars
+- Based on 20 commits
+
+---
+id: react-ui-library-naming-files
+trigger: "when creating a new file"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/wyf027/react-ui-library
+---
+
+# React Ui Library Naming Files
+
+## Action
+
+Use camelCase naming convention
+
+## Evidence
+
+- Analyzed file naming patterns in repository
+- Dominant pattern: camelCase
+
+---
+id: react-ui-library-import-relative
+trigger: "when importing modules"
+confidence: 0.75
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/wyf027/react-ui-library
+---
+
+# React Ui Library Import Relative
+
+## Action
+
+Use relative imports for project files
+
+## Evidence
+
+- Import analysis shows relative import pattern
+- Example: import { x } from '../lib/x'
+
+---
+id: react-ui-library-export-style
+trigger: "when exporting from a module"
+confidence: 0.7
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/wyf027/react-ui-library
+---
+
+# React Ui Library Export Style
+
+## Action
+
+Prefer named exports
+
+## Evidence
+
+- Export pattern analysis
+- Dominant style: named
+
+---
+id: react-ui-library-arch-type-based
+trigger: "when adding new code"
+confidence: 0.8
+domain: architecture
+source: repo-analysis
+source_repo: https://github.com/wyf027/react-ui-library
+---
+
+# React Ui Library Arch Type Based
+
+## Action
+
+Place code in the appropriate type folder (components/, services/, utils/, etc.)
+
+## Evidence
+
+- Type-based module organization detected
+- Folders: 
+
+---
+id: react-ui-library-test-separate
+trigger: "when writing tests"
+confidence: 0.8
+domain: testing
+source: repo-analysis
+source_repo: https://github.com/wyf027/react-ui-library
+---
+
+# React Ui Library Test Separate
+
+## Action
+
+Place tests in the tests/ or __tests__/ directory, mirroring src structure
+
+## Evidence
+
+- Separate test directory pattern detected
+- Tests live in dedicated test folders
+
+---
+id: react-ui-library-workflow-feature-development
+trigger: "when implementing a new feature"
+confidence: 0.9
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/wyf027/react-ui-library
+---
+
+# React Ui Library Workflow Feature Development
+
+## Action
+
+Follow the feature-development workflow:
+1. Add feature implementation
+2. Add tests for feature
+3. Update documentation
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~20x per month
+- Files: docs/components/*, docs/.vitepress/*, packages/ui/src/components/data/*
+
+---
+id: react-ui-library-workflow-add-or-update-component-documentation
+trigger: "when doing add or update component documentation"
+confidence: 0.65
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/wyf027/react-ui-library
+---
+
+# React Ui Library Workflow Add Or Update Component Documentation
+
+## Action
+
+Follow the add-or-update-component-documentation workflow:
+1. Create or update one or more markdown files in docs/components/
+2. Optionally update docs/.vitepress/config.ts to register new docs or categories
+3. Optionally update docs/components/overview.md or related index files
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~3x per month
+- Files: docs/components/*.md, docs/.vitepress/config.ts, docs/components/overview.md
+
+---
+id: react-ui-library-workflow-add-new-ui-component
+trigger: "when doing add new ui component"
+confidence: 0.6
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/wyf027/react-ui-library
+---
+
+# React Ui Library Workflow Add New Ui Component
+
+## Action
+
+Follow the add-new-ui-component workflow:
+1. Create new component file in packages/ui/src/components/<category>/<ComponentName>.tsx
+2. Export the component in the corresponding index.ts file
+3. Optionally update related documentation in docs/components/
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~2x per month
+- Files: packages/ui/src/components/*/*.tsx, packages/ui/src/components/*/index.ts, docs/components/*.md
+
+---
+id: react-ui-library-workflow-improve-accessibility-or-a11y
+trigger: "when doing improve accessibility or a11y"
+confidence: 0.55
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/wyf027/react-ui-library
+---
+
+# React Ui Library Workflow Improve Accessibility Or A11y
+
+## Action
+
+Follow the improve-accessibility-or-a11y workflow:
+1. Update one or more component files in packages/ui/src/components/ to improve a11y
+2. Update or add accessibility documentation in docs/guide/accessibility.md
+3. Optionally update docs/.vitepress/config.ts if new guide pages are added
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~1x per month
+- Files: packages/ui/src/components/*/*.tsx, docs/guide/accessibility.md, docs/.vitepress/config.ts
+
+---
+id: react-ui-library-workflow-feature-or-bugfix-in-component
+trigger: "when doing feature or bugfix in component"
+confidence: 0.6
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/wyf027/react-ui-library
+---
+
+# React Ui Library Workflow Feature Or Bugfix In Component
+
+## Action
+
+Follow the feature-or-bugfix-in-component workflow:
+1. Edit the relevant component file in packages/ui/src/components/<category>/<ComponentName>.tsx
+2. Commit with a feature or fix message
+3. Optionally merge via pull request
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~2x per month
+- Files: packages/ui/src/components/*/*.tsx
+
+---
+id: react-ui-library-naming-files-camelCase
+trigger: "When creating a new file (component, utility, etc.) in the codebase"
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: wyf027/react-ui-library
+---
+
+# React Ui Library Naming Files CamelCase
+
+## Action
+
+Name the file using camelCase (e.g., buttonGroup.tsx, formUtils.ts)
+
+## Evidence
+
+- Pattern in namingConventions.files
+- Observed in packages/ui/src/components/*/*.tsx
+
+---
+id: react-ui-library-naming-functions-camelCase
+trigger: "When defining a new function"
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: wyf027/react-ui-library
+---
+
+# React Ui Library Naming Functions CamelCase
+
+## Action
+
+Name the function using camelCase (e.g., handleClick, getOptions)
+
+## Evidence
+
+- Pattern in namingConventions.functions
+
+---
+id: react-ui-library-naming-classes-PascalCase
+trigger: "When creating a new class (e.g., React component class)"
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: wyf027/react-ui-library
+---
+
+# React Ui Library Naming Classes PascalCase
+
+## Action
+
+Name the class using PascalCase (e.g., ButtonGroup, FormProvider)
+
+## Evidence
+
+- Pattern in namingConventions.classes
+
+---
+id: react-ui-library-naming-constants-SCREAMING_SNAKE_CASE
+trigger: "When defining a constant"
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: wyf027/react-ui-library
+---
+
+# React Ui Library Naming Constants SCREAMING_SNAKE_CASE
+
+## Action
+
+Name the constant using SCREAMING_SNAKE_CASE (e.g., DEFAULT_TIMEOUT)
+
+## Evidence
+
+- Pattern in namingConventions.constants
+
+---
+id: react-ui-library-imports-relative
+trigger: "When importing modules within the codebase"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: wyf027/react-ui-library
+---
+
+# React Ui Library Imports Relative
+
+## Action
+
+Use relative import paths (e.g., import Button from '../Button')
+
+## Evidence
+
+- Pattern in importStyle
+
+---
+id: react-ui-library-exports-named
+trigger: "When exporting modules or functions"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: wyf027/react-ui-library
+---
+
+# React Ui Library Exports Named
+
+## Action
+
+Use named exports (e.g., export { Button })
+
+## Evidence
+
+- Pattern in exportStyle
+
+---
+id: react-ui-library-testing-location-separate
+trigger: "When adding tests for a component or module"
+confidence: 0.7
+domain: testing
+source: repo-analysis
+source_repo: wyf027/react-ui-library
+---
+
+# React Ui Library Testing Location Separate
+
+## Action
+
+Place test files in a separate test directory, not alongside source files
+
+## Evidence
+
+- architecture.testLocation is 'separate'
+
+---
+id: react-ui-library-testing-feature-sequence
+trigger: "When implementing a new feature"
+confidence: 0.8
+domain: testing
+source: repo-analysis
+source_repo: wyf027/react-ui-library
+---
+
+# React Ui Library Testing Feature Sequence
+
+## Action
+
+Write tests for the feature after implementation and before updating documentation
+
+## Evidence
+
+- feature-development workflow: 'Add feature implementation' → 'Add tests for feature' → 'Update documentation'
+
+---
+id: react-ui-library-git-commit-prefix
+trigger: "When writing a commit message"
+confidence: 0.9
+domain: git
+source: repo-analysis
+source_repo: wyf027/react-ui-library
+---
+
+# React Ui Library Git Commit Prefix
+
+## Action
+
+Use a prefix indicating the type of change: 'docs:', 'feat:', or 'fix:'
+
+## Evidence
+
+- commits.prefixes
+- Examples: 'docs: add Button...'
+- 'feat: add missing AntD-aligned components...'
+- 'fix(a11y): focus dropdown options...'
+
+---
+id: react-ui-library-git-commit-length
+trigger: "When writing a commit message"
+confidence: 0.7
+domain: git
+source: repo-analysis
+source_repo: wyf027/react-ui-library
+---
+
+# React Ui Library Git Commit Length
+
+## Action
+
+Keep the commit message concise, around 65 characters on average
+
+## Evidence
+
+- commits.averageLength is 65
+
+---
+id: react-ui-library-workflow-add-or-update-component-docs
+trigger: "When a new component is added or existing component documentation needs improvement"
+confidence: 0.95
+domain: workflow
+source: repo-analysis
+source_repo: wyf027/react-ui-library
+---
+
+# React Ui Library Workflow Add Or Update Component Docs
+
+## Action
+
+Create or update markdown files in docs/components/, and optionally update docs/.vitepress/config.ts and docs/components/overview.md
+
+## Evidence
+
+- add-or-update-component-documentation workflow
+- Examples: 'docs: add Button, Icon, and Typography component pages'
+
+---
+id: react-ui-library-workflow-add-new-ui-component
+trigger: "When a new UI component is to be implemented"
+confidence: 0.9
+domain: workflow
+source: repo-analysis
+source_repo: wyf027/react-ui-library
+---
+
+# React Ui Library Workflow Add New Ui Component
+
+## Action
+
+Create a new .tsx file in packages/ui/src/components/<category>/, export it in index.ts, and optionally update docs/components/
+
+## Evidence
+
+- add-new-ui-component workflow
+- Examples: 'feat: add missing AntD-aligned components...'
+
+---
+id: react-ui-library-workflow-improve-accessibility
+trigger: "When accessibility (a11y) improvements are needed for components"
+confidence: 0.8
+domain: workflow
+source: repo-analysis
+source_repo: wyf027/react-ui-library
+---
+
+# React Ui Library Workflow Improve Accessibility
+
+## Action
+
+Update component files in packages/ui/src/components/ to improve a11y, update docs/guide/accessibility.md, and optionally update docs/.vitepress/config.ts
+
+## Evidence
+
+- improve-accessibility-or-a11y workflow
+- Examples: 'fix(a11y): focus dropdown options and isolate form ids'
+
+---
+id: react-ui-library-workflow-feature-or-bugfix-in-component
+trigger: "When a feature is added or a bug is fixed in an existing component"
+confidence: 0.85
+domain: workflow
+source: repo-analysis
+source_repo: wyf027/react-ui-library
+---
+
+# React Ui Library Workflow Feature Or Bugfix In Component
+
+## Action
+
+Edit the relevant .tsx file in packages/ui/src/components/<category>/, commit with a feature or fix message, and optionally merge via pull request
+
+## Evidence
+
+- feature-or-bugfix-in-component workflow
+- Examples: 'fix(a11y): focus dropdown options and isolate form ids'
+
