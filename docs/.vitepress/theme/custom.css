@@ -1,5 +1,5 @@
 :root {
-  --vp-font-family-base: 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --vp-font-family-base: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif;
   --vp-c-brand-1: #2459ff;
   --vp-c-brand-2: #1d48d6;
   --vp-c-brand-3: #1a3cae;
@@ -83,7 +83,9 @@
   padding: 10px 10px 10px 12px;
   min-width: 2.75rem;
   text-align: right;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    monospace;
   font-size: 13px;
   line-height: 1.55;
   color: var(--vp-c-text-3);
@@ -111,7 +113,9 @@
 .live-code-editor-live pre {
   margin: 0 !important;
   padding: 10px 12px !important;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace !important;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    monospace !important;
   font-size: 13px !important;
   line-height: 1.55 !important;
   tab-size: 2;
@@ -145,7 +149,9 @@
   padding: 14px;
   background: var(--vp-c-bg-soft);
   text-decoration: none;
-  transition: border-color 0.2s ease, transform 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .comp-overview-card:hover {

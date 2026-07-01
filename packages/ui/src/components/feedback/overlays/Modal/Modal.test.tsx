@@ -26,7 +26,11 @@ describe('Modal', () => {
 
     const dialog = await waitFor(() => screen.getByRole('dialog'))
     expect(dialog).toHaveAttribute('aria-modal', 'true')
-    expect(dialog).toHaveAttribute('aria-label', 'Hello')
+    expect(dialog).toHaveAccessibleName('Hello')
+    expect(dialog).toHaveAttribute(
+      'aria-labelledby',
+      screen.getByRole('heading', { name: 'Hello' }).id,
+    )
     expect(screen.getByText('Modal body')).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Hello' })).toBeInTheDocument()
   })
@@ -41,7 +45,11 @@ describe('Modal', () => {
     )
 
     await waitFor(() => expect(screen.getByRole('dialog', { name: 'T' })).toBeInTheDocument())
-    fireEvent.click(within(screen.getByRole('dialog', { name: 'T' })).getByRole('button', { name: 'Close modal' }))
+    fireEvent.click(
+      within(screen.getByRole('dialog', { name: 'T' })).getByRole('button', {
+        name: 'Close modal',
+      }),
+    )
     expect(onClose).toHaveBeenCalledTimes(1)
   })
 })

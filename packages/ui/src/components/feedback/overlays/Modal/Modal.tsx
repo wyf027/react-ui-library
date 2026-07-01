@@ -1,4 +1,4 @@
-import { forwardRef, useRef } from 'react'
+import { forwardRef, useEffect, useRef } from 'react'
 
 import { Portal } from '../../../../utils/portal'
 import { useEscapeKey } from '../../../../hooks/useEscapeKey'
@@ -12,8 +12,21 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(function Modal(
   _ref,
 ) {
   const panelRef = useRef<HTMLDivElement>(null)
+  const closeButtonRef = useRef<HTMLButtonElement>(null)
+  const lastActiveElementRef = useRef<HTMLElement | null>(null)
   useEscapeKey(() => onClose?.(), open)
   useClickOutside(panelRef, () => onClose?.(), open)
+
+  useEffect(() => {
+    if (!open) return
+
+    lastActiveElementRef.current = document.activeElement as HTMLElement | null
+    closeButtonRef.current?.focus()
+
+    return () => {
+      lastActiveElementRef.current?.focus()
+    }
+  }, [open])
 
   if (!open) {
     return null
@@ -21,7 +34,14 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(function Modal(
 
   return (
     <Portal>
-      <ModalDialog panelRef={panelRef} title={title} onClose={onClose} className={className} dialogProps={props}>
+      <ModalDialog
+        panelRef={panelRef}
+        closeButtonRef={closeButtonRef}
+        title={title}
+        onClose={onClose}
+        className={className}
+        dialogProps={props}
+      >
         {children}
       </ModalDialog>
     </Portal>
