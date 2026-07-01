@@ -16,6 +16,23 @@ describe('InputNumber', () => {
     expect(input).toHaveAttribute('aria-valuemax', '5')
   })
 
+  it('forwards form control props to the spinbutton', () => {
+    render(
+      <InputNumber
+        id="quantity"
+        aria-label="Quantity"
+        aria-describedby="quantity-help"
+        aria-invalid="true"
+      />,
+    )
+
+    const input = screen.getByRole('spinbutton', { name: 'Quantity' })
+
+    expect(input).toHaveAttribute('id', 'quantity')
+    expect(input).toHaveAttribute('aria-describedby', 'quantity-help')
+    expect(input).toHaveAttribute('aria-invalid', 'true')
+  })
+
   it('supports named increment and decrement controls', async () => {
     const user = userEvent.setup()
     const onChange = vi.fn()
