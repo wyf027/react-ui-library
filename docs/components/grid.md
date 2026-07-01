@@ -8,9 +8,36 @@ CSS Grid 网格布局组件。
 () => {
   return (
     <Grid cols={3} gap={8}>
-      <div style={{background:'#f1f5f9',padding:'12px'}}>A</div>
-      <div style={{background:'#e2e8f0',padding:'12px'}}>B</div>
-      <div style={{background:'#f1f5f9',padding:'12px'}}>C</div>
+      <div
+        style={{
+          background: 'var(--vp-c-bg-soft)',
+          padding: '12px',
+          border: '1px solid var(--vp-c-divider)',
+          borderRadius: 8,
+        }}
+      >
+        A
+      </div>
+      <div
+        style={{
+          background: 'var(--vp-c-bg-alt)',
+          padding: '12px',
+          border: '1px solid var(--vp-c-divider)',
+          borderRadius: 8,
+        }}
+      >
+        B
+      </div>
+      <div
+        style={{
+          background: 'var(--vp-c-bg-soft)',
+          padding: '12px',
+          border: '1px solid var(--vp-c-divider)',
+          borderRadius: 8,
+        }}
+      >
+        C
+      </div>
     </Grid>
   )
 }
@@ -20,5 +47,5 @@ CSS Grid 网格布局组件。
 
 | 属性 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
-| cols | 列数 | `number` | - |
-| gap | 间距 | `number` | - |
+| cols | 列数 | `number` | `3` |
+| gap | 间距；支持 `[列间距, 行间距]` | `number \| [number, number]` | `12` |

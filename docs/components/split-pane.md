@@ -9,8 +9,30 @@
   return (
     <SplitPane
       ratio='1fr 2fr'
-      left={<div style={{background:'#eef2ff',padding:'12px'}}>左侧面板</div>}
-      right={<div style={{background:'#e0f2fe',padding:'12px'}}>右侧面板</div>}
+      left={
+        <div
+          style={{
+            background: 'var(--vp-c-bg-soft)',
+            padding: '12px',
+            border: '1px solid var(--vp-c-divider)',
+            borderRadius: 8,
+          }}
+        >
+          左侧面板
+        </div>
+      }
+      right={
+        <div
+          style={{
+            background: 'var(--vp-c-bg-alt)',
+            padding: '12px',
+            border: '1px solid var(--vp-c-divider)',
+            borderRadius: 8,
+          }}
+        >
+          右侧面板
+        </div>
+      }
     />
   )
 }
