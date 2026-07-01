@@ -17,7 +17,10 @@ export interface InputNumberProps extends Omit<HTMLAttributes<HTMLDivElement>, '
 
 export const InputNumber = forwardRef<HTMLDivElement, InputNumberProps>(function InputNumber(
   {
+    id,
     className,
+    'aria-describedby': ariaDescribedBy,
+    'aria-invalid': ariaInvalid,
     'aria-label': ariaLabel,
     'aria-labelledby': ariaLabelledBy,
     value: controlledValue,
@@ -78,9 +81,12 @@ export const InputNumber = forwardRef<HTMLDivElement, InputNumberProps>(function
         </button>
       ) : null}
       <input
+        id={id}
         role="spinbutton"
         type="text"
         inputMode="decimal"
+        aria-describedby={ariaDescribedBy}
+        aria-invalid={ariaInvalid}
         aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
         aria-valuenow={ariaValueNow}
