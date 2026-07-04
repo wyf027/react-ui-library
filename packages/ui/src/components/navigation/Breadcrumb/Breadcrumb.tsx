@@ -6,6 +6,7 @@ export interface BreadcrumbItem {
   label: ReactNode
   href?: string
   onClick?: () => void
+  current?: boolean
 }
 
 export interface BreadcrumbProps extends HTMLAttributes<HTMLElement> {
@@ -17,23 +18,48 @@ export const Breadcrumb = forwardRef<HTMLElement, BreadcrumbProps>(function Brea
   { className, items, separator = '/', ...props },
   ref,
 ) {
+  const hasExplicitCurrent = items.some((item) => item.current)
+
   return (
     <nav ref={ref} aria-label="Breadcrumb" className={cn('text-sm', className)} {...props}>
       <ol className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
-        {items.map((item, index) => (
-          <li key={item.key} className="inline-flex items-center gap-2">
-            {item.href ? (
-              <a href={item.href} onClick={item.onClick} className="hover:text-brand-600 dark:hover:text-brand-400">
-                {item.label}
-              </a>
-            ) : (
-              <button type="button" onClick={item.onClick} className="hover:text-brand-600 dark:hover:text-brand-400">
-                {item.label}
-              </button>
-            )}
-            {index < items.length - 1 ? <span>{separator}</span> : null}
-          </li>
-        ))}
+        {items.map((item, index) => {
+          const isCurrent = hasExplicitCurrent ? item.current === true : index === items.length - 1
+          const itemClassName = cn(
+            isCurrent
+              ? 'font-medium text-slate-700 dark:text-slate-200'
+              : 'hover:text-brand-600 dark:hover:text-brand-400',
+          )
+
+          return (
+            <li key={item.key} className="inline-flex items-center gap-2">
+              {item.href ? (
+                <a
+                  href={item.href}
+                  aria-current={isCurrent ? 'page' : undefined}
+                  onClick={item.onClick}
+                  className={itemClassName}
+                >
+                  {item.label}
+                </a>
+              ) : item.onClick ? (
+                <button
+                  type="button"
+                  aria-current={isCurrent ? 'page' : undefined}
+                  onClick={item.onClick}
+                  className={itemClassName}
+                >
+                  {item.label}
+                </button>
+              ) : (
+                <span aria-current={isCurrent ? 'page' : undefined} className={itemClassName}>
+                  {item.label}
+                </span>
+              )}
+              {index < items.length - 1 ? <span aria-hidden="true">{separator}</span> : null}
+            </li>
+          )
+        })}
       </ol>
     </nav>
   )
