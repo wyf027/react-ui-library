@@ -25,6 +25,7 @@ export interface SelectProps
   defaultValue?: string
   size?: ComponentSize
   onChange?: (value: string) => void
+  onNativeChange?: (event: ChangeEvent<HTMLSelectElement>) => void
   slotClassNames?: SlotClassNames
 }
 
@@ -39,6 +40,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
     size = 'md',
     id,
     onChange,
+    onNativeChange,
     disabled,
     slotClassNames,
     ...props
@@ -57,6 +59,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
 
   const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setInnerValue(event.target.value)
+    onNativeChange?.(event)
   }
 
   return (
