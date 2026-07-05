@@ -6,6 +6,7 @@ export interface DialogHeaderProps {
   title?: ReactNode
   titleId?: string
   closeButtonRef?: RefObject<HTMLButtonElement>
+  closeButtonAutoFocus?: boolean
   onClose?: () => void
   /** 外层容器额外 class（如 mb-3 / mb-4） */
   contentClassName?: string
@@ -16,6 +17,7 @@ export function DialogHeader({
   title,
   titleId,
   closeButtonRef,
+  closeButtonAutoFocus,
   onClose,
   contentClassName,
   closeAriaLabel = 'Close',
@@ -28,6 +30,7 @@ export function DialogHeader({
       <button
         ref={closeButtonRef}
         type="button"
+        autoFocus={closeButtonAutoFocus}
         onClick={onClose}
         className="rounded p-1 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
         aria-label={closeAriaLabel}
