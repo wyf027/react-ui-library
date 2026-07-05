@@ -17,7 +17,12 @@ export interface InputNumberProps extends Omit<HTMLAttributes<HTMLDivElement>, '
 
 export const InputNumber = forwardRef<HTMLDivElement, InputNumberProps>(function InputNumber(
   {
+    id,
     className,
+    'aria-describedby': ariaDescribedBy,
+    'aria-invalid': ariaInvalid,
+    'aria-label': ariaLabel,
+    'aria-labelledby': ariaLabelledBy,
     value: controlledValue,
     defaultValue,
     min = -Infinity,
@@ -49,6 +54,9 @@ export const InputNumber = forwardRef<HTMLDivElement, InputNumberProps>(function
   }
 
   const heightCls = { 'h-8': size === 'sm', 'h-10': size === 'md', 'h-11': size === 'lg' }
+  const ariaValueNow = val ?? undefined
+  const ariaValueMin = Number.isFinite(min) ? min : undefined
+  const ariaValueMax = Number.isFinite(max) ? max : undefined
 
   return (
     <div
@@ -64,6 +72,7 @@ export const InputNumber = forwardRef<HTMLDivElement, InputNumberProps>(function
       {controls ? (
         <button
           type="button"
+          aria-label="Decrease value"
           disabled={disabled || (val !== null && val <= min)}
           onClick={() => update((val ?? 0) - step)}
           className="shrink-0 border-r border-slate-300 px-2 text-sm text-slate-600 hover:bg-slate-50 disabled:opacity-40 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700"
@@ -72,23 +81,63 @@ export const InputNumber = forwardRef<HTMLDivElement, InputNumberProps>(function
         </button>
       ) : null}
       <input
+        id={id}
+        role="spinbutton"
         type="text"
         inputMode="decimal"
+        aria-describedby={ariaDescribedBy}
+        aria-invalid={ariaInvalid}
+        aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledBy}
+        aria-valuenow={ariaValueNow}
+        aria-valuemin={ariaValueMin}
+        aria-valuemax={ariaValueMax}
+        aria-disabled={disabled || undefined}
         value={val ?? ''}
         placeholder={placeholder}
         disabled={disabled}
         onChange={(e) => {
           const raw = e.target.value
-          if (raw === '' || raw === '-') { update(null); return }
+          if (raw === '' || raw === '-') {
+            update(null)
+            return
+          }
           const n = Number(raw)
           if (!isNaN(n)) update(n)
         }}
-        onBlur={() => { if (val !== null) update(clamp(val)) }}
+        onKeyDown={(event) => {
+          if (event.key === 'ArrowUp') {
+            event.preventDefault()
+            update((val ?? 0) + step)
+            return
+          }
+
+          if (event.key === 'ArrowDown') {
+            event.preventDefault()
+            update((val ?? 0) - step)
+            return
+          }
+
+          if (event.key === 'Home' && Number.isFinite(min)) {
+            event.preventDefault()
+            update(min)
+            return
+          }
+
+          if (event.key === 'End' && Number.isFinite(max)) {
+            event.preventDefault()
+            update(max)
+          }
+        }}
+        onBlur={() => {
+          if (val !== null) update(clamp(val))
+        }}
         className="w-16 min-w-0 flex-1 bg-transparent px-2 text-center text-sm outline-none dark:text-slate-100"
       />
       {controls ? (
         <button
           type="button"
+          aria-label="Increase value"
           disabled={disabled || (val !== null && val >= max)}
           onClick={() => update((val ?? 0) + step)}
           className="shrink-0 border-l border-slate-300 px-2 text-sm text-slate-600 hover:bg-slate-50 disabled:opacity-40 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700"
