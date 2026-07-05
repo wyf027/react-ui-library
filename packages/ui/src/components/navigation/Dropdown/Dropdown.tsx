@@ -38,6 +38,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(function Dropd
     defaultOpen = false,
     onOpen,
     onClose,
+    onKeyDown,
     ...props
   },
   ref,
@@ -97,6 +98,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(function Dropd
 
   const handleMenuKeyDown = (event: KeyboardEvent<HTMLUListElement>) => {
     if (event.key === 'Escape') {
+      event.preventDefault()
       setOpen(false)
       triggerRef.current?.focus()
       return
@@ -127,8 +129,26 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(function Dropd
     }
   }
 
+  const handleRootKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    onKeyDown?.(event)
+
+    if (event.defaultPrevented) {
+      return
+    }
+
+    if (event.key === 'Escape' && open) {
+      setOpen(false)
+      triggerRef.current?.focus()
+    }
+  }
+
   return (
-    <div ref={setCombinedRef} className={cn('relative inline-flex', className)} {...props}>
+    <div
+      ref={setCombinedRef}
+      className={cn('relative inline-flex', className)}
+      onKeyDown={handleRootKeyDown}
+      {...props}
+    >
       <button
         ref={triggerRef}
         type="button"
