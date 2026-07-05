@@ -25,6 +25,7 @@
       <Badge count={120} overflowCount={99}><Avatar name='A' /></Badge>
       <Badge count={0} showZero><Avatar name='B' /></Badge>
       <Badge dot status='success'><Avatar name='C' /></Badge>
+      <Badge count='new'><Avatar name='D' /></Badge>
     </Space>
   )
 }
@@ -32,12 +33,12 @@
 
 ## API
 
-| 属性 | 说明 | 类型 | 默认值 |
-| --- | --- | --- | --- |
-| count | 展示数字 | `number` | `0` |
-| dot | 显示小圆点 | `boolean` | `false` |
-| overflowCount | 超过后显示为 `${overflowCount}+` | `number` | `99` |
-| showZero | `count` 为 0 时是否展示 | `boolean` | `false` |
-| status | 状态色（作用于圆点或数字徽标背景） | `'default' \| 'success' \| 'processing' \| 'error' \| 'warning'` | - |
-| offset | 相对默认位置的偏移 `[x, y]`（px） | `[number, number]` | - |
-| color | 自定义背景色 | `string` | - |
+| 属性          | 说明                                                                    | 类型                                                             | 默认值  |
+| ------------- | ----------------------------------------------------------------------- | ---------------------------------------------------------------- | ------- |
+| count         | 展示内容；数字会参与 `overflowCount` 截断，字符串或自定义节点会直接渲染 | `ReactNode`                                                      | `0`     |
+| dot           | 显示小圆点                                                              | `boolean`                                                        | `false` |
+| overflowCount | 超过后显示为 `${overflowCount}+`                                        | `number`                                                         | `99`    |
+| showZero      | `count` 为 0 时是否展示                                                 | `boolean`                                                        | `false` |
+| status        | 状态色（作用于圆点或数字徽标背景）                                      | `'default' \| 'success' \| 'processing' \| 'error' \| 'warning'` | -       |
+| offset        | 相对默认位置的偏移 `[x, y]`（px）                                       | `[number, number]`                                               | -       |
+| color         | 自定义背景色                                                            | `string`                                                         | -       |
