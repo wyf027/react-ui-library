@@ -33,4 +33,18 @@ describe('Select', () => {
 
     expect(onChange).toHaveBeenCalledWith('2')
   })
+
+  it('calls onNativeChange with the select change event', async () => {
+    const user = userEvent.setup()
+    const onNativeChange = vi.fn()
+
+    const { getByRole } = render(
+      <Select options={options} onNativeChange={onNativeChange} aria-label="Native select" />,
+    )
+
+    await user.selectOptions(getByRole('combobox', { name: 'Native select' }), '2')
+
+    expect(onNativeChange).toHaveBeenCalledTimes(1)
+    expect(onNativeChange.mock.calls[0][0].target).toHaveValue('2')
+  })
 })
