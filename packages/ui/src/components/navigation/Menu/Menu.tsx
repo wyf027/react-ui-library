@@ -4,6 +4,7 @@ import {
   type KeyboardEvent,
   type ReactNode,
   useMemo,
+  useRef,
   useState,
 } from 'react'
 import { cn } from '../../../utils/cn'
@@ -26,31 +27,67 @@ export const Menu = forwardRef<HTMLUListElement, MenuProps>(function Menu(
   ref,
 ) {
   const enabledItems = useMemo(() => items.filter((item) => !item.disabled), [items])
+  const itemRefs = useRef(new Map<string, HTMLButtonElement>())
   const [activeKey, setActiveKey] = useState<string | undefined>(
     selectedKey ?? enabledItems[0]?.key,
   )
+  const currentKey = selectedKey ?? activeKey
+
+  const focusItem = (key: string) => {
+    requestAnimationFrame(() => {
+      itemRefs.current.get(key)?.focus()
+    })
+  }
+
+  const selectItem = (key: string) => {
+    setActiveKey(key)
+    focusItem(key)
+    onChange?.(key)
+  }
+
+  const getRelativeItem = (offset: number) => {
+    const currentIndex = Math.max(
+      enabledItems.findIndex((item) => item.key === currentKey),
+      0,
+    )
+    return enabledItems[(currentIndex + offset + enabledItems.length) % enabledItems.length]
+  }
 
   const onKeyDown = (event: KeyboardEvent<HTMLUListElement>) => {
     if (!enabledItems.length) return
-    const currentIndex = enabledItems.findIndex((item) => item.key === activeKey)
-    if (event.key === 'ArrowDown' || (mode === 'horizontal' && event.key === 'ArrowRight')) {
-      event.preventDefault()
-      const next = enabledItems[(currentIndex + 1) % enabledItems.length]
-      setActiveKey(next?.key)
-      onChange?.(next.key)
+
+    const keyMap: Record<string, () => MenuItem | undefined> = {
+      Home: () => enabledItems[0],
+      End: () => enabledItems[enabledItems.length - 1],
     }
-    if (event.key === 'ArrowUp' || (mode === 'horizontal' && event.key === 'ArrowLeft')) {
-      event.preventDefault()
-      const prev = enabledItems[(currentIndex - 1 + enabledItems.length) % enabledItems.length]
-      setActiveKey(prev?.key)
-      onChange?.(prev.key)
+
+    if (mode === 'horizontal') {
+      keyMap.ArrowRight = () => getRelativeItem(1)
+      keyMap.ArrowLeft = () => getRelativeItem(-1)
+    } else {
+      keyMap.ArrowDown = () => getRelativeItem(1)
+      keyMap.ArrowUp = () => getRelativeItem(-1)
     }
+
+    const getNextItem = keyMap[event.key]
+    if (!getNextItem) {
+      return
+    }
+
+    const nextItem = getNextItem()
+    if (!nextItem) {
+      return
+    }
+
+    event.preventDefault()
+    selectItem(nextItem.key)
   }
 
   return (
     <ul
       ref={ref}
-      role="menu"
+      role={mode === 'horizontal' ? 'menubar' : 'menu'}
+      aria-orientation={mode}
       onKeyDown={onKeyDown}
       className={cn(
         'list-none p-0',
@@ -62,14 +99,22 @@ export const Menu = forwardRef<HTMLUListElement, MenuProps>(function Menu(
       {items.map((item) => (
         <li key={item.key} role="none">
           <button
+            ref={(node) => {
+              if (node) {
+                itemRefs.current.set(item.key, node)
+              } else {
+                itemRefs.current.delete(item.key)
+              }
+            }}
             type="button"
             role="menuitem"
-            tabIndex={(selectedKey ?? activeKey) === item.key ? 0 : -1}
+            tabIndex={currentKey === item.key ? 0 : -1}
+            aria-current={currentKey === item.key ? 'page' : undefined}
             disabled={item.disabled}
-            onClick={() => onChange?.(item.key)}
+            onClick={() => selectItem(item.key)}
             className={cn(
               'nova-focus-ring rounded-md px-3 py-2 text-sm',
-              selectedKey === item.key
+              currentKey === item.key
                 ? 'bg-brand-500 text-white'
                 : 'text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800',
             )}
