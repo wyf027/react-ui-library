@@ -40,19 +40,28 @@ export const Upload = forwardRef<HTMLDivElement, UploadProps>(function Upload(
 
   return (
     <div ref={ref} className={cn('space-y-2', className)} {...props}>
-      <label className={cn('flex cursor-pointer items-center justify-center rounded-lg border border-dashed border-slate-300 px-4 py-6 text-sm text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-900', disabled && 'cursor-not-allowed opacity-60')}>
+      <label className="block">
         <input
           type="file"
-          className="hidden"
+          className="peer sr-only"
           accept={accept}
           multiple={multiple}
           disabled={disabled}
           onChange={handleChange}
         />
-        {triggerText}
+        <span
+          className={cn(
+            'flex cursor-pointer items-center justify-center rounded-lg border border-dashed border-slate-300 px-4 py-6 text-sm text-slate-600 hover:bg-slate-50 peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-brand-500 peer-disabled:cursor-not-allowed peer-disabled:opacity-60 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-900',
+          )}
+        >
+          {triggerText}
+        </span>
       </label>
       {fileList.length > 0 ? (
-        <ul className="space-y-1 text-sm text-slate-600 dark:text-slate-300">
+        <ul
+          aria-label="Uploaded files"
+          className="space-y-1 text-sm text-slate-600 dark:text-slate-300"
+        >
           {fileList.map((file) => (
             <li key={file.uid} className="rounded bg-slate-100 px-2 py-1 dark:bg-slate-800">
               {file.name}
