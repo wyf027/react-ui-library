@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
@@ -53,13 +53,21 @@ describe('Popconfirm', () => {
     )
 
     await user.click(screen.getByRole('button', { name: 'Publish' }))
-    await user.click(screen.getByRole('button', { name: 'Keep editing' }))
+    await user.click(
+      within(screen.getByRole('dialog', { name: 'Publish changes' })).getByRole('button', {
+        name: 'Keep editing',
+      }),
+    )
 
     expect(onCancel).toHaveBeenCalledTimes(1)
     expect(screen.queryByRole('dialog', { name: 'Publish changes' })).not.toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: 'Publish' }))
-    await user.click(screen.getByRole('button', { name: 'Publish' }))
+    await user.click(
+      within(screen.getByRole('dialog', { name: 'Publish changes' })).getByRole('button', {
+        name: 'Publish',
+      }),
+    )
 
     expect(onConfirm).toHaveBeenCalledTimes(1)
     expect(screen.queryByRole('dialog', { name: 'Publish changes' })).not.toBeInTheDocument()
