@@ -25,6 +25,20 @@ function collectKeys(nodes: TreeNode[]): string[] {
   return nodes.flatMap((node) => [node.key, ...(node.children ? collectKeys(node.children) : [])])
 }
 
+function getClickedNodeKey(target: HTMLElement | null, keys: string[]) {
+  const button =
+    target?.closest<HTMLButtonElement>('[data-tree-node-key]') ?? target?.closest('button')
+  if (!button) return null
+
+  const nodeKey = button.getAttribute('data-tree-node-key')
+  if (nodeKey && keys.includes(nodeKey)) {
+    return nodeKey
+  }
+
+  const text = button.textContent?.trim()
+  return keys.find((key) => text?.includes(key)) ?? null
+}
+
 export const TreeSelect = forwardRef<HTMLDivElement, TreeSelectProps>(function TreeSelect(
   { className, data, value, defaultValue = '', onChange, ...props },
   ref,
@@ -40,17 +54,14 @@ export const TreeSelect = forwardRef<HTMLDivElement, TreeSelectProps>(function T
   return (
     <div ref={ref} className={cn('space-y-2', className)} {...props}>
       <div className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
-        {current ? findTitle(data, current) ?? current : '请选择节点'}
+        {current ? (findTitle(data, current) ?? current) : '请选择节点'}
       </div>
       <Tree
         data={data}
         expandedKeys={keys}
         onClick={(event) => {
           const target = event.target as HTMLElement | null
-          const btn = target?.closest('button')
-          if (!btn) return
-          const text = btn.textContent?.trim()
-          const matched = keys.find((k) => text?.includes(k))
+          const matched = getClickedNodeKey(target, keys)
           if (matched) {
             setCurrent(matched)
           }
