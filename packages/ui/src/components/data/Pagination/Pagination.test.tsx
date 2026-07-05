@@ -13,9 +13,33 @@ describe('Pagination', () => {
 
     render(<Pagination current={1} total={25} pageSize={10} onChange={onChange} />)
 
-    await user.click(screen.getByRole('button', { name: '2' }))
+    await user.click(screen.getByRole('button', { name: 'Go to page 2' }))
 
     expect(onChange).toHaveBeenCalledWith(2)
+  })
+
+  it('uses defaultCurrent for uncontrolled pagination', () => {
+    render(<Pagination defaultCurrent={2} total={30} pageSize={10} />)
+
+    expect(screen.getByRole('button', { name: 'Page 2, current page' })).toHaveAttribute(
+      'aria-current',
+      'page',
+    )
+  })
+
+  it('updates the active page when uncontrolled pagination changes', async () => {
+    const user = userEvent.setup()
+    const onChange = vi.fn()
+
+    render(<Pagination defaultCurrent={2} total={30} pageSize={10} onChange={onChange} />)
+
+    await user.click(screen.getByRole('button', { name: 'Next page' }))
+
+    expect(onChange).toHaveBeenCalledWith(3)
+    expect(screen.getByRole('button', { name: 'Page 3, current page' })).toHaveAttribute(
+      'aria-current',
+      'page',
+    )
   })
 
   it('updates visible current page when parent re-renders with new current', async () => {
@@ -34,8 +58,11 @@ describe('Pagination', () => {
     render(<Harness />)
     expect(screen.getByTestId('cur')).toHaveTextContent('1')
 
-    await user.click(screen.getByRole('button', { name: '2' }))
+    await user.click(screen.getByRole('button', { name: 'Go to page 2' }))
     expect(screen.getByTestId('cur')).toHaveTextContent('2')
-    expect(screen.getByRole('button', { name: '2' })).toHaveAttribute('aria-current', 'page')
+    expect(screen.getByRole('button', { name: 'Page 2, current page' })).toHaveAttribute(
+      'aria-current',
+      'page',
+    )
   })
 })
