@@ -1,4 +1,13 @@
-import { forwardRef, type HTMLAttributes, type ReactNode, useState } from 'react'
+import {
+  cloneElement,
+  forwardRef,
+  isValidElement,
+  type HTMLAttributes,
+  type KeyboardEvent,
+  type ReactNode,
+  useId,
+  useState,
+} from 'react'
 import { cn } from '../../../../utils/cn'
 
 export interface TooltipProps extends Omit<HTMLAttributes<HTMLDivElement>, 'content'> {
@@ -6,11 +15,43 @@ export interface TooltipProps extends Omit<HTMLAttributes<HTMLDivElement>, 'cont
   disabled?: boolean
 }
 
+function mergeAriaDescribedBy(...ids: Array<string | undefined>) {
+  return ids
+    .flatMap((id) => id?.split(/\s+/) ?? [])
+    .filter(Boolean)
+    .join(' ')
+}
+
 export const Tooltip = forwardRef<HTMLDivElement, TooltipProps>(function Tooltip(
-  { className, content, children, disabled, ...props },
+  { className, content, children, disabled, onKeyDown, ...props },
   ref,
 ) {
+  const tooltipId = useId()
   const [open, setOpen] = useState(false)
+  const describedBy = open && !disabled ? tooltipId : undefined
+  const trigger = isValidElement<Record<string, unknown>>(children)
+    ? cloneElement(children, {
+        'aria-describedby':
+          mergeAriaDescribedBy(
+            typeof children.props['aria-describedby'] === 'string'
+              ? children.props['aria-describedby']
+              : undefined,
+            describedBy,
+          ) || undefined,
+      })
+    : children
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    onKeyDown?.(event)
+
+    if (event.defaultPrevented) {
+      return
+    }
+
+    if (event.key === 'Escape') {
+      setOpen(false)
+    }
+  }
 
   return (
     <div
@@ -20,11 +61,16 @@ export const Tooltip = forwardRef<HTMLDivElement, TooltipProps>(function Tooltip
       onMouseLeave={() => setOpen(false)}
       onFocus={() => !disabled && setOpen(true)}
       onBlur={() => setOpen(false)}
+      onKeyDown={handleKeyDown}
       {...props}
     >
-      {children}
+      {trigger}
       {open ? (
-        <div role="tooltip" className="absolute left-1/2 top-full z-40 mt-2 -translate-x-1/2 rounded bg-slate-900 px-2 py-1 text-xs text-white">
+        <div
+          id={tooltipId}
+          role="tooltip"
+          className="absolute left-1/2 top-full z-40 mt-2 -translate-x-1/2 rounded bg-slate-900 px-2 py-1 text-xs text-white"
+        >
           {content}
         </div>
       ) : null}
