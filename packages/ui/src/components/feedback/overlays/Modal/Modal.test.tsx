@@ -5,6 +5,7 @@ import { Modal } from './Modal'
 
 afterEach(() => {
   cleanup()
+  document.body.style.overflow = ''
 })
 
 describe('Modal', () => {
@@ -51,5 +52,69 @@ describe('Modal', () => {
       }),
     )
     expect(onClose).toHaveBeenCalledTimes(1)
+  })
+
+  it('locks body scroll while open and restores the previous overflow value', async () => {
+    document.body.style.overflow = 'scroll'
+
+    const { rerender } = render(
+      <Modal open title="Locked">
+        x
+      </Modal>,
+    )
+
+    await waitFor(() => expect(screen.getByRole('dialog', { name: 'Locked' })).toBeInTheDocument())
+    expect(document.body.style.overflow).toBe('hidden')
+
+    rerender(
+      <Modal open={false} title="Locked">
+        x
+      </Modal>,
+    )
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    expect(document.body.style.overflow).toBe('scroll')
+  })
+
+  it('keeps body scroll locked until all open modals are closed', async () => {
+    const { rerender } = render(
+      <>
+        <Modal open title="First">
+          First body
+        </Modal>
+        <Modal open title="Second">
+          Second body
+        </Modal>
+      </>,
+    )
+
+    await waitFor(() => expect(screen.getByRole('dialog', { name: 'First' })).toBeInTheDocument())
+    expect(document.body.style.overflow).toBe('hidden')
+
+    rerender(
+      <>
+        <Modal open={false} title="First">
+          First body
+        </Modal>
+        <Modal open title="Second">
+          Second body
+        </Modal>
+      </>,
+    )
+
+    expect(document.body.style.overflow).toBe('hidden')
+
+    rerender(
+      <>
+        <Modal open={false} title="First">
+          First body
+        </Modal>
+        <Modal open={false} title="Second">
+          Second body
+        </Modal>
+      </>,
+    )
+
+    expect(document.body.style.overflow).toBe('')
   })
 })
