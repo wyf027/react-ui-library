@@ -4,7 +4,7 @@ import { cn } from '../../../utils/cn'
 import { badgeStatusBgClass, type BadgeStatus } from '../../../theme/componentTokens'
 
 export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
-  count?: number
+  count?: ReactNode
   dot?: boolean
   children?: ReactNode
   /** 超过该值显示 `${overflowCount}+`，对标 Ant Design `overflowCount` */
@@ -35,9 +35,11 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(function Badge(
   },
   ref,
 ) {
-  const showBadge = dot || count > 0 || showZero
-  const display =
-    typeof count === 'number' && count > overflowCount ? `${overflowCount}+` : count
+  const isNumericCount = typeof count === 'number'
+  const hasCustomCount =
+    count !== null && count !== undefined && count !== '' && typeof count !== 'boolean'
+  const showBadge = dot || (isNumericCount ? count > 0 || showZero : hasCustomCount)
+  const display = isNumericCount && count > overflowCount ? `${overflowCount}+` : count
 
   const bgClass = color ? undefined : status ? badgeStatusBgClass[status] : 'bg-red-500'
 
