@@ -8,17 +8,40 @@ export interface SpinProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export const Spin = forwardRef<HTMLDivElement, SpinProps>(function Spin(
-  { className, spinning = true, size = 'md', tip, children, ...props },
+  {
+    className,
+    spinning = true,
+    size = 'md',
+    tip,
+    children,
+    'aria-label': ariaLabel,
+    'aria-labelledby': ariaLabelledBy,
+    'aria-live': ariaLive,
+    ...props
+  },
   ref,
 ) {
+  const accessibleLabel =
+    ariaLabel ?? (ariaLabelledBy ? undefined : typeof tip === 'string' ? tip : 'Loading')
+
   const spinner = (
-    <div className="flex flex-col items-center gap-2">
+    <div
+      className="flex flex-col items-center gap-2"
+      role="status"
+      aria-label={accessibleLabel}
+      aria-labelledby={ariaLabelledBy}
+      aria-live={ariaLive ?? 'polite'}
+    >
       <span
-        className={cn('inline-block animate-spin rounded-full border-2 border-brand-500 border-r-transparent', {
-          'h-4 w-4': size === 'sm',
-          'h-6 w-6': size === 'md',
-          'h-8 w-8': size === 'lg',
-        })}
+        aria-hidden="true"
+        className={cn(
+          'inline-block animate-spin rounded-full border-2 border-brand-500 border-r-transparent',
+          {
+            'h-4 w-4': size === 'sm',
+            'h-6 w-6': size === 'md',
+            'h-8 w-8': size === 'lg',
+          },
+        )}
       />
       {tip ? <span className="text-sm text-slate-500 dark:text-slate-400">{tip}</span> : null}
     </div>
@@ -26,14 +49,18 @@ export const Spin = forwardRef<HTMLDivElement, SpinProps>(function Spin(
 
   if (!children) {
     return spinning ? (
-      <div ref={ref} className={cn('inline-flex items-center justify-center', className)} {...props}>
+      <div
+        ref={ref}
+        className={cn('inline-flex items-center justify-center', className)}
+        {...props}
+      >
         {spinner}
       </div>
     ) : null
   }
 
   return (
-    <div ref={ref} className={cn('relative', className)} {...props}>
+    <div ref={ref} className={cn('relative', className)} {...props} aria-busy={spinning}>
       {children}
       {spinning ? (
         <div className="absolute inset-0 flex items-center justify-center rounded bg-white/60 dark:bg-slate-900/60">
