@@ -1,4 +1,5 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 
 import { Table } from './Table'
@@ -30,5 +31,36 @@ describe('Table', () => {
 
     expect(screen.getByRole('cell', { name: 'banana' })).toBeInTheDocument()
     expect(screen.queryByRole('cell', { name: 'apple' })).not.toBeInTheDocument()
+  })
+
+  it('exposes aria-sort on sortable headers and updates it when sorted', async () => {
+    const user = userEvent.setup()
+    const dataSource = [{ name: 'Grace' }, { name: 'Ada' }] as Record<string, unknown>[]
+
+    render(
+      <Table
+        columns={[
+          {
+            key: 'name',
+            title: 'Name',
+            sorter: (a, b) => String(a.name).localeCompare(String(b.name)),
+          },
+        ]}
+        dataSource={dataSource}
+      />,
+    )
+
+    const header = screen.getByRole('columnheader', { name: /Name/ })
+    expect(header).not.toHaveAttribute('aria-sort')
+
+    await user.click(within(header).getByRole('button', { name: 'Sort Name ascending' }))
+
+    expect(header).toHaveAttribute('aria-sort', 'ascending')
+    expect(screen.getAllByRole('cell').map((cell) => cell.textContent)).toEqual(['Ada', 'Grace'])
+
+    await user.click(within(header).getByRole('button', { name: 'Sort Name descending' }))
+
+    expect(header).toHaveAttribute('aria-sort', 'descending')
+    expect(screen.getAllByRole('cell').map((cell) => cell.textContent)).toEqual(['Grace', 'Ada'])
   })
 })
