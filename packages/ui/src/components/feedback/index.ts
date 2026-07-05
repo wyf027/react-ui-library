@@ -2,7 +2,7 @@ export { Modal } from './overlays/Modal'
 export type { ModalProps } from './overlays/Modal'
 
 export { Drawer } from './overlays/Drawer'
-export type { DrawerProps } from './overlays/Drawer'
+export type { DrawerPlacement, DrawerProps } from './overlays/Drawer'
 
 export { Toast, Message } from './Toast'
 export type { ToastProps } from './Toast'
