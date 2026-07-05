@@ -3,6 +3,7 @@ import { forwardRef, useEffect, useRef } from 'react'
 import { Portal } from '../../../../utils/portal'
 import { useEscapeKey } from '../../../../hooks/useEscapeKey'
 import { useClickOutside } from '../../../../hooks/useClickOutside'
+import { useLockBodyScroll } from '../../../../hooks/useLockBodyScroll'
 
 import type { ModalProps } from './Modal.types'
 import { ModalDialog } from './parts/ModalDialog'
@@ -16,6 +17,7 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(function Modal(
   const lastActiveElementRef = useRef<HTMLElement | null>(null)
   useEscapeKey(() => onClose?.(), open)
   useClickOutside(panelRef, () => onClose?.(), open)
+  useLockBodyScroll(open)
 
   useEffect(() => {
     if (!open) return
