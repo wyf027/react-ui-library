@@ -28,7 +28,10 @@ describe('QRCode', () => {
     render(
       <div>
         <span id="qr-label">Nova UI docs QR code</span>
-        <QRCode value="https://leno23.github.io/react-ui-library/" aria-labelledby="qr-label" />
+        <QRCode
+          value="https://leno23.github.io/react-ui-library/"
+          aria-labelledby="qr-label"
+        />
       </div>,
     )
 
