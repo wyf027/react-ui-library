@@ -22,12 +22,14 @@ describe('Table', () => {
     expect(screen.getByText('Nothing here')).toBeInTheDocument()
   })
 
-  it('filters rows when searchable and search input matches', () => {
+  it('labels the search input and filters matching rows', () => {
     const dataSource = [{ name: 'apple' }, { name: 'banana' }] as Record<string, unknown>[]
 
-    render(<Table columns={columns} dataSource={dataSource} searchable />)
+    render(<Table columns={columns} dataSource={dataSource} title="Fruit" searchable />)
 
-    fireEvent.change(screen.getByPlaceholderText('Search...'), { target: { value: 'ban' } })
+    fireEvent.change(screen.getByRole('textbox', { name: 'Search Fruit' }), {
+      target: { value: 'ban' },
+    })
 
     expect(screen.getByRole('cell', { name: 'banana' })).toBeInTheDocument()
     expect(screen.queryByRole('cell', { name: 'apple' })).not.toBeInTheDocument()
