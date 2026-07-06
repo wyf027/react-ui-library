@@ -224,6 +224,7 @@ export const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unkn
                       </div>
                       {column.filters?.length ? (
                         <select
+                          aria-label={`Filter ${columnLabel}`}
                           value={effectiveFilterMap[key] ?? ''}
                           onChange={(event) => {
                             const nextValue = event.target.value
