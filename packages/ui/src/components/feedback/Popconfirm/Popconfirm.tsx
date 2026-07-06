@@ -1,4 +1,5 @@
 import {
+  cloneElement,
   forwardRef,
   useCallback,
   useEffect,
@@ -44,6 +45,7 @@ export const Popconfirm = forwardRef<HTMLDivElement, PopconfirmProps>(function P
   const [internalOpen, setInternalOpen] = useState(defaultOpen)
   const isOpen = controlledOpen ?? internalOpen
   const wrapperRef = useRef<HTMLDivElement>(null)
+  const popupId = useId()
   const titleId = useId()
   const descriptionId = useId()
 
@@ -78,12 +80,19 @@ export const Popconfirm = forwardRef<HTMLDivElement, PopconfirmProps>(function P
     }
   }, [isOpen, setOpen])
 
+  const trigger = cloneElement(children, {
+    'aria-controls': isOpen ? popupId : undefined,
+    'aria-expanded': isOpen,
+    'aria-haspopup': 'dialog',
+  })
+
   return (
     <div ref={wrapperRef} className={cn('relative inline-block', className)} {...props}>
-      <div onClick={() => setOpen(!isOpen)}>{children}</div>
+      <div onClick={() => setOpen(!isOpen)}>{trigger}</div>
       {isOpen ? (
         <div
           ref={ref}
+          id={popupId}
           role="dialog"
           aria-labelledby={titleId}
           aria-describedby={description ? descriptionId : undefined}
