@@ -10,7 +10,7 @@ describe('Slider', () => {
     const slider = screen.getByRole('slider', { name: 'Volume' })
     const value = screen.getByText('30')
 
-    expect(slider).toHaveValue('30')
+    expect((slider as HTMLInputElement).value).toBe('30')
     expect(slider).toHaveAttribute('aria-describedby', value.id)
     expect(slider).toHaveAccessibleDescription('30')
   })
