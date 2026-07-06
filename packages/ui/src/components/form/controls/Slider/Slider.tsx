@@ -1,4 +1,4 @@
-import { forwardRef, type InputHTMLAttributes } from 'react'
+import { forwardRef, useId, type InputHTMLAttributes } from 'react'
 import { cn } from '../../../../utils/cn'
 import { useControllableState } from '../../../../utils/useControllableState'
 
@@ -24,15 +24,18 @@ export const Slider = forwardRef<HTMLInputElement, SliderProps>(function Slider(
     onChange,
     showValue = true,
     disabled,
+    'aria-describedby': ariaDescribedBy,
     ...props
   },
   ref,
 ) {
+  const valueId = useId()
   const [innerValue, setInnerValue] = useControllableState<number>({
     value,
     defaultValue,
     onChange,
   })
+  const describedBy = [ariaDescribedBy, showValue ? valueId : undefined].filter(Boolean).join(' ') || undefined
 
   return (
     <div className="flex items-center gap-3">
@@ -44,11 +47,16 @@ export const Slider = forwardRef<HTMLInputElement, SliderProps>(function Slider(
         step={step}
         value={innerValue}
         disabled={disabled}
+        aria-describedby={describedBy}
         onChange={(event) => setInnerValue(Number(event.target.value))}
         className={cn('h-2 w-full cursor-pointer accent-brand-500', className)}
         {...props}
       />
-      {showValue ? <span className="w-10 text-right text-sm text-slate-600 dark:text-slate-300">{innerValue}</span> : null}
+      {showValue ? (
+        <span id={valueId} className="w-10 text-right text-sm text-slate-600 dark:text-slate-300">
+          {innerValue}
+        </span>
+      ) : null}
     </div>
   )
 })
