@@ -28,6 +28,7 @@ export const Popover = forwardRef<HTMLDivElement, PopoverProps>(function Popover
     onOpen,
     onClose,
     onKeyDown,
+    'aria-label': ariaLabel,
     ...props
   },
   ref,
@@ -80,7 +81,7 @@ export const Popover = forwardRef<HTMLDivElement, PopoverProps>(function Popover
         onClick={handleToggle}
         aria-expanded={open}
         aria-haspopup="dialog"
-        aria-controls={popoverId}
+        aria-controls={open ? popoverId : undefined}
         className="inline-flex"
       >
         {trigger}
@@ -88,6 +89,8 @@ export const Popover = forwardRef<HTMLDivElement, PopoverProps>(function Popover
       {open ? (
         <div
           id={popoverId}
+          role="dialog"
+          aria-label={ariaLabel ?? 'Popover content'}
           className="absolute left-0 top-full z-40 mt-2 min-w-48 rounded-lg border border-slate-200 bg-white p-3 text-sm shadow-lg dark:border-slate-700 dark:bg-slate-900"
         >
           {content}
