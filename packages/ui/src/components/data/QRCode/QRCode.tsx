@@ -50,7 +50,13 @@ export const QRCode = forwardRef<HTMLDivElement, QRCodeProps>(function QRCode(
     >
       {Array.from({ length: matrixSize * matrixSize }, (_, index) => {
         const fill = ((index * 31 + seed) % 7) < 3
-        return <span key={index} aria-hidden="true" className={fill ? 'bg-slate-900' : 'bg-white'} />
+        return (
+          <span
+            key={index}
+            aria-hidden="true"
+            className={fill ? 'bg-slate-900' : 'bg-white'}
+          />
+        )
       })}
     </div>
   )
