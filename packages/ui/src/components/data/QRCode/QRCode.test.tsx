@@ -14,7 +14,12 @@ describe('QRCode', () => {
   })
 
   it('allows consumers to provide a specific accessible label', () => {
-    render(<QRCode value="https://leno23.github.io/react-ui-library/" aria-label="Scan to open Nova UI docs" />)
+    render(
+      <QRCode
+        value="https://leno23.github.io/react-ui-library/"
+        aria-label="Scan to open Nova UI docs"
+      />,
+    )
 
     expect(screen.getByRole('img', { name: 'Scan to open Nova UI docs' })).toBeInTheDocument()
   })
