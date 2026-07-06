@@ -2,6 +2,7 @@ import { forwardRef, type HTMLAttributes, useId, useLayoutEffect, useRef } from 
 
 import { DialogHeader } from '../../../_internal/DialogHeader'
 import { useEscapeKey } from '../../../../hooks/useEscapeKey'
+import { useLockBodyScroll } from '../../../../hooks/useLockBodyScroll'
 import { Portal } from '../../../../utils/portal'
 import { cn } from '../../../../utils/cn'
 
@@ -30,6 +31,7 @@ export const Drawer = forwardRef<HTMLDivElement, DrawerProps>(function Drawer(
   const lastActiveElementRef = useRef<HTMLElement | null>(null)
 
   useEscapeKey(() => onClose?.(), open)
+  useLockBodyScroll(open)
 
   useLayoutEffect(() => {
     if (!open) {

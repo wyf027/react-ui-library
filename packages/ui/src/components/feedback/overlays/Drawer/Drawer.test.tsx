@@ -1,9 +1,14 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useState } from 'react'
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { Drawer } from './Drawer'
+
+afterEach(() => {
+  cleanup()
+  document.body.style.overflow = ''
+})
 
 describe('Drawer', () => {
   it('renders nothing when closed', () => {
@@ -81,6 +86,70 @@ describe('Drawer', () => {
 
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
     expect(opener).toHaveFocus()
+  })
+
+  it('locks body scroll while open and restores the previous overflow value', async () => {
+    document.body.style.overflow = 'scroll'
+
+    const { rerender } = render(
+      <Drawer open title="Locked drawer">
+        x
+      </Drawer>,
+    )
+
+    await waitFor(() => expect(screen.getByRole('dialog', { name: 'Locked drawer' })).toBeInTheDocument())
+    expect(document.body.style.overflow).toBe('hidden')
+
+    rerender(
+      <Drawer open={false} title="Locked drawer">
+        x
+      </Drawer>,
+    )
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    expect(document.body.style.overflow).toBe('scroll')
+  })
+
+  it('keeps body scroll locked until all open drawers are closed', async () => {
+    const { rerender } = render(
+      <>
+        <Drawer open title="First drawer">
+          First body
+        </Drawer>
+        <Drawer open title="Second drawer">
+          Second body
+        </Drawer>
+      </>,
+    )
+
+    await waitFor(() => expect(screen.getByRole('dialog', { name: 'First drawer' })).toBeInTheDocument())
+    expect(document.body.style.overflow).toBe('hidden')
+
+    rerender(
+      <>
+        <Drawer open={false} title="First drawer">
+          First body
+        </Drawer>
+        <Drawer open title="Second drawer">
+          Second body
+        </Drawer>
+      </>,
+    )
+
+    expect(document.body.style.overflow).toBe('hidden')
+
+    rerender(
+      <>
+        <Drawer open={false} title="First drawer">
+          First body
+        </Drawer>
+        <Drawer open={false} title="Second drawer">
+          Second body
+        </Drawer>
+      </>,
+    )
+
+    expect(document.body.style.overflow).toBe('')
   })
 
   it('supports vertical placement from the top and bottom edges', async () => {

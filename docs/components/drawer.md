@@ -29,4 +29,4 @@
 
 ## 可访问性
 
-`Drawer` 使用 `role="dialog"` 和 `aria-modal="true"` 表示模态浮层。传入 `title` 时，标题会通过 `aria-labelledby` 关联到抽屉面板。抽屉打开后焦点会移动到关闭按钮；点击遮罩、点击关闭按钮或按 <kbd>Escape</kbd> 会触发 `onClose`，关闭后焦点会回到打开抽屉前的元素。
+`Drawer` 使用 `role="dialog"` 和 `aria-modal="true"` 表示模态浮层。传入 `title` 时，标题会通过 `aria-labelledby` 关联到抽屉面板。抽屉打开后焦点会移动到关闭按钮，并锁定页面滚动；点击遮罩、点击关闭按钮或按 <kbd>Escape</kbd> 会触发 `onClose`，关闭后焦点会回到打开抽屉前的元素。
