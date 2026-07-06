@@ -127,6 +127,8 @@ export const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unkn
     const canGoNext = Boolean(pagination && pagination.current < totalPages)
 
     const colSpan = visibleColumns.length
+    const tableTitle = typeof title === 'string' || typeof title === 'number' ? String(title) : ''
+    const searchAriaLabel = tableTitle ? `Search ${tableTitle}` : 'Search table'
 
     return (
       <div className="space-y-2">
@@ -139,6 +141,7 @@ export const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unkn
                   value={search}
                   onChange={(event) => setSearch(event.target.value)}
                   placeholder="Search..."
+                  aria-label={searchAriaLabel}
                   className={tableSearchInput}
                 />
               ) : null}
