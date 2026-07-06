@@ -81,18 +81,33 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(function Dropd
       setActiveIndex(-1)
       return
     }
-    setActiveIndex(0)
+    setActiveIndex((current) => (current >= 0 ? current : 0))
   }, [open])
+
+  const focusOption = (option?: DropdownOption) => {
+    if (!option) {
+      return
+    }
+
+    requestAnimationFrame(() => {
+      optionRefs.current.get(option.key)?.focus()
+    })
+  }
 
   const handleTriggerKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
     if (event.key === 'ArrowDown' || event.key === 'Enter' || event.key === ' ') {
       event.preventDefault()
       setOpen(true)
-      if (enabledOptions[0]) {
-        requestAnimationFrame(() => {
-          optionRefs.current.get(enabledOptions[0].key)?.focus()
-        })
-      }
+      setActiveIndex(0)
+      focusOption(enabledOptions[0])
+      return
+    }
+
+    if (event.key === 'ArrowUp') {
+      event.preventDefault()
+      setOpen(true)
+      setActiveIndex(enabledOptions.length - 1)
+      focusOption(enabledOptions[enabledOptions.length - 1])
     }
   }
 
@@ -108,9 +123,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(function Dropd
       if (enabledOptions.length > 0) {
         setActiveIndex((prev) => {
           const next = (prev + 1) % enabledOptions.length
-          requestAnimationFrame(() => {
-            optionRefs.current.get(enabledOptions[next].key)?.focus()
-          })
+          focusOption(enabledOptions[next])
           return next
         })
       }
@@ -120,9 +133,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(function Dropd
       if (enabledOptions.length > 0) {
         setActiveIndex((prev) => {
           const next = (prev - 1 + enabledOptions.length) % enabledOptions.length
-          requestAnimationFrame(() => {
-            optionRefs.current.get(enabledOptions[next].key)?.focus()
-          })
+          focusOption(enabledOptions[next])
           return next
         })
       }
@@ -185,6 +196,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(function Dropd
                 onClick={() => {
                   onChange?.(item.key)
                   setOpen(false)
+                  triggerRef.current?.focus()
                 }}
                 className="nova-focus-ring w-full rounded px-3 py-2 text-left text-sm text-slate-700 hover:bg-slate-100 disabled:opacity-50 dark:text-slate-200 dark:hover:bg-slate-800"
               >
