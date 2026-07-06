@@ -8,23 +8,21 @@ describe('Popover', () => {
   it('shows content after trigger is clicked', async () => {
     const user = userEvent.setup()
 
-    render(<Popover trigger={<span>Open me</span>} content={<span>Popover panel</span>} />)
+    render(<Popover trigger={<span>Open me</span>} content={<span>Popover panel</span>} aria-label="Help panel" />)
 
-    expect(screen.queryByText('Popover panel')).not.toBeInTheDocument()
+    expect(screen.queryByRole('dialog', { name: 'Help panel' })).not.toBeInTheDocument()
 
-    await user.click(screen.getByRole('button', { name: /Open me/i }))
-    const panel = screen.getByText('Popover panel')
     const trigger = screen.getByRole('button', { name: /Open me/i })
-    const panelId = panel.parentElement?.id
-
-    if (!panelId) {
-      throw new Error('Expected Popover panel to render with an id.')
-    }
-
-    expect(panel).toBeInTheDocument()
-    expect(trigger).toHaveAttribute('aria-expanded', 'true')
+    expect(trigger).toHaveAttribute('aria-expanded', 'false')
     expect(trigger).toHaveAttribute('aria-haspopup', 'dialog')
-    expect(trigger).toHaveAttribute('aria-controls', panelId)
+    expect(trigger).not.toHaveAttribute('aria-controls')
+
+    await user.click(trigger)
+
+    const dialog = screen.getByRole('dialog', { name: 'Help panel' })
+    expect(dialog).toHaveTextContent('Popover panel')
+    expect(trigger).toHaveAttribute('aria-expanded', 'true')
+    expect(trigger).toHaveAttribute('aria-controls', dialog.id)
   })
 
   it('calls onOpen and onClose when toggling uncontrolled', async () => {
