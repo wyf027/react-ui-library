@@ -21,6 +21,8 @@ export const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(function T
     placeholder = '选择时间',
     onChange,
     onKeyDown,
+    id,
+    'aria-describedby': ariaDescribedBy,
     'aria-label': ariaLabel,
     'aria-labelledby': ariaLabelledBy,
     size = 'md',
@@ -68,9 +70,11 @@ export const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(function T
   return (
     <div ref={wrapperRef} className={cn('relative inline-block', className)} {...props}>
       <div
+        id={id}
         ref={ref}
         role="combobox"
         tabIndex={disabled ? -1 : 0}
+        aria-describedby={ariaDescribedBy}
         aria-label={ariaLabel ?? (ariaLabelledBy ? undefined : placeholder)}
         aria-labelledby={ariaLabelledBy}
         aria-expanded={open}
