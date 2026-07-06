@@ -38,13 +38,14 @@ export const Image = forwardRef<HTMLImageElement, ImageProps>(function Image(
   const imgSrc = failed ? fallback : src
   const previewTriggerLabel = ariaLabel ?? (alt ? `Preview ${alt}` : 'Preview image')
   const previewDialogLabel = alt ? `${alt} preview` : 'Image preview'
+  const closePreview = () => setPreviewOpen(false)
 
   useEffect(() => {
     if (!previewOpen) return
 
     const handleDocumentKeyDown = (event: globalThis.KeyboardEvent) => {
       if (event.key === 'Escape') {
-        setPreviewOpen(false)
+        closePreview()
       }
     }
 
@@ -90,8 +91,19 @@ export const Image = forwardRef<HTMLImageElement, ImageProps>(function Image(
           aria-modal="true"
           aria-label={previewDialogLabel}
           className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70"
-          onClick={() => setPreviewOpen(false)}
+          onClick={closePreview}
         >
+          <button
+            type="button"
+            aria-label="Close image preview"
+            className="nova-focus-ring absolute right-4 top-4 rounded bg-white/90 px-2 py-1 text-sm font-medium text-slate-900 shadow hover:bg-white"
+            onClick={(event) => {
+              event.stopPropagation()
+              closePreview()
+            }}
+          >
+            X
+          </button>
           <img src={imgSrc} alt={alt} className="max-h-[90vh] max-w-[90vw] rounded shadow-2xl" />
         </div>
       ) : null}
