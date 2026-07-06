@@ -1,5 +1,6 @@
 import {
   forwardRef,
+  useCallback,
   useEffect,
   useState,
   type ImgHTMLAttributes,
@@ -38,7 +39,7 @@ export const Image = forwardRef<HTMLImageElement, ImageProps>(function Image(
   const imgSrc = failed ? fallback : src
   const previewTriggerLabel = ariaLabel ?? (alt ? `Preview ${alt}` : 'Preview image')
   const previewDialogLabel = alt ? `${alt} preview` : 'Image preview'
-  const closePreview = () => setPreviewOpen(false)
+  const closePreview = useCallback(() => setPreviewOpen(false), [])
 
   useEffect(() => {
     if (!previewOpen) return
@@ -51,7 +52,7 @@ export const Image = forwardRef<HTMLImageElement, ImageProps>(function Image(
 
     document.addEventListener('keydown', handleDocumentKeyDown)
     return () => document.removeEventListener('keydown', handleDocumentKeyDown)
-  }, [previewOpen])
+  }, [closePreview, previewOpen])
 
   const handlePreviewKeyDown = (event: KeyboardEvent<HTMLImageElement>) => {
     onKeyDown?.(event)
