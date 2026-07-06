@@ -21,6 +21,24 @@ describe('TimePicker', () => {
     expect(screen.getByRole('group', { name: 'Minutes' })).toBeInTheDocument()
   })
 
+  it('supports external labels and descriptions on the combobox trigger', () => {
+    render(
+      <>
+        <span id="start-time-label">Start time</span>
+        <span id="start-time-help">Use the time picker panel.</span>
+        <TimePicker
+          id="start-time"
+          aria-labelledby="start-time-label"
+          aria-describedby="start-time-help"
+        />
+      </>,
+    )
+
+    const trigger = screen.getByRole('combobox', { name: 'Start time' })
+    expect(trigger).toHaveAttribute('id', 'start-time')
+    expect(trigger).toHaveAccessibleDescription('Use the time picker panel.')
+  })
+
   it('opens and closes from the keyboard', async () => {
     const user = userEvent.setup()
 
