@@ -14,12 +14,18 @@ describe('Popconfirm', () => {
       </Popconfirm>,
     )
 
+    const trigger = screen.getByRole('button', { name: 'Delete' })
+    expect(trigger).toHaveAttribute('aria-haspopup', 'dialog')
+    expect(trigger).toHaveAttribute('aria-expanded', 'false')
+    expect(trigger).not.toHaveAttribute('aria-controls')
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
 
-    await user.click(screen.getByRole('button', { name: 'Delete' }))
+    await user.click(trigger)
 
     const dialog = screen.getByRole('dialog', { name: 'Delete item' })
     expect(dialog).toHaveAccessibleDescription('This action cannot be undone.')
+    expect(trigger).toHaveAttribute('aria-expanded', 'true')
+    expect(trigger).toHaveAttribute('aria-controls', dialog.id)
   })
 
   it('closes on Escape and reports the open state change', async () => {
