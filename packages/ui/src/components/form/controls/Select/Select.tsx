@@ -19,6 +19,8 @@ export interface SelectOption {
 export interface SelectProps
   extends Omit<SelectHTMLAttributes<HTMLSelectElement>, 'size' | 'onChange'> {
   label?: ReactNode
+  helperText?: ReactNode
+  error?: ReactNode
   options: SelectOption[]
   placeholder?: string
   value?: string
@@ -33,6 +35,8 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
   {
     className,
     label,
+    helperText,
+    error,
     options,
     placeholder,
     value,
@@ -43,12 +47,17 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
     onNativeChange,
     disabled,
     slotClassNames,
+    'aria-describedby': ariaDescribedBy,
+    'aria-invalid': ariaInvalid,
     ...props
   },
   ref,
 ) {
   const generatedId = useId()
   const selectId = id ?? generatedId
+  const helperId = helperText && !error ? `${selectId}-helper` : undefined
+  const errorId = error ? `${selectId}-error` : undefined
+  const descriptionIds = [ariaDescribedBy, errorId ?? helperId].filter(Boolean).join(' ') || undefined
   const [innerValue, setInnerValue] = useControllableState<string>({
     value,
     defaultValue: defaultValue ?? '',
@@ -65,7 +74,10 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
   return (
     <div className={cn('flex w-full flex-col gap-1.5', slotClassNames?.root)}>
       {label ? (
-        <label htmlFor={selectId} className={cn('text-sm font-medium text-slate-700 dark:text-slate-200', slotClassNames?.label)}>
+        <label
+          htmlFor={selectId}
+          className={cn('text-sm font-medium text-slate-700 dark:text-slate-200', slotClassNames?.label)}
+        >
           {label}
         </label>
       ) : null}
@@ -74,6 +86,8 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
         id={selectId}
         value={mergedValue}
         disabled={disabled}
+        aria-describedby={descriptionIds}
+        aria-invalid={ariaInvalid ?? (error ? true : undefined)}
         onChange={handleChange}
         className={cn(
           'nova-focus-ring w-full rounded-md border border-slate-300 bg-white px-3 text-sm text-slate-800 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100',
@@ -82,6 +96,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
             'h-10': size === 'md',
             'h-11': size === 'lg',
           },
+          error && 'border-red-500 focus:border-red-500 focus:ring-red-100',
           className,
           slotClassNames?.input,
         )}
@@ -94,6 +109,15 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
           </option>
         ))}
       </select>
+      {error ? (
+        <p id={errorId} role="alert" className="text-xs text-red-600">
+          {error}
+        </p>
+      ) : helperText ? (
+        <p id={helperId} className="text-xs text-slate-500 dark:text-slate-400">
+          {helperText}
+        </p>
+      ) : null}
     </div>
   )
 })

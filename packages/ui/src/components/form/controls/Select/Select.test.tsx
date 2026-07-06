@@ -20,6 +20,45 @@ describe('Select', () => {
     expect(getByRole('combobox', { name: 'Pick number' })).toHaveValue('2')
   })
 
+  it('associates helper text with the select description', () => {
+    const { getByRole } = render(
+      <Select label="Country" helperText="Choose the billing country." options={options} />,
+    )
+
+    expect(getByRole('combobox', { name: 'Country' })).toHaveAccessibleDescription(
+      'Choose the billing country.',
+    )
+  })
+
+  it('preserves custom descriptions when helper text is present', () => {
+    const { getByRole } = render(
+      <>
+        <span id="external-help">Required for tax calculation.</span>
+        <Select
+          label="Country"
+          helperText="Choose the billing country."
+          options={options}
+          aria-describedby="external-help"
+        />
+      </>,
+    )
+
+    expect(getByRole('combobox', { name: 'Country' })).toHaveAccessibleDescription(
+      'Required for tax calculation. Choose the billing country.',
+    )
+  })
+
+  it('renders error in an alert region and marks the select invalid', () => {
+    const { getByRole } = render(
+      <Select label="Country" error="Select a country." options={options} />,
+    )
+    const select = getByRole('combobox', { name: 'Country' })
+
+    expect(getByRole('alert')).toHaveTextContent('Select a country.')
+    expect(select).toHaveAttribute('aria-invalid', 'true')
+    expect(select).toHaveAccessibleDescription('Select a country.')
+  })
+
   it('calls onChange when selection changes in controlled mode', async () => {
     const user = userEvent.setup()
     const onChange = vi.fn()
