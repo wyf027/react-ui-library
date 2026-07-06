@@ -1,4 +1,4 @@
-import { type HTMLAttributes, type ReactNode, type RefObject, useId } from 'react'
+import { type HTMLAttributes, type ReactNode, type RefObject, useEffect, useId } from 'react'
 
 import { DialogHeader } from '../../../../_internal/DialogHeader'
 import { cn } from '../../../../../utils/cn'
@@ -23,6 +23,14 @@ export function ModalDialog({
   dialogProps,
 }: ModalDialogProps) {
   const titleId = useId()
+
+  useEffect(() => {
+    const activeElement = document.activeElement as HTMLElement | null
+
+    if (!panelRef.current?.contains(activeElement)) {
+      closeButtonRef.current?.focus()
+    }
+  }, [closeButtonRef, panelRef])
 
   return (
     <div
