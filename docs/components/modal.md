@@ -28,4 +28,6 @@
 
 ## 可访问性
 
-`Modal` 使用 `role="dialog"` 和 `aria-modal="true"` 表示模态对话框。传入 `title` 时，标题会通过 `aria-labelledby` 关联到对话框面板。对话框打开期间页面主体会锁定滚动，避免背景内容跟随滚动；点击遮罩、点击关闭按钮或按 <kbd>Escape</kbd> 会触发 `onClose`。
+`Modal` 使用 `role="dialog"` 和 `aria-modal="true"` 表示模态对话框。传入 `title` 时，标题会通过 `aria-labelledby` 关联到对话框面板。对话框打开后会聚焦关闭按钮，按 <kbd>Tab</kbd> / <kbd>Shift</kbd> + <kbd>Tab</kbd> 会在对话框内循环焦点，关闭后会把焦点还给打开前的活动元素。
+
+对话框打开期间页面主体会锁定滚动，避免背景内容跟随滚动；点击遮罩、点击关闭按钮或按 <kbd>Escape</kbd> 会触发 `onClose`。
