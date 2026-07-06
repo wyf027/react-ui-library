@@ -27,6 +27,7 @@
 ## 可访问性
 
 - 表格使用原生 `<table>` / `<th scope="col">` / `<td>` 结构，保留浏览器和辅助技术默认表格语义。
+- 全局搜索输入会按表格标题输出可访问名称，例如 `Search 用户表`；没有标题时回退为 `Search table`。
 - 当前排序列会在表头上输出 `aria-sort`：升序为 `ascending`，降序为 `descending`。
 - 排序按钮包含明确的 `aria-label`，图标仅作装饰并通过 `aria-hidden` 隐藏。
 - 列过滤下拉框会按列名输出 `aria-label`，例如 `Filter Role`。
