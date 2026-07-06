@@ -38,12 +38,17 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
     disabled,
     id,
     slotClassNames,
+    'aria-describedby': ariaDescribedBy,
+    'aria-invalid': ariaInvalid,
     ...props
   },
   ref,
 ) {
   const generatedId = useId()
   const inputId = id ?? generatedId
+  const helperId = helperText && !error ? `${inputId}-helper` : undefined
+  const errorId = error ? `${inputId}-error` : undefined
+  const descriptionIds = [ariaDescribedBy, errorId ?? helperId].filter(Boolean).join(' ') || undefined
   const [innerValue, setInnerValue] = useControllableState<string>({
     value: typeof value === 'string' ? value : undefined,
     defaultValue: (defaultValue as string) ?? '',
@@ -95,6 +100,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
           id={inputId}
           value={mergedValue}
           disabled={disabled}
+          aria-describedby={descriptionIds}
+          aria-invalid={ariaInvalid ?? (error ? true : undefined)}
           className={cn(
             'nova-focus-ring w-full border-none bg-transparent text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none dark:text-slate-100',
             className,
@@ -107,11 +114,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
         ) : null}
       </div>
       {error ? (
-        <p role="alert" className="text-xs text-red-600">
+        <p id={errorId} role="alert" className="text-xs text-red-600">
           {error}
         </p>
       ) : helperText ? (
-        <p className="text-xs text-slate-500 dark:text-slate-400">{helperText}</p>
+        <p id={helperId} className="text-xs text-slate-500 dark:text-slate-400">
+          {helperText}
+        </p>
       ) : null}
     </div>
   )

@@ -30,9 +30,34 @@ describe('Input', () => {
     expect(typed).toBe('hi')
   })
 
-  it('renders error in an alert region', () => {
+  it('associates helper text with the input description', () => {
+    const { getByRole } = render(<Input label="Email" helperText="Use your work email." />)
+
+    expect(getByRole('textbox', { name: 'Email' })).toHaveAccessibleDescription(
+      'Use your work email.',
+    )
+  })
+
+  it('preserves custom descriptions when helper text is present', () => {
+    const { getByRole } = render(
+      <>
+        <span id="external-help">Required for invoices.</span>
+        <Input label="Email" helperText="Use your work email." aria-describedby="external-help" />
+      </>,
+    )
+
+    expect(getByRole('textbox', { name: 'Email' })).toHaveAccessibleDescription(
+      'Required for invoices. Use your work email.',
+    )
+  })
+
+  it('renders error in an alert region and marks the input invalid', () => {
     const { getByRole } = render(<Input error="Bad input" aria-label="Error field" />)
+    const input = getByRole('textbox', { name: 'Error field' })
+
     expect(getByRole('alert')).toHaveTextContent('Bad input')
+    expect(input).toHaveAttribute('aria-invalid', 'true')
+    expect(input).toHaveAccessibleDescription('Bad input')
   })
 
   it('renders prefix and suffix', () => {
