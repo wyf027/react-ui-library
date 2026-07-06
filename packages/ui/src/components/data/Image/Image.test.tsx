@@ -23,6 +23,19 @@ describe('Image', () => {
     expect(screen.queryByRole('dialog', { name: 'Mountain preview' })).not.toBeInTheDocument()
   })
 
+  it('closes the preview with an explicit close button', async () => {
+    const user = userEvent.setup()
+
+    render(<Image src="/photo.jpg" alt="Mountain" />)
+
+    await user.click(screen.getByRole('button', { name: 'Preview Mountain' }))
+    expect(screen.getByRole('dialog', { name: 'Mountain preview' })).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Close image preview' }))
+
+    expect(screen.queryByRole('dialog', { name: 'Mountain preview' })).not.toBeInTheDocument()
+  })
+
   it('uses a custom preview trigger label when provided', () => {
     render(<Image src="/photo.jpg" alt="Mountain" aria-label="Open large mountain photo" />)
 
