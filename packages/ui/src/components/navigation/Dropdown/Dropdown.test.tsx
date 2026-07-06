@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
@@ -16,12 +16,30 @@ describe('Dropdown', () => {
 
     render(<Dropdown trigger={<span>Open menu</span>} options={options} onChange={onChange} />)
 
-    await user.click(screen.getByRole('button', { name: /Open menu/i }))
+    const trigger = screen.getByRole('button', { name: /Open menu/i })
+
+    await user.click(trigger)
     expect(screen.getByRole('menu')).toBeInTheDocument()
 
     await user.click(screen.getByRole('menuitem', { name: 'Beta' }))
     expect(onChange).toHaveBeenCalledWith('b')
     expect(screen.queryByRole('menu')).not.toBeInTheDocument()
+    expect(trigger).toHaveFocus()
+  })
+
+  it('opens from the trigger with ArrowUp and focuses the last enabled item', async () => {
+    const user = userEvent.setup()
+
+    render(<Dropdown trigger={<span>Open menu</span>} options={options} />)
+
+    const trigger = screen.getByRole('button', { name: /Open menu/i })
+    trigger.focus()
+
+    await user.keyboard('{ArrowUp}')
+
+    expect(screen.getByRole('menu')).toBeInTheDocument()
+    expect(trigger).toHaveAttribute('aria-expanded', 'true')
+    await waitFor(() => expect(screen.getByRole('menuitem', { name: 'Beta' })).toHaveFocus())
   })
 
   it('closes with Escape from the trigger after click opening', async () => {
