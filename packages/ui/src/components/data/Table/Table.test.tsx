@@ -33,6 +33,39 @@ describe('Table', () => {
     expect(screen.queryByRole('cell', { name: 'apple' })).not.toBeInTheDocument()
   })
 
+  it('labels column filters and filters matching rows', async () => {
+    const user = userEvent.setup()
+    const dataSource = [
+      { name: 'Alice', role: 'Admin' },
+      { name: 'Bob', role: 'Editor' },
+    ] as Record<string, unknown>[]
+
+    render(
+      <Table
+        columns={[
+          { key: 'name', title: 'Name' },
+          {
+            key: 'role',
+            title: 'Role',
+            filters: [
+              { text: 'Admin', value: 'Admin' },
+              { text: 'Editor', value: 'Editor' },
+            ],
+          },
+        ]}
+        dataSource={dataSource}
+      />,
+    )
+
+    const filter = screen.getByRole('combobox', { name: 'Filter Role' })
+
+    await user.selectOptions(filter, 'Admin')
+
+    expect(filter).toHaveValue('Admin')
+    expect(screen.getByRole('cell', { name: 'Alice' })).toBeInTheDocument()
+    expect(screen.queryByRole('cell', { name: 'Bob' })).not.toBeInTheDocument()
+  })
+
   it('exposes aria-sort on sortable headers and updates it when sorted', async () => {
     const user = userEvent.setup()
     const dataSource = [{ name: 'Grace' }, { name: 'Ada' }] as Record<string, unknown>[]
