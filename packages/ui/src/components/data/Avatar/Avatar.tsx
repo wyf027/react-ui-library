@@ -11,16 +11,18 @@ export const Avatar = forwardRef<HTMLImageElement, AvatarProps>(function Avatar(
   ref,
 ) {
   const fallback = name?.trim().slice(0, 1).toUpperCase() ?? '?'
+  const fallbackLabel = alt ?? name
 
   if (!src) {
     return (
       <span
+        role={fallbackLabel ? 'img' : undefined}
+        aria-label={fallbackLabel || undefined}
         className={cn(
           'inline-flex items-center justify-center rounded-full bg-brand-500 text-sm font-semibold text-white',
           className,
         )}
         style={{ width: size, height: size }}
-        aria-label={name}
       >
         {fallback}
       </span>
