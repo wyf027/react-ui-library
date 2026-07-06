@@ -16,16 +16,31 @@ function hashValue(input: string): number {
 }
 
 export const QRCode = forwardRef<HTMLDivElement, QRCodeProps>(function QRCode(
-  { className, value, size = 128, ...props },
+  {
+    className,
+    value,
+    size = 128,
+    role = 'img',
+    'aria-label': ariaLabel,
+    'aria-labelledby': ariaLabelledBy,
+    ...props
+  },
   ref,
 ) {
   const matrixSize = 21
   const seed = hashValue(value)
+  const accessibleLabel = ariaLabelledBy ? ariaLabel : (ariaLabel ?? 'QR code')
 
   return (
     <div
       ref={ref}
-      className={cn('grid overflow-hidden rounded border border-slate-300 bg-white p-2 dark:border-slate-700', className)}
+      role={role}
+      aria-label={accessibleLabel}
+      aria-labelledby={ariaLabelledBy}
+      className={cn(
+        'grid overflow-hidden rounded border border-slate-300 bg-white p-2 dark:border-slate-700',
+        className,
+      )}
       style={{
         width: size,
         height: size,
@@ -35,7 +50,13 @@ export const QRCode = forwardRef<HTMLDivElement, QRCodeProps>(function QRCode(
     >
       {Array.from({ length: matrixSize * matrixSize }, (_, index) => {
         const fill = ((index * 31 + seed) % 7) < 3
-        return <span key={index} className={fill ? 'bg-slate-900' : 'bg-white'} />
+        return (
+          <span
+            key={index}
+            aria-hidden="true"
+            className={fill ? 'bg-slate-900' : 'bg-white'}
+          />
+        )
       })}
     </div>
   )
