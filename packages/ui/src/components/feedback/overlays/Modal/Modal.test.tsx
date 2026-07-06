@@ -1,4 +1,5 @@
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { Modal } from './Modal'
@@ -34,6 +35,34 @@ describe('Modal', () => {
     )
     expect(screen.getByText('Modal body')).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Hello' })).toBeInTheDocument()
+  })
+
+  it('keeps keyboard focus inside the dialog', async () => {
+    const user = userEvent.setup()
+
+    render(
+      <>
+        <button type="button">Background action</button>
+        <Modal open title="Focus trap">
+          <button type="button">Confirm</button>
+        </Modal>
+      </>,
+    )
+
+    const dialog = await waitFor(() => screen.getByRole('dialog', { name: 'Focus trap' }))
+    const closeButton = within(dialog).getByRole('button', { name: 'Close modal' })
+    const confirmButton = within(dialog).getByRole('button', { name: 'Confirm' })
+
+    await waitFor(() => expect(closeButton).toHaveFocus())
+
+    await user.tab()
+    expect(confirmButton).toHaveFocus()
+
+    await user.tab()
+    expect(closeButton).toHaveFocus()
+
+    await user.tab({ shift: true })
+    expect(confirmButton).toHaveFocus()
   })
 
   it('calls onClose when close button is clicked', async () => {
