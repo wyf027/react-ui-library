@@ -1,4 +1,4 @@
-import { forwardRef, type ButtonHTMLAttributes } from 'react'
+import { forwardRef, type ButtonHTMLAttributes, type MouseEvent } from 'react'
 import { cn } from '../../../../utils/cn'
 import { useControllableState } from '../../../../utils/useControllableState'
 
@@ -9,7 +9,7 @@ export interface SwitchProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement
 }
 
 export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(function Switch(
-  { className, checked, defaultChecked, onChange, disabled, ...props },
+  { className, checked, defaultChecked, onChange, onClick, disabled, ...props },
   ref,
 ) {
   const [innerChecked, setInnerChecked] = useControllableState<boolean>({
@@ -18,6 +18,13 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(function Switch
     onChange,
   })
 
+  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
+    onClick?.(event)
+    if (event.defaultPrevented || disabled) return
+
+    setInnerChecked(!innerChecked)
+  }
+
   return (
     <button
       ref={ref}
@@ -25,7 +32,7 @@ export const Switch = forwardRef<HTMLButtonElement, SwitchProps>(function Switch
       role="switch"
       aria-checked={innerChecked}
       disabled={disabled}
-      onClick={() => setInnerChecked(!innerChecked)}
+      onClick={handleClick}
       className={cn(
         'nova-focus-ring relative inline-flex h-6 w-11 items-center rounded-full transition',
         innerChecked ? 'bg-brand-500' : 'bg-slate-300 dark:bg-slate-600',
