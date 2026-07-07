@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 
-import { FloatButton } from './FloatButton'
+import { FloatButton } from '../../../index'
 
 describe('FloatButton', () => {
   it('uses tooltip as the accessible name for icon-only buttons', () => {
