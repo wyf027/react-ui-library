@@ -9,7 +9,9 @@ export interface BackTopProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   target?: () => BackTopTarget | null
 }
 
-const getScrollTop = (target: BackTopTarget) => (target === window ? window.scrollY : target.scrollTop)
+const isWindowTarget = (target: BackTopTarget): target is Window => target === window
+
+const getScrollTop = (target: BackTopTarget) => (isWindowTarget(target) ? target.scrollY : target.scrollTop)
 
 const scrollToTop = (target: BackTopTarget) => {
   target.scrollTo({ top: 0, behavior: 'smooth' })
