@@ -1,4 +1,4 @@
-import { forwardRef, type ButtonHTMLAttributes, useEffect, useState } from 'react'
+import { forwardRef, type ButtonHTMLAttributes, type MouseEvent, useEffect, useState } from 'react'
 import { cn } from '../../../utils/cn'
 
 export interface BackTopProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -6,7 +6,14 @@ export interface BackTopProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export const BackTop = forwardRef<HTMLButtonElement, BackTopProps>(function BackTop(
-  { className, visibilityHeight = 200, ...props },
+  {
+    className,
+    visibilityHeight = 200,
+    children = '↑ Top',
+    onClick,
+    'aria-label': ariaLabel = 'Back to top',
+    ...props
+  },
   ref,
 ) {
   const [visible, setVisible] = useState(false)
@@ -22,15 +29,25 @@ export const BackTop = forwardRef<HTMLButtonElement, BackTopProps>(function Back
 
   if (!visible) return null
 
+  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
+    onClick?.(event)
+    if (event.defaultPrevented) {
+      return
+    }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
   return (
     <button
       ref={ref}
       type="button"
-      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      onClick={handleClick}
+      aria-label={ariaLabel}
       className={cn('fixed bottom-6 right-6 rounded-full bg-brand-500 px-3 py-2 text-sm text-white shadow-lg', className)}
       {...props}
     >
-      ↑ Top
+      {children}
     </button>
   )
 })
