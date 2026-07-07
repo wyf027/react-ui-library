@@ -1,9 +1,10 @@
-import { act, render, screen } from '@testing-library/react'
+import { act, cleanup, render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { Toast } from './Toast'
 
 afterEach(() => {
+  cleanup()
   vi.useRealTimers()
 })
 
