@@ -28,7 +28,7 @@ describe('Popconfirm', () => {
     expect(trigger).toHaveAttribute('aria-controls', dialog.id)
   })
 
-  it('closes on Escape and reports the open state change', async () => {
+  it('closes on Escape, reports the open state change, and restores trigger focus', async () => {
     const user = userEvent.setup()
     const onOpenChange = vi.fn()
 
@@ -38,16 +38,23 @@ describe('Popconfirm', () => {
       </Popconfirm>,
     )
 
-    await user.click(screen.getByRole('button', { name: 'Archive' }))
-    expect(screen.getByRole('dialog', { name: 'Archive item' })).toBeInTheDocument()
+    const trigger = screen.getByRole('button', { name: 'Archive' })
+
+    await user.click(trigger)
+    const dialog = screen.getByRole('dialog', { name: 'Archive item' })
+    expect(dialog).toBeInTheDocument()
+
+    within(dialog).getByRole('button', { name: '取消' }).focus()
+    expect(within(dialog).getByRole('button', { name: '取消' })).toHaveFocus()
 
     fireEvent.keyDown(document, { key: 'Escape' })
 
     expect(screen.queryByRole('dialog', { name: 'Archive item' })).not.toBeInTheDocument()
     expect(onOpenChange).toHaveBeenLastCalledWith(false)
+    expect(trigger).toHaveFocus()
   })
 
-  it('calls confirm and cancel callbacks before closing', async () => {
+  it('calls confirm and cancel callbacks, closes, and restores trigger focus', async () => {
     const user = userEvent.setup()
     const onConfirm = vi.fn()
     const onCancel = vi.fn()
@@ -58,7 +65,9 @@ describe('Popconfirm', () => {
       </Popconfirm>,
     )
 
-    await user.click(screen.getByRole('button', { name: 'Publish' }))
+    const trigger = screen.getByRole('button', { name: 'Publish' })
+
+    await user.click(trigger)
     await user.click(
       within(screen.getByRole('dialog', { name: 'Publish changes' })).getByRole('button', {
         name: 'Keep editing',
@@ -67,8 +76,9 @@ describe('Popconfirm', () => {
 
     expect(onCancel).toHaveBeenCalledTimes(1)
     expect(screen.queryByRole('dialog', { name: 'Publish changes' })).not.toBeInTheDocument()
+    expect(trigger).toHaveFocus()
 
-    await user.click(screen.getByRole('button', { name: 'Publish' }))
+    await user.click(trigger)
     await user.click(
       within(screen.getByRole('dialog', { name: 'Publish changes' })).getByRole('button', {
         name: 'Publish',
@@ -77,5 +87,6 @@ describe('Popconfirm', () => {
 
     expect(onConfirm).toHaveBeenCalledTimes(1)
     expect(screen.queryByRole('dialog', { name: 'Publish changes' })).not.toBeInTheDocument()
+    expect(trigger).toHaveFocus()
   })
 })
