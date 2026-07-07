@@ -34,7 +34,22 @@ describe('Alert', () => {
     await user.click(screen.getByRole('button', { name: 'Close alert' }))
 
     expect(onClose).toHaveBeenCalledTimes(1)
+    expect(onClose.mock.calls[0]?.[0]).toHaveProperty('type', 'click')
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+  })
+
+  it('supports custom close icon and accessible name', () => {
+    render(
+      <Alert
+        closable
+        message="Dismiss me"
+        closeIcon={<span>Dismiss</span>}
+        closeAriaLabel="Dismiss alert"
+      />,
+    )
+
+    const closeButton = screen.getByRole('button', { name: 'Dismiss alert' })
+    expect(closeButton).toHaveTextContent('Dismiss')
   })
 
   it('renders an optional action area', () => {

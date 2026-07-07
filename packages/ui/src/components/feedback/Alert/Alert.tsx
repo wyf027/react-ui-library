@@ -1,4 +1,4 @@
-import { forwardRef, useState, type HTMLAttributes, type ReactNode } from 'react'
+import { forwardRef, useState, type HTMLAttributes, type MouseEvent, type ReactNode } from 'react'
 
 import { cn } from '../../../utils/cn'
 import { alertTypeSurfaceClass, type AlertType } from '../../../theme/componentTokens'
@@ -10,9 +10,11 @@ export interface AlertProps extends HTMLAttributes<HTMLDivElement> {
   closable?: boolean
   showIcon?: boolean
   icon?: ReactNode
-  onClose?: () => void
+  onClose?: (event: MouseEvent<HTMLButtonElement>) => void
   banner?: boolean
   action?: ReactNode
+  closeIcon?: ReactNode
+  closeAriaLabel?: string
 }
 
 const typeIconMap: Record<AlertType, string> = {
@@ -34,6 +36,8 @@ export const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
     onClose,
     banner = false,
     action,
+    closeIcon = '✕',
+    closeAriaLabel = 'Close alert',
     ...props
   },
   ref,
@@ -67,14 +71,14 @@ export const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
       {closable ? (
         <button
           type="button"
-          onClick={() => {
+          onClick={(event) => {
             setVisible(false)
-            onClose?.()
+            onClose?.(event)
           }}
-          className="shrink-0 rounded px-1 opacity-60 hover:opacity-100"
-          aria-label="Close alert"
+          className="shrink-0 rounded px-1 opacity-60 hover:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
+          aria-label={closeAriaLabel}
         >
-          ✕
+          {closeIcon}
         </button>
       ) : null}
     </div>
