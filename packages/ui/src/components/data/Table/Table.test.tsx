@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
 import { Table } from './Table'
 
@@ -97,5 +97,29 @@ describe('Table', () => {
 
     expect(header).toHaveAttribute('aria-sort', 'descending')
     expect(screen.getAllByRole('cell').map((cell) => cell.textContent)).toEqual(['Grace', 'Ada'])
+  })
+
+  it('labels internal pagination controls and reports the current page', async () => {
+    const user = userEvent.setup()
+    const onChange = vi.fn()
+    const dataSource = [{ name: 'Ada' }, { name: 'Grace' }] as Record<string, unknown>[]
+
+    render(
+      <Table
+        columns={columns}
+        dataSource={dataSource}
+        title="Users"
+        pagination={{ current: 2, pageSize: 1, total: 3, onChange }}
+      />,
+    )
+
+    const pagination = screen.getByRole('navigation', { name: 'Users pagination' })
+    expect(within(pagination).getByText('Page 2 / 3')).toHaveAttribute('aria-live', 'polite')
+
+    await user.click(within(pagination).getByRole('button', { name: 'Previous table page' }))
+    expect(onChange).toHaveBeenCalledWith(1, 1)
+
+    await user.click(within(pagination).getByRole('button', { name: 'Next table page' }))
+    expect(onChange).toHaveBeenCalledWith(3, 1)
   })
 })

@@ -129,6 +129,7 @@ export const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unkn
     const colSpan = visibleColumns.length
     const tableTitle = typeof title === 'string' || typeof title === 'number' ? String(title) : ''
     const searchAriaLabel = tableTitle ? `Search ${tableTitle}` : 'Search table'
+    const paginationAriaLabel = tableTitle ? `${tableTitle} pagination` : 'Table pagination'
 
     return (
       <div className="space-y-2">
@@ -292,14 +293,15 @@ export const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unkn
           </table>
         </div>
         {pagination ? (
-          <div className={tablePaginationWrap}>
-            <span>
+          <nav className={tablePaginationWrap} aria-label={paginationAriaLabel}>
+            <span aria-live="polite">
               Page {pagination.current} / {totalPages}
             </span>
             <button
               type="button"
               disabled={!canGoPrev}
               onClick={() => pagination.onChange(pagination.current - 1, pagination.pageSize)}
+              aria-label="Previous table page"
               className={tablePaginationBtn}
             >
               Prev
@@ -308,11 +310,12 @@ export const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unkn
               type="button"
               disabled={!canGoNext}
               onClick={() => pagination.onChange(pagination.current + 1, pagination.pageSize)}
+              aria-label="Next table page"
               className={tablePaginationBtn}
             >
               Next
             </button>
-          </div>
+          </nav>
         ) : null}
       </div>
     )
