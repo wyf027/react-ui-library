@@ -17,6 +17,30 @@ describe('Toast', () => {
     expect(toast).toHaveTextContent('Saved successfully')
   })
 
+  it('renders error updates as alert regions', () => {
+    render(
+      <Toast open status="error">
+        Save failed
+      </Toast>,
+    )
+
+    const toast = screen.getByRole('alert')
+    expect(toast).not.toHaveAttribute('aria-live')
+    expect(toast).toHaveTextContent('Save failed')
+  })
+
+  it('allows callers to override live region urgency', () => {
+    render(
+      <Toast open status="warning" role="alert" aria-live="assertive">
+        Session expiring
+      </Toast>,
+    )
+
+    const toast = screen.getByRole('alert')
+    expect(toast).toHaveAttribute('aria-live', 'assertive')
+    expect(toast).toHaveTextContent('Session expiring')
+  })
+
   it('uses a 3000ms default auto-close duration', () => {
     vi.useFakeTimers()
     const onClose = vi.fn()
