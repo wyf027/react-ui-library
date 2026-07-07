@@ -9,11 +9,11 @@ export interface ToastProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export const Toast = forwardRef<HTMLDivElement, ToastProps>(function Toast(
-  { className, open = false, duration = 2500, onClose, status = 'info', children, ...props },
+  { className, open = false, duration = 3000, onClose, status = 'info', children, ...props },
   ref,
 ) {
   useEffect(() => {
-    if (!open) {
+    if (!open || duration <= 0) {
       return
     }
     const timer = window.setTimeout(() => onClose?.(), duration)
