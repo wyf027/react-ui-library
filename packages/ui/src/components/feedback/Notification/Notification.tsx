@@ -1,4 +1,4 @@
-import { forwardRef, type HTMLAttributes } from 'react'
+import { forwardRef, useCallback, useEffect, useState, type HTMLAttributes } from 'react'
 import { cn } from '../../../utils/cn'
 
 export interface NotificationProps extends HTMLAttributes<HTMLDivElement> {
@@ -6,6 +6,7 @@ export interface NotificationProps extends HTMLAttributes<HTMLDivElement> {
   title?: string
   description?: string
   open?: boolean
+  duration?: number
   onClose?: () => void
 }
 
@@ -15,13 +16,35 @@ export const Notification = forwardRef<HTMLDivElement, NotificationProps>(functi
     type = 'info',
     title = 'Notification',
     description,
-    open = true,
+    open,
+    duration = 0,
     onClose,
     ...props
   },
   ref,
 ) {
-  if (!open) return null
+  const [visible, setVisible] = useState(true)
+  const mergedOpen = open ?? visible
+
+  const handleClose = useCallback(() => {
+    if (open === undefined) {
+      setVisible(false)
+    }
+    onClose?.()
+  }, [onClose, open])
+
+  useEffect(() => {
+    if (!mergedOpen || duration <= 0) {
+      return
+    }
+
+    const timer = window.setTimeout(handleClose, duration)
+    return () => {
+      window.clearTimeout(timer)
+    }
+  }, [duration, handleClose, mergedOpen])
+
+  if (!mergedOpen) return null
 
   return (
     <div
@@ -44,7 +67,12 @@ export const Notification = forwardRef<HTMLDivElement, NotificationProps>(functi
           <p className="text-sm font-semibold">{title}</p>
           {description ? <p className="mt-1 text-sm opacity-90">{description}</p> : null}
         </div>
-        <button type="button" onClick={onClose} className="rounded px-1 text-sm opacity-70 hover:opacity-100" aria-label="Close notification">
+        <button
+          type="button"
+          onClick={handleClose}
+          className="rounded px-1 text-sm opacity-70 hover:opacity-100"
+          aria-label="Close notification"
+        >
           ✕
         </button>
       </div>
