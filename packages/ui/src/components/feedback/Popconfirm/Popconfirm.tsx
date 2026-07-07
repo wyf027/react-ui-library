@@ -45,6 +45,7 @@ export const Popconfirm = forwardRef<HTMLDivElement, PopconfirmProps>(function P
   const [internalOpen, setInternalOpen] = useState(defaultOpen)
   const isOpen = controlledOpen ?? internalOpen
   const wrapperRef = useRef<HTMLDivElement>(null)
+  const triggerRef = useRef<HTMLDivElement>(null)
   const popupId = useId()
   const titleId = useId()
   const descriptionId = useId()
@@ -57,6 +58,18 @@ export const Popconfirm = forwardRef<HTMLDivElement, PopconfirmProps>(function P
     [onOpenChange],
   )
 
+  const focusTrigger = useCallback(() => {
+    const triggerElement = triggerRef.current?.querySelector<HTMLElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+    )
+    triggerElement?.focus()
+  }, [])
+
+  const closeAndFocusTrigger = useCallback(() => {
+    setOpen(false)
+    focusTrigger()
+  }, [focusTrigger, setOpen])
+
   useEffect(() => {
     if (!isOpen) return
 
@@ -68,7 +81,7 @@ export const Popconfirm = forwardRef<HTMLDivElement, PopconfirmProps>(function P
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        setOpen(false)
+        closeAndFocusTrigger()
       }
     }
 
@@ -78,7 +91,7 @@ export const Popconfirm = forwardRef<HTMLDivElement, PopconfirmProps>(function P
       document.removeEventListener('mousedown', handlePointerDown)
       document.removeEventListener('keydown', handleKeyDown)
     }
-  }, [isOpen, setOpen])
+  }, [closeAndFocusTrigger, isOpen, setOpen])
 
   const trigger = cloneElement(children, {
     'aria-controls': isOpen ? popupId : undefined,
@@ -88,7 +101,9 @@ export const Popconfirm = forwardRef<HTMLDivElement, PopconfirmProps>(function P
 
   return (
     <div ref={wrapperRef} className={cn('relative inline-block', className)} {...props}>
-      <div onClick={() => setOpen(!isOpen)}>{trigger}</div>
+      <div ref={triggerRef} onClick={() => setOpen(!isOpen)}>
+        {trigger}
+      </div>
       {isOpen ? (
         <div
           ref={ref}
@@ -118,7 +133,7 @@ export const Popconfirm = forwardRef<HTMLDivElement, PopconfirmProps>(function P
               type="button"
               className="rounded border border-slate-300 px-3 py-1 text-xs text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700"
               onClick={() => {
-                setOpen(false)
+                closeAndFocusTrigger()
                 onCancel?.()
               }}
             >
@@ -128,7 +143,7 @@ export const Popconfirm = forwardRef<HTMLDivElement, PopconfirmProps>(function P
               type="button"
               className="rounded bg-brand-500 px-3 py-1 text-xs text-white hover:bg-brand-600"
               onClick={() => {
-                setOpen(false)
+                closeAndFocusTrigger()
                 onConfirm?.()
               }}
             >
