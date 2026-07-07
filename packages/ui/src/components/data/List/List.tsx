@@ -54,7 +54,7 @@ export const List = forwardRef<HTMLDivElement, ListProps>(function List(
   return (
     <div
       ref={ref}
-      aria-busy={ariaBusy ?? (loading ? true : undefined)}
+      aria-busy={loading ? true : ariaBusy || undefined}
       className={cn(bordered && 'rounded-lg border border-slate-200 dark:border-slate-700', className)}
       {...props}
     >
