@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { BackTop } from './BackTop'
@@ -8,7 +8,9 @@ const setScrollY = (value: number) => {
     configurable: true,
     value,
   })
-  window.dispatchEvent(new Event('scroll'))
+  act(() => {
+    window.dispatchEvent(new Event('scroll'))
+  })
 }
 
 beforeEach(() => {
