@@ -13,6 +13,13 @@ const setScrollY = (value: number) => {
   })
 }
 
+const setTargetScrollTop = (target: HTMLElement, value: number) => {
+  target.scrollTop = value
+  act(() => {
+    target.dispatchEvent(new Event('scroll'))
+  })
+}
+
 beforeEach(() => {
   Object.defineProperty(window, 'scrollTo', {
     configurable: true,
@@ -46,6 +53,25 @@ describe('BackTop', () => {
 
     expect(onClick).toHaveBeenCalledTimes(1)
     expect(window.scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' })
+  })
+
+  it('uses a custom scroll target for visibility and scrolling', () => {
+    const scrollTarget = document.createElement('div')
+    const scrollTo = vi.fn()
+    Object.defineProperty(scrollTarget, 'scrollTo', {
+      configurable: true,
+      value: scrollTo,
+    })
+
+    render(<BackTop visibilityHeight={100} target={() => scrollTarget} />)
+
+    expect(screen.queryByRole('button')).not.toBeInTheDocument()
+
+    setTargetScrollTop(scrollTarget, 101)
+    fireEvent.click(screen.getByRole('button', { name: 'Back to top' }))
+
+    expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' })
+    expect(window.scrollTo).not.toHaveBeenCalled()
   })
 
   it('lets callers prevent the default scroll behavior', () => {
