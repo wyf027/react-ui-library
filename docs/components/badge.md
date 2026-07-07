@@ -7,11 +7,11 @@
 <LivePlayground :code="`
 () => {
   return (
-    <Space size={16}>
-      <Badge count={5}><Avatar name='U' /></Badge>
-      <Badge dot><Avatar name='V' /></Badge>
-      <Badge count={99}><Avatar name='W' /></Badge>
-    </Space>
+    <div className='flex flex-wrap items-center gap-4 rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900'>
+      <Badge count={5} badgeLabel='5 条未读消息'><Avatar name='U' /></Badge>
+      <Badge dot badgeLabel='有新的状态更新'><Avatar name='V' /></Badge>
+      <Badge count={99} badgeLabel='99 条通知'><Avatar name='W' /></Badge>
+    </div>
   )
 }
 `" />
@@ -21,15 +21,19 @@
 <LivePlayground :code="`
 () => {
   return (
-    <Space size={24}>
-      <Badge count={120} overflowCount={99}><Avatar name='A' /></Badge>
-      <Badge count={0} showZero><Avatar name='B' /></Badge>
-      <Badge dot status='success'><Avatar name='C' /></Badge>
-      <Badge count='new'><Avatar name='D' /></Badge>
-    </Space>
+    <div className='flex flex-wrap items-center gap-6 rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900'>
+      <Badge count={120} overflowCount={99} badgeLabel='99 条以上未读消息'><Avatar name='A' /></Badge>
+      <Badge count={0} showZero badgeLabel='0 条待处理事项'><Avatar name='B' /></Badge>
+      <Badge dot status='success' badgeLabel='在线'><Avatar name='C' /></Badge>
+      <Badge count='new' badgeLabel='新内容'><Avatar name='D' /></Badge>
+    </div>
   )
 }
 `" />
+
+## 可访问性
+
+`Badge` 的数字和圆点本身只是视觉提示，建议用 `badgeLabel` 为业务语境补充可访问名称，例如“5 条未读消息”或“在线”。当 `dot` 没有提供 `badgeLabel` 时，圆点会被标记为装饰性内容，避免辅助技术读出没有语义的空状态。
 
 ## API
 
@@ -42,3 +46,4 @@
 | status        | 状态色（作用于圆点或数字徽标背景）                                      | `'default' \| 'success' \| 'processing' \| 'error' \| 'warning'` | -       |
 | offset        | 相对默认位置的偏移 `[x, y]`（px）                                       | `[number, number]`                                               | -       |
 | color         | 自定义背景色                                                            | `string`                                                         | -       |
+| badgeLabel    | 徽标可访问名称，用于说明数字或圆点的业务含义                            | `string`                                                         | -       |
