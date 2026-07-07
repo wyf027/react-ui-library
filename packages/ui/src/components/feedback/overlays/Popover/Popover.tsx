@@ -3,7 +3,10 @@ import {
   type HTMLAttributes,
   type KeyboardEvent,
   type ReactNode,
+  useCallback,
+  useEffect,
   useId,
+  useImperativeHandle,
   useRef,
   useState,
 } from 'react'
@@ -34,20 +37,26 @@ export const Popover = forwardRef<HTMLDivElement, PopoverProps>(function Popover
   ref,
 ) {
   const [innerOpen, setInnerOpen] = useState(defaultOpen)
+  const rootRef = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
   const popoverId = useId()
   const open = controlledOpen ?? innerOpen
 
-  const setOpen = (next: boolean) => {
-    if (controlledOpen === undefined) {
-      setInnerOpen(next)
-    }
-    if (next) {
-      onOpen?.()
-    } else {
-      onClose?.()
-    }
-  }
+  useImperativeHandle(ref, () => rootRef.current as HTMLDivElement, [])
+
+  const setOpen = useCallback(
+    (next: boolean) => {
+      if (controlledOpen === undefined) {
+        setInnerOpen(next)
+      }
+      if (next) {
+        onOpen?.()
+      } else {
+        onClose?.()
+      }
+    },
+    [controlledOpen, onClose, onOpen],
+  )
 
   const handleToggle = () => {
     setOpen(!open)
@@ -68,9 +77,26 @@ export const Popover = forwardRef<HTMLDivElement, PopoverProps>(function Popover
     triggerRef.current?.focus()
   }
 
+  useEffect(() => {
+    if (!open) {
+      return
+    }
+
+    const handlePointerDown = (event: MouseEvent) => {
+      if (rootRef.current && !rootRef.current.contains(event.target as Node)) {
+        setOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handlePointerDown)
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown)
+    }
+  }, [open, setOpen])
+
   return (
     <div
-      ref={ref}
+      ref={rootRef}
       className={cn('relative inline-flex', className)}
       onKeyDown={handleKeyDown}
       {...props}
