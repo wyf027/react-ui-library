@@ -3,6 +3,7 @@ import {
   type ForwardedRef,
   type HTMLAttributes,
   type KeyboardEvent,
+  type MutableRefObject,
   type ReactNode,
   useCallback,
   useEffect,
@@ -28,7 +29,7 @@ function assignForwardedRef<T>(ref: ForwardedRef<T>, value: T | null) {
   }
 
   if (ref) {
-    ref.current = value
+    ;(ref as MutableRefObject<T | null>).current = value
   }
 }
 
