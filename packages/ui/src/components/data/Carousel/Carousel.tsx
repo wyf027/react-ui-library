@@ -3,8 +3,10 @@ import {
   useState,
   useEffect,
   useCallback,
+  type FocusEvent,
   type HTMLAttributes,
   type KeyboardEvent,
+  type MouseEvent,
   type ReactNode,
 } from 'react'
 import { cn } from '../../../utils/cn'
@@ -23,6 +25,10 @@ function isTextEditingTarget(target: EventTarget | null) {
     : false
 }
 
+function isRotationControlTarget(target: EventTarget | null) {
+  return target instanceof HTMLElement ? Boolean(target.closest('[data-carousel-rotation-control]')) : false
+}
+
 export const Carousel = forwardRef<HTMLDivElement, CarouselProps>(function Carousel(
   {
     className,
@@ -31,7 +37,10 @@ export const Carousel = forwardRef<HTMLDivElement, CarouselProps>(function Carou
     autoplaySpeed = 3000,
     dots = true,
     arrows = true,
+    onFocusCapture,
     onKeyDown,
+    onMouseEnter,
+    onMouseLeave,
     role = 'region',
     tabIndex = 0,
     'aria-label': ariaLabel,
@@ -42,7 +51,11 @@ export const Carousel = forwardRef<HTMLDivElement, CarouselProps>(function Carou
   ref,
 ) {
   const [current, setCurrent] = useState(0)
+  const [rotationPaused, setRotationPaused] = useState(false)
+  const [pointerInside, setPointerInside] = useState(false)
   const count = items.length
+  const rotationEnabled = autoplay && count > 1
+  const rotationRunning = rotationEnabled && !rotationPaused && !pointerInside
   const resolvedAriaLabel = ariaLabel ?? (ariaLabelledBy ? undefined : 'Slides')
 
   const goTo = useCallback(
@@ -51,6 +64,36 @@ export const Carousel = forwardRef<HTMLDivElement, CarouselProps>(function Carou
       setCurrent(((index % count) + count) % count)
     },
     [count],
+  )
+
+  const handleFocusCapture = useCallback(
+    (event: FocusEvent<HTMLDivElement>) => {
+      onFocusCapture?.(event)
+      if (!event.defaultPrevented && rotationEnabled && !isRotationControlTarget(event.target)) {
+        setRotationPaused(true)
+      }
+    },
+    [onFocusCapture, rotationEnabled],
+  )
+
+  const handleMouseEnter = useCallback(
+    (event: MouseEvent<HTMLDivElement>) => {
+      onMouseEnter?.(event)
+      if (!event.defaultPrevented && rotationEnabled) {
+        setPointerInside(true)
+      }
+    },
+    [onMouseEnter, rotationEnabled],
+  )
+
+  const handleMouseLeave = useCallback(
+    (event: MouseEvent<HTMLDivElement>) => {
+      onMouseLeave?.(event)
+      if (!event.defaultPrevented) {
+        setPointerInside(false)
+      }
+    },
+    [onMouseLeave],
   )
 
   const handleKeyDown = useCallback(
@@ -76,10 +119,10 @@ export const Carousel = forwardRef<HTMLDivElement, CarouselProps>(function Carou
   )
 
   useEffect(() => {
-    if (!autoplay || count <= 1) return
+    if (!rotationRunning) return
     const timer = setInterval(() => goTo(current + 1), autoplaySpeed)
     return () => clearInterval(timer)
-  }, [autoplay, autoplaySpeed, current, count, goTo])
+  }, [rotationRunning, autoplaySpeed, current, goTo])
 
   return (
     <div
@@ -89,13 +132,27 @@ export const Carousel = forwardRef<HTMLDivElement, CarouselProps>(function Carou
       aria-labelledby={ariaLabelledBy}
       aria-roledescription={ariaRoleDescription}
       tabIndex={tabIndex}
+      onFocusCapture={handleFocusCapture}
       onKeyDown={handleKeyDown}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       className={cn('relative overflow-hidden rounded-lg', className)}
       {...props}
     >
-      <span className="sr-only" aria-live={autoplay ? 'off' : 'polite'} aria-atomic="true">
+      <span className="sr-only" aria-live={rotationRunning ? 'off' : 'polite'} aria-atomic="true">
         {count > 0 ? `Slide ${current + 1} of ${count}` : 'No slides'}
       </span>
+      {rotationEnabled ? (
+        <button
+          type="button"
+          data-carousel-rotation-control="true"
+          onClick={() => setRotationPaused((paused) => !paused)}
+          className="nova-focus-ring absolute left-2 top-2 z-10 rounded bg-black/40 px-3 py-1 text-xs font-medium text-white hover:bg-black/60"
+          aria-label={rotationPaused ? 'Start slide rotation' : 'Stop slide rotation'}
+        >
+          {rotationPaused ? 'Start' : 'Stop'}
+        </button>
+      ) : null}
       <div
         className="flex transition-transform duration-500 ease-in-out"
         style={{ transform: `translateX(-${current * 100}%)` }}

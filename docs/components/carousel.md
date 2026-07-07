@@ -9,6 +9,8 @@
   return (
     <Carousel
       aria-label='Featured product stories'
+      autoplay
+      autoplaySpeed={4000}
       items={[
         <div className='rounded-lg bg-blue-500 px-6 py-10 text-center text-lg font-semibold text-white'>Slide 1</div>,
         <div className='rounded-lg bg-emerald-500 px-6 py-10 text-center text-lg font-semibold text-white'>Slide 2</div>,
@@ -23,7 +25,8 @@
 
 - 根节点默认使用 `role="region"` 和 `aria-roledescription="carousel"`，可通过 `aria-label` 为页面中的多个轮播提供清晰名称。
 - 每个 slide 会暴露为 `role="group"`，并使用 `1 of 3` 这类位置标签帮助读屏用户理解当前位置。
-- 非自动播放时，当前 slide 位置会通过 `aria-live="polite"` 轻量播报；启用 `autoplay` 时会切换为 `aria-live="off"`，避免连续轮播打断读屏。
+- 非自动播放时，当前 slide 位置会通过 `aria-live="polite"` 轻量播报；自动轮播运行中会切换为 `aria-live="off"`，避免连续轮播打断读屏。
+- 启用 `autoplay` 且存在多个 slide 时，轮播会提供 Stop/Start 控制按钮。焦点进入轮播控制区会停止自动轮播；鼠标悬停时会临时暂停，移出后如果用户未显式停止则继续轮播。
 - 指示点会用 `aria-current="true"` 标记当前项；当轮播或其控制按钮获得焦点时，支持 `ArrowLeft`、`ArrowRight`、`Home`、`End` 切换。
 
 ## API
