@@ -16,6 +16,27 @@ describe('Switch', () => {
     expect(sw).toHaveAttribute('aria-checked', 'true')
   })
 
+  it('renders state content without using it as the accessible name', async () => {
+    const user = userEvent.setup()
+
+    render(
+      <Switch
+        aria-label="Billing cycle"
+        checkedChildren="Yearly"
+        unCheckedChildren="Monthly"
+      />,
+    )
+
+    const sw = screen.getByRole('switch', { name: 'Billing cycle' })
+    expect(screen.queryByRole('switch', { name: 'Monthly' })).not.toBeInTheDocument()
+    expect(sw).toHaveTextContent('Monthly')
+
+    await user.click(sw)
+
+    expect(sw).toHaveAttribute('aria-checked', 'true')
+    expect(sw).toHaveTextContent('Yearly')
+  })
+
   it('calls onClick without replacing toggle behavior', async () => {
     const user = userEvent.setup()
     const onClick = vi.fn()
