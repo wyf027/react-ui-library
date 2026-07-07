@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 
@@ -65,6 +65,44 @@ describe('Carousel', () => {
   it('does not announce automatic slide changes as live updates', () => {
     render(<Carousel items={items} aria-label="Gallery" autoplay />)
 
+    expect(screen.getByText('Slide 1 of 3')).toHaveAttribute('aria-live', 'off')
+  })
+
+  it('lets users stop automatic slide rotation', async () => {
+    const user = userEvent.setup()
+    render(<Carousel items={items} aria-label="Gallery" autoplay />)
+
+    const stopButton = screen.getByRole('button', { name: 'Stop slide rotation' })
+    expect(stopButton).toHaveTextContent('Stop')
+    expect(screen.getByText('Slide 1 of 3')).toHaveAttribute('aria-live', 'off')
+
+    await user.click(stopButton)
+
+    expect(screen.getByRole('button', { name: 'Start slide rotation' })).toHaveTextContent('Start')
+    expect(screen.getByText('Slide 1 of 3')).toHaveAttribute('aria-live', 'polite')
+  })
+
+  it('stops automatic rotation when focus enters slide controls', async () => {
+    render(<Carousel items={items} aria-label="Gallery" autoplay />)
+
+    screen.getByRole('button', { name: 'Next slide' }).focus()
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Start slide rotation' })).toBeInTheDocument()
+    })
+    expect(screen.getByText('Slide 1 of 3')).toHaveAttribute('aria-live', 'polite')
+  })
+
+  it('pauses automatic rotation while the pointer is over the carousel', async () => {
+    const user = userEvent.setup()
+    render(<Carousel items={items} aria-label="Gallery" autoplay />)
+
+    const carousel = screen.getByRole('region', { name: 'Gallery' })
+
+    await user.hover(carousel)
+    expect(screen.getByText('Slide 1 of 3')).toHaveAttribute('aria-live', 'polite')
+
+    await user.unhover(carousel)
     expect(screen.getByText('Slide 1 of 3')).toHaveAttribute('aria-live', 'off')
   })
 })
