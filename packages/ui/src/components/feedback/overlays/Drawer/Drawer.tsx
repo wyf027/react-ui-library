@@ -1,4 +1,4 @@
-import { forwardRef, type HTMLAttributes, useId, useLayoutEffect, useRef } from 'react'
+import { forwardRef, type HTMLAttributes, useEffect, useId, useLayoutEffect, useRef } from 'react'
 
 import { DialogHeader } from '../../../_internal/DialogHeader'
 import { useEscapeKey } from '../../../../hooks/useEscapeKey'
@@ -14,6 +14,15 @@ export interface DrawerProps extends HTMLAttributes<HTMLDivElement> {
   placement?: DrawerPlacement
   title?: string
 }
+
+const FOCUSABLE_SELECTOR = [
+  'a[href]',
+  'button:not([disabled])',
+  'input:not([disabled])',
+  'select:not([disabled])',
+  'textarea:not([disabled])',
+  '[tabindex]:not([tabindex="-1"])',
+].join(',')
 
 const placementClassName: Record<DrawerPlacement, string> = {
   left: 'left-0 top-0 h-full w-80',
@@ -44,6 +53,52 @@ export const Drawer = forwardRef<HTMLDivElement, DrawerProps>(function Drawer(
     return () => {
       lastActiveElementRef.current?.focus()
     }
+  }, [open])
+
+  useEffect(() => {
+    if (!open) {
+      return
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Tab') {
+        return
+      }
+
+      const drawer = closeButtonRef.current?.closest<HTMLElement>('[role="dialog"]')
+      if (!drawer) {
+        return
+      }
+
+      const focusableElements = Array.from(
+        drawer.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR),
+      ).filter((element) => element.getAttribute('aria-hidden') !== 'true')
+
+      if (focusableElements.length === 0) {
+        event.preventDefault()
+        return
+      }
+
+      const firstElement = focusableElements[0]
+      const lastElement = focusableElements[focusableElements.length - 1]
+      const activeElement = document.activeElement as HTMLElement | null
+
+      if (event.shiftKey) {
+        if (activeElement === firstElement || !drawer.contains(activeElement)) {
+          event.preventDefault()
+          lastElement.focus()
+        }
+        return
+      }
+
+      if (activeElement === lastElement || !drawer.contains(activeElement)) {
+        event.preventDefault()
+        firstElement.focus()
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
   }, [open])
 
   if (!open) {
