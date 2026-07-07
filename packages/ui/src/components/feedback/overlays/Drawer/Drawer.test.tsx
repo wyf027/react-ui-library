@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useState } from 'react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
@@ -38,6 +38,34 @@ describe('Drawer', () => {
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Close drawer' })).toHaveFocus()
     })
+  })
+
+  it('keeps keyboard focus inside the drawer', async () => {
+    const user = userEvent.setup()
+
+    render(
+      <>
+        <button type="button">Background action</button>
+        <Drawer open title="Focus drawer">
+          <button type="button">Drawer action</button>
+        </Drawer>
+      </>,
+    )
+
+    const dialog = await waitFor(() => screen.getByRole('dialog', { name: 'Focus drawer' }))
+    const closeButton = within(dialog).getByRole('button', { name: 'Close drawer' })
+    const actionButton = within(dialog).getByRole('button', { name: 'Drawer action' })
+
+    await waitFor(() => expect(closeButton).toHaveFocus())
+
+    await user.tab()
+    expect(actionButton).toHaveFocus()
+
+    await user.tab()
+    expect(closeButton).toHaveFocus()
+
+    await user.tab({ shift: true })
+    expect(actionButton).toHaveFocus()
   })
 
   it('calls onClose when close button is clicked', async () => {
