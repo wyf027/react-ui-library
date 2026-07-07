@@ -10,13 +10,31 @@ afterEach(() => {
 })
 
 describe('Notification', () => {
-  it('renders an alert region with title and description', () => {
+  it('renders non-error notifications as polite status regions', () => {
     render(<Notification title="Published" description="The package is live." />)
 
-    const notification = screen.getByRole('alert')
+    const notification = screen.getByRole('status')
+    expect(notification).toHaveAttribute('aria-live', 'polite')
     expect(notification).toHaveTextContent('Published')
     expect(notification).toHaveTextContent('The package is live.')
     expect(screen.getByRole('button', { name: 'Close notification' })).toBeInTheDocument()
+  })
+
+  it('renders error notifications as alert regions', () => {
+    render(<Notification type="error" title="Failed" description="Check the build logs." />)
+
+    const notification = screen.getByRole('alert')
+    expect(notification).not.toHaveAttribute('aria-live')
+    expect(notification).toHaveTextContent('Failed')
+    expect(notification).toHaveTextContent('Check the build logs.')
+  })
+
+  it('allows callers to override live region urgency', () => {
+    render(<Notification type="warning" title="Session expiring" role="alert" aria-live="assertive" />)
+
+    const notification = screen.getByRole('alert')
+    expect(notification).toHaveAttribute('aria-live', 'assertive')
+    expect(notification).toHaveTextContent('Session expiring')
   })
 
   it('hides when the close button is clicked in uncontrolled mode', async () => {
@@ -28,7 +46,7 @@ describe('Notification', () => {
     await user.click(screen.getByRole('button', { name: 'Close notification' }))
 
     expect(onClose).toHaveBeenCalledTimes(1)
-    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+    expect(screen.queryByRole('status')).not.toBeInTheDocument()
   })
 
   it('keeps controlled notifications open until open changes', async () => {
@@ -40,7 +58,7 @@ describe('Notification', () => {
     await user.click(screen.getByRole('button', { name: 'Close notification' }))
 
     expect(onClose).toHaveBeenCalledTimes(1)
-    expect(screen.getByRole('alert')).toHaveTextContent('Controlled')
+    expect(screen.getByRole('status')).toHaveTextContent('Controlled')
   })
 
   it('auto-closes uncontrolled notifications after duration', () => {
@@ -52,14 +70,14 @@ describe('Notification', () => {
     act(() => {
       vi.advanceTimersByTime(4499)
     })
-    expect(screen.getByRole('alert')).toBeInTheDocument()
+    expect(screen.getByRole('status')).toBeInTheDocument()
     expect(onClose).not.toHaveBeenCalled()
 
     act(() => {
       vi.advanceTimersByTime(1)
     })
     expect(onClose).toHaveBeenCalledTimes(1)
-    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+    expect(screen.queryByRole('status')).not.toBeInTheDocument()
   })
 
   it('does not auto-close when duration is 0', () => {
@@ -73,6 +91,6 @@ describe('Notification', () => {
     })
 
     expect(onClose).not.toHaveBeenCalled()
-    expect(screen.getByRole('alert')).toHaveTextContent('Persistent')
+    expect(screen.getByRole('status')).toHaveTextContent('Persistent')
   })
 })
