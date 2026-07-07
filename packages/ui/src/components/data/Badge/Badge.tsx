@@ -17,6 +17,8 @@ export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
   offset?: [number, number]
   /** 自定义背景色（优先于 `status`） */
   color?: string
+  /** 徽标的可访问名称，用于补充数字或圆点在当前业务语境中的含义 */
+  badgeLabel?: string
 }
 
 export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(function Badge(
@@ -30,14 +32,14 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(function Badge(
     status,
     offset,
     color,
+    badgeLabel,
     style,
     ...props
   },
   ref,
 ) {
   const isNumericCount = typeof count === 'number'
-  const hasCustomCount =
-    count !== null && count !== undefined && count !== '' && typeof count !== 'boolean'
+  const hasCustomCount = count !== null && count !== undefined && count !== '' && typeof count !== 'boolean'
   const showBadge = dot || (isNumericCount ? count > 0 || showZero : hasCustomCount)
   const display = isNumericCount && count > overflowCount ? `${overflowCount}+` : count
 
@@ -54,6 +56,9 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(function Badge(
       {children}
       {showBadge ? (
         <span
+          role={badgeLabel ? 'status' : undefined}
+          aria-label={badgeLabel}
+          aria-hidden={!badgeLabel && dot ? true : undefined}
           className={cn(
             'absolute -right-2 -top-2 inline-flex items-center justify-center rounded-full text-[10px] font-semibold text-white',
             dot ? 'h-2 w-2 min-h-0 min-w-0 p-0' : 'min-h-5 min-w-5 px-1',
