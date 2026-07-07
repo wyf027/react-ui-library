@@ -32,6 +32,7 @@ export const List = forwardRef<HTMLDivElement, ListProps>(function List(
     loading = false,
     renderItem,
     grid,
+    'aria-busy': ariaBusy,
     ...props
   },
   ref,
@@ -53,12 +54,15 @@ export const List = forwardRef<HTMLDivElement, ListProps>(function List(
   return (
     <div
       ref={ref}
+      aria-busy={loading ? true : ariaBusy || undefined}
       className={cn(bordered && 'rounded-lg border border-slate-200 dark:border-slate-700', className)}
       {...props}
     >
       {header ? <div className={cn('border-b border-slate-200 font-medium dark:border-slate-700', paddingCls)}>{header}</div> : null}
       {loading ? (
-        <div className={cn('text-center text-sm text-slate-400', paddingCls)}>Loading...</div>
+        <div role="status" aria-live="polite" className={cn('text-center text-sm text-slate-400', paddingCls)}>
+          Loading...
+        </div>
       ) : grid ? (
         <div className={cn('grid', paddingCls)} style={{ gridTemplateColumns: `repeat(${grid.cols ?? 3}, 1fr)`, gap: grid.gap ?? 16 }}>
           {dataSource.map((item, i) => (
