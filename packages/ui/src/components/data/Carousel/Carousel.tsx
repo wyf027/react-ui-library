@@ -25,6 +25,10 @@ function isTextEditingTarget(target: EventTarget | null) {
     : false
 }
 
+function isRotationControlTarget(target: EventTarget | null) {
+  return target instanceof HTMLElement ? Boolean(target.closest('[data-carousel-rotation-control]')) : false
+}
+
 export const Carousel = forwardRef<HTMLDivElement, CarouselProps>(function Carousel(
   {
     className,
@@ -65,7 +69,7 @@ export const Carousel = forwardRef<HTMLDivElement, CarouselProps>(function Carou
   const handleFocusCapture = useCallback(
     (event: FocusEvent<HTMLDivElement>) => {
       onFocusCapture?.(event)
-      if (!event.defaultPrevented && rotationEnabled) {
+      if (!event.defaultPrevented && rotationEnabled && !isRotationControlTarget(event.target)) {
         setRotationPaused(true)
       }
     },
@@ -141,6 +145,7 @@ export const Carousel = forwardRef<HTMLDivElement, CarouselProps>(function Carou
       {rotationEnabled ? (
         <button
           type="button"
+          data-carousel-rotation-control="true"
           onClick={() => setRotationPaused((paused) => !paused)}
           className="nova-focus-ring absolute left-2 top-2 z-10 rounded bg-black/40 px-3 py-1 text-xs font-medium text-white hover:bg-black/60"
           aria-label={rotationPaused ? 'Start slide rotation' : 'Stop slide rotation'}
