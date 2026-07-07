@@ -1,13 +1,12 @@
 import {
   forwardRef,
-  type ForwardedRef,
   type HTMLAttributes,
   type KeyboardEvent,
-  type MutableRefObject,
   type ReactNode,
   useCallback,
   useEffect,
   useId,
+  useImperativeHandle,
   useRef,
   useState,
 } from 'react'
@@ -20,17 +19,6 @@ export interface PopoverProps extends Omit<HTMLAttributes<HTMLDivElement>, 'cont
   defaultOpen?: boolean
   onOpen?: () => void
   onClose?: () => void
-}
-
-function assignForwardedRef<T>(ref: ForwardedRef<T>, value: T | null) {
-  if (typeof ref === 'function') {
-    ref(value)
-    return
-  }
-
-  if (ref) {
-    ;(ref as MutableRefObject<T | null>).current = value
-  }
 }
 
 export const Popover = forwardRef<HTMLDivElement, PopoverProps>(function Popover(
@@ -54,13 +42,7 @@ export const Popover = forwardRef<HTMLDivElement, PopoverProps>(function Popover
   const popoverId = useId()
   const open = controlledOpen ?? innerOpen
 
-  const setRootRef = useCallback(
-    (node: HTMLDivElement | null) => {
-      rootRef.current = node
-      assignForwardedRef(ref, node)
-    },
-    [ref],
-  )
+  useImperativeHandle(ref, () => rootRef.current as HTMLDivElement, [])
 
   const setOpen = useCallback(
     (next: boolean) => {
@@ -114,7 +96,7 @@ export const Popover = forwardRef<HTMLDivElement, PopoverProps>(function Popover
 
   return (
     <div
-      ref={setRootRef}
+      ref={rootRef}
       className={cn('relative inline-flex', className)}
       onKeyDown={handleKeyDown}
       {...props}
