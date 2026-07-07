@@ -20,6 +20,38 @@ describe('Tooltip', () => {
     expect(await screen.findByRole('tooltip')).toHaveTextContent('Help text')
   })
 
+  it('positions tooltip below the trigger by default', async () => {
+    const user = userEvent.setup()
+
+    render(
+      <Tooltip content="Default placement">
+        <button type="button">Default</button>
+      </Tooltip>,
+    )
+
+    await user.hover(screen.getByRole('button', { name: 'Default' }))
+
+    expect(await screen.findByRole('tooltip')).toHaveClass('top-full', 'mt-2')
+  })
+
+  it('supports custom placement', async () => {
+    const user = userEvent.setup()
+
+    render(
+      <Tooltip content="Left placement" placement="left">
+        <button type="button">Left aligned</button>
+      </Tooltip>,
+    )
+
+    await user.hover(screen.getByRole('button', { name: 'Left aligned' }))
+
+    expect(await screen.findByRole('tooltip')).toHaveClass(
+      'right-full',
+      'mr-2',
+      '-translate-y-1/2',
+    )
+  })
+
   it('links focused trigger to tooltip content', async () => {
     const user = userEvent.setup()
 
