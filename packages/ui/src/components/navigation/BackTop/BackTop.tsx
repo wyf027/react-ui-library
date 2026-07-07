@@ -1,14 +1,25 @@
 import { forwardRef, type ButtonHTMLAttributes, type MouseEvent, useEffect, useState } from 'react'
 import { cn } from '../../../utils/cn'
 
+type BackTopTarget = HTMLElement | Window
+
 export interface BackTopProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   visibilityHeight?: number
+  /** 自定义滚动容器，默认监听并滚动 window */
+  target?: () => BackTopTarget | null
+}
+
+const getScrollTop = (target: BackTopTarget) => (target === window ? window.scrollY : target.scrollTop)
+
+const scrollToTop = (target: BackTopTarget) => {
+  target.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
 export const BackTop = forwardRef<HTMLButtonElement, BackTopProps>(function BackTop(
   {
     className,
     visibilityHeight = 200,
+    target,
     children = '↑ Top',
     onClick,
     'aria-label': ariaLabel = 'Back to top',
@@ -19,13 +30,16 @@ export const BackTop = forwardRef<HTMLButtonElement, BackTopProps>(function Back
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
+    const scrollTarget = target?.() ?? window
     const onScroll = () => {
-      setVisible(window.scrollY > visibilityHeight)
+      setVisible(getScrollTop(scrollTarget) > visibilityHeight)
     }
-    window.addEventListener('scroll', onScroll)
+
+    scrollTarget.addEventListener('scroll', onScroll)
     onScroll()
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [visibilityHeight])
+
+    return () => scrollTarget.removeEventListener('scroll', onScroll)
+  }, [target, visibilityHeight])
 
   if (!visible) return null
 
@@ -35,7 +49,7 @@ export const BackTop = forwardRef<HTMLButtonElement, BackTopProps>(function Back
       return
     }
 
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    scrollToTop(target?.() ?? window)
   }
 
   return (
