@@ -1,8 +1,11 @@
 import {
   forwardRef,
+  type ForwardedRef,
   type HTMLAttributes,
   type KeyboardEvent,
   type ReactNode,
+  useCallback,
+  useEffect,
   useId,
   useRef,
   useState,
@@ -16,6 +19,17 @@ export interface PopoverProps extends Omit<HTMLAttributes<HTMLDivElement>, 'cont
   defaultOpen?: boolean
   onOpen?: () => void
   onClose?: () => void
+}
+
+function assignForwardedRef<T>(ref: ForwardedRef<T>, value: T | null) {
+  if (typeof ref === 'function') {
+    ref(value)
+    return
+  }
+
+  if (ref) {
+    ref.current = value
+  }
 }
 
 export const Popover = forwardRef<HTMLDivElement, PopoverProps>(function Popover(
@@ -34,20 +48,32 @@ export const Popover = forwardRef<HTMLDivElement, PopoverProps>(function Popover
   ref,
 ) {
   const [innerOpen, setInnerOpen] = useState(defaultOpen)
+  const rootRef = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
   const popoverId = useId()
   const open = controlledOpen ?? innerOpen
 
-  const setOpen = (next: boolean) => {
-    if (controlledOpen === undefined) {
-      setInnerOpen(next)
-    }
-    if (next) {
-      onOpen?.()
-    } else {
-      onClose?.()
-    }
-  }
+  const setRootRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      rootRef.current = node
+      assignForwardedRef(ref, node)
+    },
+    [ref],
+  )
+
+  const setOpen = useCallback(
+    (next: boolean) => {
+      if (controlledOpen === undefined) {
+        setInnerOpen(next)
+      }
+      if (next) {
+        onOpen?.()
+      } else {
+        onClose?.()
+      }
+    },
+    [controlledOpen, onClose, onOpen],
+  )
 
   const handleToggle = () => {
     setOpen(!open)
@@ -68,9 +94,26 @@ export const Popover = forwardRef<HTMLDivElement, PopoverProps>(function Popover
     triggerRef.current?.focus()
   }
 
+  useEffect(() => {
+    if (!open) {
+      return
+    }
+
+    const handlePointerDown = (event: MouseEvent) => {
+      if (rootRef.current && !rootRef.current.contains(event.target as Node)) {
+        setOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handlePointerDown)
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown)
+    }
+  }, [open, setOpen])
+
   return (
     <div
-      ref={ref}
+      ref={setRootRef}
       className={cn('relative inline-flex', className)}
       onKeyDown={handleKeyDown}
       {...props}
