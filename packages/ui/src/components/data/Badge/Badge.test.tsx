@@ -33,4 +33,35 @@ describe('Badge', () => {
 
     expect(container.firstChild).toBeEmptyDOMElement()
   })
+
+  it('adds an accessible status label when badgeLabel is provided for counts', () => {
+    render(
+      <Badge count={5} badgeLabel="5 unread notifications">
+        Inbox
+      </Badge>,
+    )
+
+    expect(screen.getByRole('status', { name: '5 unread notifications' })).toHaveTextContent('5')
+  })
+
+  it('adds an accessible status label when badgeLabel is provided for dot badges', () => {
+    render(
+      <Badge dot badgeLabel="Unread updates">
+        Updates
+      </Badge>,
+    )
+
+    expect(screen.getByRole('status', { name: 'Unread updates' })).toBeInTheDocument()
+  })
+
+  it('keeps unlabeled dot badges decorative', () => {
+    const { container } = render(
+      <Badge dot>
+        Updates
+      </Badge>,
+    )
+
+    expect(screen.queryByRole('status')).not.toBeInTheDocument()
+    expect(container.querySelector('[aria-hidden="true"]')).toBeInTheDocument()
+  })
 })
