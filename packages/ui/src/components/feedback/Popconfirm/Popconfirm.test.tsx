@@ -54,7 +54,7 @@ describe('Popconfirm', () => {
     expect(trigger).toHaveFocus()
   })
 
-  it('calls confirm and cancel callbacks before closing', async () => {
+  it('calls confirm and cancel callbacks, closes, and restores trigger focus', async () => {
     const user = userEvent.setup()
     const onConfirm = vi.fn()
     const onCancel = vi.fn()
