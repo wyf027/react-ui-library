@@ -69,4 +69,36 @@ describe('Popover', () => {
     expect(onClose).toHaveBeenCalledTimes(1)
     expect(trigger).toHaveFocus()
   })
+
+  it('closes when clicking outside while leaving inside clicks open', async () => {
+    const user = userEvent.setup()
+    const onClose = vi.fn()
+
+    render(
+      <>
+        <Popover
+          trigger={<span>More info</span>}
+          content={<button type="button">Inside action</button>}
+          aria-label="Info panel"
+          onClose={onClose}
+        />
+        <button type="button">Outside action</button>
+      </>,
+    )
+
+    const trigger = screen.getByRole('button', { name: /More info/i })
+
+    await user.click(trigger)
+    expect(screen.getByRole('dialog', { name: 'Info panel' })).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Inside action' }))
+    expect(screen.getByRole('dialog', { name: 'Info panel' })).toBeInTheDocument()
+    expect(onClose).not.toHaveBeenCalled()
+
+    await user.click(screen.getByRole('button', { name: 'Outside action' }))
+
+    expect(screen.queryByRole('dialog', { name: 'Info panel' })).not.toBeInTheDocument()
+    expect(trigger).toHaveAttribute('aria-expanded', 'false')
+    expect(onClose).toHaveBeenCalledTimes(1)
+  })
 })
