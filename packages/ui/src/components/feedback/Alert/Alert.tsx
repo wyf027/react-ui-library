@@ -54,7 +54,11 @@ export const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
       )}
       {...props}
     >
-      {showIcon ? <span className="mt-0.5 shrink-0">{icon ?? typeIconMap[type]}</span> : null}
+      {showIcon ? (
+        <span className="mt-0.5 shrink-0" aria-hidden={icon ? undefined : true}>
+          {icon ?? typeIconMap[type]}
+        </span>
+      ) : null}
       <div className="flex-1">
         <div className="font-medium">{message}</div>
         {description ? <div className="mt-1 opacity-90">{description}</div> : null}
