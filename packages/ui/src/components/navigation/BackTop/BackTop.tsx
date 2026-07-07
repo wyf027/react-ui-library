@@ -9,7 +9,8 @@ export interface BackTopProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   target?: () => BackTopTarget | null
 }
 
-const isWindowTarget = (target: BackTopTarget): target is Window => target === window
+const isWindowTarget = (target: BackTopTarget): target is Window =>
+  target === window || (typeof Window !== 'undefined' && target instanceof Window)
 
 const getScrollTop = (target: BackTopTarget) => (isWindowTarget(target) ? target.scrollY : target.scrollTop)
 
