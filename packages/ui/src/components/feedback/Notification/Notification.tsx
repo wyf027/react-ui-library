@@ -1,13 +1,18 @@
 import { forwardRef, useCallback, useEffect, useState, type HTMLAttributes } from 'react'
 import { cn } from '../../../utils/cn'
 
+type NotificationType = 'info' | 'success' | 'warning' | 'error'
+type NotificationRole = 'status' | 'alert'
+
 export interface NotificationProps extends HTMLAttributes<HTMLDivElement> {
-  type?: 'info' | 'success' | 'warning' | 'error'
+  type?: NotificationType
   title?: string
   description?: string
   open?: boolean
   duration?: number
   onClose?: () => void
+  /** 通知的 live region 语义，默认 error 为 alert，其余类型为 status */
+  role?: NotificationRole
 }
 
 export const Notification = forwardRef<HTMLDivElement, NotificationProps>(function Notification(
@@ -19,12 +24,16 @@ export const Notification = forwardRef<HTMLDivElement, NotificationProps>(functi
     open,
     duration = 0,
     onClose,
+    role,
+    'aria-live': ariaLive,
     ...props
   },
   ref,
 ) {
   const [visible, setVisible] = useState(true)
   const mergedOpen = open ?? visible
+  const notificationRole = role ?? (type === 'error' ? 'alert' : 'status')
+  const notificationAriaLive = ariaLive ?? (notificationRole === 'status' ? 'polite' : undefined)
 
   const handleClose = useCallback(() => {
     if (open === undefined) {
@@ -49,7 +58,8 @@ export const Notification = forwardRef<HTMLDivElement, NotificationProps>(functi
   return (
     <div
       ref={ref}
-      role="alert"
+      role={notificationRole}
+      aria-live={notificationAriaLive}
       className={cn(
         'rounded-lg border p-4 shadow-sm',
         {
