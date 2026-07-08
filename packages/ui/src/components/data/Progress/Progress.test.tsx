@@ -25,6 +25,31 @@ describe('Progress', () => {
     expect(screen.getByText('100%')).toBeInTheDocument()
   })
 
+  it('uses custom formatted text for visible and accessible value text', () => {
+    render(<Progress percent={75} format={(value) => `${value} days`} />)
+
+    const progress = screen.getByRole('progressbar', { name: 'Progress' })
+
+    expect(progress).toHaveAttribute('aria-valuenow', '75')
+    expect(progress).toHaveAttribute('aria-valuetext', '75 days')
+    expect(screen.getByText('75 days')).toBeInTheDocument()
+  })
+
+  it('keeps explicit value text when custom formatted content is visual only', () => {
+    render(
+      <Progress
+        percent={75}
+        format={(value) => <span>{value} days</span>}
+        aria-valuetext="75 days remaining"
+      />,
+    )
+
+    const progress = screen.getByRole('progressbar', { name: 'Progress' })
+
+    expect(progress).toHaveAttribute('aria-valuetext', '75 days remaining')
+    expect(screen.getByText('75 days')).toBeInTheDocument()
+  })
+
   it('supports external labelling and custom value text', () => {
     render(
       <div>
