@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useRef } from 'react'
 
 import { LiveContext, LiveEditor } from 'react-live'
+import { Flex, Tag, Text } from '@wuyangfan/nova-ui'
 
 function lineCount(code: string) {
   if (!code) {
@@ -37,6 +38,7 @@ export function LiveCodeEditor() {
 
   const { code, language } = ctx
   const lines = Math.max(lineCount(code), 1)
+  const badge = languageBadge(language)
 
   const mainRef = useRef<HTMLDivElement>(null)
   const gutterRef = useRef<HTMLDivElement>(null)
@@ -76,22 +78,25 @@ export function LiveCodeEditor() {
   }, [code])
 
   return (
-    <div className="live-code-editor">
-      <div className="live-code-editor-toolbar">
-        <span className="live-code-editor-lang">{languageBadge(language)}</span>
-      </div>
-      <div className="live-code-editor-main" ref={mainRef}>
-        <div className="live-code-editor-gutter" ref={gutterRef} aria-hidden="true">
+    <Flex vertical className="live-code-editor">
+      <Flex className="live-code-editor-toolbar" align="center" justify="between">
+        <Text className="live-code-editor-title">Code</Text>
+        <Tag className="live-code-editor-lang" aria-label={`${badge} example code`}>
+          {badge}
+        </Tag>
+      </Flex>
+      <Flex className="live-code-editor-main" ref={mainRef}>
+        <Flex vertical className="live-code-editor-gutter" ref={gutterRef} aria-hidden="true">
           {Array.from({ length: lines }, (_, index) => (
-            <div key={index} className="live-code-editor-gutter-line">
+            <Text key={index} className="live-code-editor-gutter-line">
               {index + 1}
-            </div>
+            </Text>
           ))}
-        </div>
-        <div className="live-code-editor-editor">
+        </Flex>
+        <Flex vertical className="live-code-editor-editor">
           <LiveEditor className="live-code-editor-live" />
-        </div>
-      </div>
-    </div>
+        </Flex>
+      </Flex>
+    </Flex>
   )
 }

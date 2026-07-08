@@ -52,22 +52,28 @@
 }
 
 .live-code-editor-toolbar {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  padding: 6px 10px;
+  justify-content: space-between;
+  padding: 8px 12px;
   border-bottom: 1px solid var(--vp-c-divider);
-  background: var(--vp-code-block-bg, var(--vp-code-bg, var(--vp-c-bg-alt)));
+  background: color-mix(in srgb, var(--vp-c-bg-soft) 80%, transparent);
+}
+
+.live-code-editor-title {
+  color: var(--vp-c-text-2) !important;
+  font-size: 12px !important;
+  font-weight: 600;
+  letter-spacing: 0.02em;
 }
 
 .live-code-editor-lang {
-  font-size: 11px;
+  border-color: var(--vp-c-divider) !important;
+  background: var(--vp-c-bg) !important;
+  color: var(--vp-c-text-2) !important;
+  font-size: 11px !important;
   font-weight: 600;
   letter-spacing: 0.06em;
-  color: var(--vp-c-text-3);
-  border: 1px solid var(--vp-c-divider);
-  border-radius: 6px;
-  padding: 2px 8px;
+  border-radius: 999px !important;
+  padding: 2px 8px !important;
 }
 
 .live-code-editor-main {
@@ -95,8 +101,13 @@
 }
 
 .live-code-editor-gutter-line {
-  font-size: 13px;
-  line-height: 1.55;
+  display: block;
+  color: var(--vp-c-text-3) !important;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    monospace !important;
+  font-size: 13px !important;
+  line-height: 1.55 !important;
   min-height: calc(13px * 1.55);
 }
 
