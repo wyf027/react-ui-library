@@ -1,10 +1,11 @@
-import { forwardRef, type HTMLAttributes, type ReactNode } from 'react'
+import { forwardRef, useEffect, useState, type HTMLAttributes, type ReactNode } from 'react'
 import { cn } from '../../../utils/cn'
 
 export interface SpinProps extends HTMLAttributes<HTMLDivElement> {
   spinning?: boolean
   size?: 'sm' | 'md' | 'lg'
   tip?: ReactNode
+  delay?: number
 }
 
 export const Spin = forwardRef<HTMLDivElement, SpinProps>(function Spin(
@@ -13,6 +14,7 @@ export const Spin = forwardRef<HTMLDivElement, SpinProps>(function Spin(
     spinning = true,
     size = 'md',
     tip,
+    delay = 0,
     children,
     'aria-label': ariaLabel,
     'aria-labelledby': ariaLabelledBy,
@@ -21,8 +23,30 @@ export const Spin = forwardRef<HTMLDivElement, SpinProps>(function Spin(
   },
   ref,
 ) {
+  const [showSpinner, setShowSpinner] = useState(() => spinning && delay <= 0)
   const accessibleLabel =
     ariaLabel ?? (ariaLabelledBy ? undefined : typeof tip === 'string' ? tip : 'Loading')
+
+  useEffect(() => {
+    if (!spinning) {
+      setShowSpinner(false)
+      return
+    }
+
+    if (delay <= 0) {
+      setShowSpinner(true)
+      return
+    }
+
+    setShowSpinner(false)
+    const timer = window.setTimeout(() => {
+      setShowSpinner(true)
+    }, delay)
+
+    return () => {
+      window.clearTimeout(timer)
+    }
+  }, [delay, spinning])
 
   const spinner = (
     <div
@@ -48,7 +72,7 @@ export const Spin = forwardRef<HTMLDivElement, SpinProps>(function Spin(
   )
 
   if (!children) {
-    return spinning ? (
+    return showSpinner ? (
       <div
         ref={ref}
         className={cn('inline-flex items-center justify-center', className)}
@@ -62,7 +86,7 @@ export const Spin = forwardRef<HTMLDivElement, SpinProps>(function Spin(
   return (
     <div ref={ref} className={cn('relative', className)} {...props} aria-busy={spinning}>
       {children}
-      {spinning ? (
+      {showSpinner ? (
         <div className="absolute inset-0 flex items-center justify-center rounded bg-white/60 dark:bg-slate-900/60">
           {spinner}
         </div>
