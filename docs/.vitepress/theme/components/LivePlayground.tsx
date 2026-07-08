@@ -80,8 +80,8 @@ const ReactLiveMount = defineComponent({
 
       root.render(
         React.createElement(
-          'div',
-          { className: 'live-wrap' },
+          NovaUI.Flex,
+          { className: 'live-wrap', vertical: true },
           React.createElement(
             LiveProvider,
             {
@@ -90,8 +90,8 @@ const ReactLiveMount = defineComponent({
               language: prismLanguage,
               enableTypeScript: resolveEnableTypeScript(props.language),
             },
-            React.createElement('div', { className: 'live-pane live-preview' }, React.createElement(LivePreview, null)),
-            React.createElement('div', { className: 'live-pane live-editor' }, React.createElement(LiveCodeEditor, null)),
+            React.createElement(NovaUI.Flex, { className: 'live-pane live-preview' }, React.createElement(LivePreview, null)),
+            React.createElement(NovaUI.Flex, { className: 'live-pane live-editor', vertical: true }, React.createElement(LiveCodeEditor, null)),
             React.createElement(LiveError, { className: 'live-error' }),
           ),
         ),
