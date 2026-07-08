@@ -1,10 +1,11 @@
-import { forwardRef, type HTMLAttributes } from 'react'
+import { forwardRef, type HTMLAttributes, type ReactNode } from 'react'
 import { cn } from '../../../utils/cn'
 
 export interface ProgressProps extends HTMLAttributes<HTMLDivElement> {
   percent: number
   status?: 'normal' | 'success' | 'exception'
   showInfo?: boolean
+  format?: (percent: number) => ReactNode
 }
 
 export const Progress = forwardRef<HTMLDivElement, ProgressProps>(function Progress(
@@ -13,6 +14,7 @@ export const Progress = forwardRef<HTMLDivElement, ProgressProps>(function Progr
     percent,
     status = 'normal',
     showInfo = true,
+    format,
     'aria-label': ariaLabel,
     'aria-labelledby': ariaLabelledBy,
     'aria-valuetext': ariaValueText,
@@ -22,6 +24,9 @@ export const Progress = forwardRef<HTMLDivElement, ProgressProps>(function Progr
 ) {
   const safePercent = Math.max(0, Math.min(100, percent))
   const accessibleLabel = ariaLabel ?? (ariaLabelledBy ? undefined : 'Progress')
+  const info = format ? format(safePercent) : `${safePercent}%`
+  const formattedValueText =
+    typeof info === 'string' || typeof info === 'number' ? String(info) : `${safePercent}%`
 
   return (
     <div
@@ -34,7 +39,7 @@ export const Progress = forwardRef<HTMLDivElement, ProgressProps>(function Progr
       aria-valuemin={0}
       aria-valuemax={100}
       aria-valuenow={safePercent}
-      aria-valuetext={ariaValueText ?? `${safePercent}%`}
+      aria-valuetext={ariaValueText ?? formattedValueText}
     >
       <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
         <div
@@ -46,9 +51,7 @@ export const Progress = forwardRef<HTMLDivElement, ProgressProps>(function Progr
           style={{ width: `${safePercent}%` }}
         />
       </div>
-      {showInfo ? (
-        <div className="mt-1 text-right text-xs text-slate-500">{safePercent}%</div>
-      ) : null}
+      {showInfo ? <div className="mt-1 text-right text-xs text-slate-500">{info}</div> : null}
     </div>
   )
 })
