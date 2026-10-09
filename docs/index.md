@@ -4,4 +4,4 @@ sidebar: false
 toc: false
 ---
 
-<HomeBaseLayout />
+<HomeBaseLayout></HomeBaseLayout>

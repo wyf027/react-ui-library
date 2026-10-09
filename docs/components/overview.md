@@ -6,7 +6,7 @@ Nova UI 提供覆盖中后台常见场景的 React 组件，按能力分为 **6 
 
 每个组件目录下的 `packages/ui/src/components/.../{Name}/README.md` 中有简短说明与设计约束；完整示例与 API 表仍以本站文档为准。
 
-<ComponentOverview />
+<ComponentOverview></ComponentOverview>
 
 ## 全量组件清单
 
