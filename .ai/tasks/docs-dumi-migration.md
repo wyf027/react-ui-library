@@ -10,7 +10,9 @@
 - Skills: brainstorming and writing-plans scope incorporated into project documentation. pickup/handoff skills were searched but unavailable; Git checkpoints and this task card provide recovery state.
 - Publication: prior explicit instruction to publish ongoing UI changes remains applicable; use PR CI and Pages workflow after source review.
 - Verification: source completeness, docs/UI type checks, lint, development-server route probes and representative screenshots; CI for production output.
-- State: source migration complete; dev server ready on localhost:8000/react-ui-library/. No active file mutations before browser handoff.
-- Verification passed: docs noEmit, UI noEmit, UI lint, git diff --check; 81 docs, 86 valid native demo references, 81 canonical routes + 80 legacy .html aliases, no dependency README routes. Dev webpack compilation passed.
-- Next action: inspect representative live developer pages, editing and theme changes in Chrome.
+- State: source migration and representative browser verification complete; Git checkpoint f5bc83f. Dev listener is being stopped before publication tooling.
+- Verification passed: docs noEmit, UI noEmit, UI lint, git diff --check; 81 docs, 86 valid native demo references, 81 canonical routes + 81 legacy .html redirect routes, no dependency README routes. Dev webpack compilation passed.
+- Browser evidence: native source editor updates the Button preview; overview full prose and category cards visible; search Button navigates to its page; VirtualList scroll advances items; playground renders; dark Modal opens and Escape closes; old overview.html preserves query/hash and highlights the canonical sidebar. Fixed HTML self-closing builtin swallowing following Markdown and docs-only portal reset.
+- Independent read-only review: no release blocker found at ffc213a; browser findings fixed in f5bc83f.
+- Next action: push the migration branch and create a reviewable PR; inspect CI before merging and Pages publication.
 - Checkpoint: Git commit after source conversion; development listener belongs to this worktree and remains running solely for visual verification.

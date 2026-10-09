@@ -20,11 +20,11 @@ Count and parse all documents/demos, check route and sidebar coverage, run docs/
 
 ## Implementation plan
 
-- [ ] Replace docs dependencies/scripts with dumi 2.4.50, dumi-theme-antd 0.4.4 and compatible Antd 5; remove VitePress and Vue integration.
-- [ ] Add docs/.dumirc.ts with base/publicPath /react-ui-library/, dist output, source aliases, Chinese nav/sidebar, branding and legacy routes.
-- [ ] Convert 86 LivePlayground snippets to imported React demos; preserve all prose and API tables.
-- [ ] Replace VitePress home/overview markup with dumi-compatible Tailwind markup and retain editable playground.
-- [ ] Add docs-only styling/theme synchronization and Tailwind configuration without global preflight.
-- [ ] Update GitHub Pages artifact path, README and repository development instructions.
-- [ ] Verify source completeness, noEmit, lint and development pages; obtain read-only review.
+- [x] Replace docs dependencies/scripts with dumi 2.4.50, dumi-theme-antd 0.4.4 and compatible Antd 5; remove VitePress and Vue integration.
+- [x] Add docs/.dumirc.ts with base/publicPath /react-ui-library/, dist output, source aliases, Chinese nav/sidebar, branding and legacy routes.
+- [x] Convert 86 LivePlayground snippets to imported React demos; preserve all prose and API tables.
+- [x] Replace VitePress home/overview markup with dumi-compatible Tailwind markup and retain editable playground.
+- [x] Add docs-only styling/theme synchronization and Tailwind configuration without global preflight.
+- [x] Update GitHub Pages artifact path, README and repository development instructions.
+- [x] Verify source completeness, noEmit, lint and development pages; obtain read-only review.
 - [ ] Checkpoint, open PR, inspect CI, publish authorized changes and verify live documentation.
