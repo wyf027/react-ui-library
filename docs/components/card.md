@@ -1,38 +1,16 @@
-# Card 卡片
+---
+title: Card 卡片
+---
 
 通用卡片容器，常用属性对齐 Ant Design `Card`。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Space direction='vertical' size={8}>
-      <Card title='卡片标题'>卡片内容</Card>
-      <Card title='带操作' extra={<Button size='sm' variant='ghost'>更多</Button>}>卡片内容</Card>
-    </Space>
-  )
-}
-`" />
+<code src="../demos/card-1.tsx"></code>
 
 ### 封面、加载、底部操作
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Card
-      style={{ maxWidth: 360 }}
-      hoverable
-      size='small'
-      title='示例'
-      cover={<div style={{height:120,background:'linear-gradient(135deg,#dbeafe,#e0e7ff)'}} />}
-      actions={<Button size='sm' variant='outline'>操作</Button>}
-    >
-      正文区域
-    </Card>
-  )
-}
-`" />
+<code src="../demos/card-2.tsx"></code>
 
 ## API
 

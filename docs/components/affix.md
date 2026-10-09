@@ -1,18 +1,12 @@
-# Affix 固钉
+---
+title: Affix 固钉
+---
 
 将元素钉在可视范围内。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Affix offsetTop={10}>
-      <Button size='sm'>固钉按钮</Button>
-    </Affix>
-  )
-}
-`" />
+<code src="../demos/affix-1.tsx"></code>
 
 ## API
 

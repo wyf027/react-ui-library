@@ -1,16 +1,12 @@
-# Upload 上传
+---
+title: Upload 上传
+---
 
 文件上传组件。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Upload onChange={(files) => console.log(files)} />
-  )
-}
-`" />
+<code src="../demos/upload-1.tsx"></code>
 
 ## 键盘操作
 

@@ -1,21 +1,12 @@
-# InputNumber 数字输入框
+---
+title: InputNumber 数字输入框
+---
 
 通过鼠标或键盘输入数值，对齐 Ant Design InputNumber。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Space direction='vertical' size={8}>
-      <InputNumber defaultValue={3} min={1} max={10} />
-      <InputNumber defaultValue={0} step={0.1} precision={2} />
-      <InputNumber placeholder='无控制器' controls={false} />
-      <InputNumber defaultValue={5} disabled />
-    </Space>
-  )
-}
-`" />
+<code src="../demos/input-number-1.tsx"></code>
 
 ## API
 

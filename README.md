@@ -3,7 +3,7 @@
 企业级 React 组件库工程，包含：
 
 1. `packages/ui`：可发布的组件库包 `@wuyangfan/nova-ui`
-2. `docs`：基于 VitePress 的文档站与在线示例
+2. `docs`：基于 dumi 的文档站与在线示例
 
 ## 技术栈
 
@@ -11,7 +11,7 @@
 - Tailwind CSS v3
 - ESLint + Prettier
 - tsup（ESM/CJS + d.ts）
-- VitePress 文档
+- dumi 文档
 
 ## 本地开发
 
@@ -41,7 +41,7 @@ npm run build
 
 ## 发布文档到 GitHub Pages
 
-仓库已包含自动部署工作流 [`.github/workflows/docs-deploy.yml`](file:///Users/zhangbin/Desktop/project/other/react-ui-library/.github/workflows/docs-deploy.yml)。
+仓库已包含自动部署工作流 [`.github/workflows/docs-deploy.yml`](.github/workflows/docs-deploy.yml)。
 
 1. push 到 `main` 后会自动构建并发布 `docs`。
 2. 在 GitHub 仓库设置中打开 `Settings -> Pages -> Source: GitHub Actions`。

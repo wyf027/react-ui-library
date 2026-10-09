@@ -1,40 +1,16 @@
-# Space 间距
+---
+title: Space 间距
+---
 
 设置组件之间的间距，用法贴近 Ant Design `Space`。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Space direction='vertical' size={12}>
-      <Space size={8}>
-        <Button>按钮 1</Button>
-        <Button variant='outline'>按钮 2</Button>
-        <Button variant='ghost'>按钮 3</Button>
-      </Space>
-      <Space direction='vertical' size={8}>
-        <Tag color='success'>标签 A</Tag>
-        <Tag color='warning'>标签 B</Tag>
-      </Space>
-    </Space>
-  )
-}
-`" />
+<code src="../demos/space-1.tsx"></code>
 
 ### 预设尺寸与分隔符 `split`
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Space size='large' split={<span style={{color:'var(--vp-c-text-3)'}}>|</span>}>
-      <Text>北京</Text>
-      <Text>上海</Text>
-      <Text>广州</Text>
-    </Space>
-  )
-}
-`" />
+<code src="../demos/space-2.tsx"></code>
 
 ## API
 

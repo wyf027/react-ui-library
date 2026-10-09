@@ -1,18 +1,12 @@
-# Watermark 水印
+---
+title: Watermark 水印
+---
 
 页面水印组件。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Watermark content='INTERNAL'>
-      <Card title='受保护内容'>此面板带有水印。</Card>
-    </Watermark>
-  )
-}
-`" />
+<code src="../demos/watermark-1.tsx"></code>
 
 ## API
 

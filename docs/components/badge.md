@@ -1,35 +1,16 @@
-# Badge 徽标
+---
+title: Badge 徽标
+---
 
 徽标数组件，常用行为对齐 Ant Design `Badge`。`status` 默认背景 class 由 `packages/ui/src/theme/componentTokens.ts` 中的 `badgeStatusBgClass` 维护。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <div className='flex flex-wrap items-center gap-4 rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900'>
-      <Badge count={5} badgeLabel='5 条未读消息'><Avatar name='U' /></Badge>
-      <Badge dot badgeLabel='有新的状态更新'><Avatar name='V' /></Badge>
-      <Badge count={99} badgeLabel='99 条通知'><Avatar name='W' /></Badge>
-    </div>
-  )
-}
-`" />
+<code src="../demos/badge-1.tsx"></code>
 
 ### 封顶与状态色
 
-<LivePlayground :code="`
-() => {
-  return (
-    <div className='flex flex-wrap items-center gap-6 rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900'>
-      <Badge count={120} overflowCount={99} badgeLabel='99 条以上未读消息'><Avatar name='A' /></Badge>
-      <Badge count={0} showZero badgeLabel='0 条待处理事项'><Avatar name='B' /></Badge>
-      <Badge dot status='success' badgeLabel='在线'><Avatar name='C' /></Badge>
-      <Badge count='new' badgeLabel='新内容'><Avatar name='D' /></Badge>
-    </div>
-  )
-}
-`" />
+<code src="../demos/badge-2.tsx"></code>
 
 ## 可访问性
 

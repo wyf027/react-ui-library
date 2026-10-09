@@ -1,67 +1,16 @@
-# Layout 页面骨架
+---
+title: Layout 页面骨架
+---
 
 用于搭建中后台常见的**顶栏 + 侧栏 + 内容区**结构，与 [Container](./container.md) 互补：`Layout*` 负责**区域与折叠**，`Container` 负责**版心与内边距**。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Layout className='min-h-0 h-80'>
-      <LayoutHeader>
-        <span className='text-sm font-medium text-slate-800 dark:text-slate-100'>顶栏</span>
-      </LayoutHeader>
-      <Layout direction='horizontal'>
-        <LayoutSider width={200} collapsible defaultCollapsed={false}>
-          <div className='text-xs text-slate-600 dark:text-slate-300'>侧栏菜单占位</div>
-        </LayoutSider>
-        <LayoutContent>
-          <div
-            style={{
-              background: 'var(--vp-c-bg-alt)',
-              padding: '12px',
-              borderRadius: '8px',
-              border: '1px solid var(--vp-c-divider)',
-            }}
-          >
-            主内容区（默认渲染为 main）
-          </div>
-        </LayoutContent>
-      </Layout>
-    </Layout>
-  )
-}
-`" />
+<code src="../demos/layout-1.tsx"></code>
 
 ### 与 Container 组合
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Layout className='min-h-0 h-80'>
-      <LayoutHeader>
-        <span className='text-sm font-medium'>顶栏</span>
-      </LayoutHeader>
-      <Layout direction='horizontal'>
-        <LayoutSider width={180}>侧栏</LayoutSider>
-        <LayoutContent className='p-0'>
-          <Container maxWidth='xl' padding='md' verticalPadding='md'>
-            <div
-              style={{
-                background: 'var(--vp-c-bg-soft)',
-                padding: '12px',
-                borderRadius: '8px',
-              }}
-            >
-              版心在内容区内居中
-            </div>
-          </Container>
-        </LayoutContent>
-      </Layout>
-    </Layout>
-  )
-}
-`" />
+<code src="../demos/layout-2.tsx"></code>
 
 ## API
 

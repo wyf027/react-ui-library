@@ -1,16 +1,12 @@
-# Calendar 日历
+---
+title: Calendar 日历
+---
 
 日历组件。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Calendar />
-  )
-}
-`" />
+<code src="../demos/calendar-1.tsx"></code>
 
 ## API
 

@@ -1,16 +1,12 @@
-# QRCode 二维码
+---
+title: QRCode 二维码
+---
 
 二维码组件。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <QRCode value='https://wyf027.github.io/react-ui-library/' aria-label='Scan to open Nova UI docs' />
-  )
-}
-`" />
+<code src="../demos/qrcode-1.tsx"></code>
 
 ## 可访问性
 

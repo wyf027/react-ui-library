@@ -1,21 +1,12 @@
-# Cascader 级联选择
+---
+title: Cascader 级联选择
+---
 
 级联选择框。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Cascader
-      options={[
-        { value: 'zj', label: '浙江', children: [{ value: 'hz', label: '杭州' }] },
-        { value: 'js', label: '江苏', children: [{ value: 'nj', label: '南京' }] },
-      ]}
-    />
-  )
-}
-`" />
+<code src="../demos/cascader-1.tsx"></code>
 
 ## API
 

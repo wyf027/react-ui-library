@@ -1,19 +1,12 @@
-# VirtualList 虚拟列表
+---
+title: VirtualList 虚拟列表
+---
 
 高性能虚拟滚动列表。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <VirtualList
-      items={Array.from({ length: 100 }, (_, i) => 'Item ' + (i + 1))}
-      renderItem={(item) => item}
-    />
-  )
-}
-`" />
+<code src="../demos/virtual-list-1.tsx"></code>
 
 ## API
 

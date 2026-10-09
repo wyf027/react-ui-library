@@ -1,22 +1,12 @@
-# Radio 单选框
+---
+title: Radio 单选框
+---
 
 单选框组件。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Space direction='vertical' size={8}>
-      <Space>
-        <Radio name='lang' label='中文' value='zh' />
-        <Radio name='lang' label='English' value='en' helperText='用于界面语言' />
-      </Space>
-      <Radio name='plan' label='请选择套餐' value='required' error='请选择一个套餐' />
-    </Space>
-  )
-}
-`" />
+<code src="../demos/radio-1.tsx"></code>
 
 ## 可访问性
 

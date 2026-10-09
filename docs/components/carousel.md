@@ -1,25 +1,12 @@
-# Carousel 走马灯
+---
+title: Carousel 走马灯
+---
 
 轮播组件，对齐 Ant Design Carousel。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Carousel
-      aria-label='Featured product stories'
-      autoplay
-      autoplaySpeed={4000}
-      items={[
-        <div className='rounded-lg bg-blue-500 px-6 py-10 text-center text-lg font-semibold text-white'>Slide 1</div>,
-        <div className='rounded-lg bg-emerald-500 px-6 py-10 text-center text-lg font-semibold text-white'>Slide 2</div>,
-        <div className='rounded-lg bg-amber-500 px-6 py-10 text-center text-lg font-semibold text-white'>Slide 3</div>,
-      ]}
-    />
-  )
-}
-`" />
+<code src="../demos/carousel-1.tsx"></code>
 
 ## 可访问性
 

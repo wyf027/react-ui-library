@@ -1,23 +1,12 @@
-# Dropdown 下拉菜单
+---
+title: Dropdown 下拉菜单
+---
 
 下拉菜单组件。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Dropdown
-      trigger={<Button variant='outline'>下拉菜单</Button>}
-      options={[
-        { key: 'profile', label: '个人信息' },
-        { key: 'settings', label: '设置' },
-        { key: 'logout', label: '退出' },
-      ]}
-    />
-  )
-}
-`" />
+<code src="../demos/dropdown-1.tsx"></code>
 
 ## API
 

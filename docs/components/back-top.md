@@ -1,41 +1,16 @@
-# BackTop 回到顶部
+---
+title: BackTop 回到顶部
+---
 
 返回页面顶部的按钮。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <div className='relative min-h-24 rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-900'>
-      <Text>滚动超过阈值后显示回到顶部按钮。</Text>
-      <BackTop visibilityHeight={0} aria-label='回到页面顶部'>顶部</BackTop>
-    </div>
-  )
-}
-`" />
+<code src="../demos/back-top-1.tsx"></code>
 
 ### 自定义滚动容器
 
-<LivePlayground :code="`
-() => {
-  return (
-    <div id='back-top-scroll-panel' className='relative h-40 overflow-y-auto rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900'>
-      <div className='space-y-4 pb-56 text-sm text-slate-600 dark:text-slate-300'>
-        <Text>在容器内滚动超过阈值后显示按钮。</Text>
-        <Text>target 可以让 BackTop 监听并滚动指定容器。</Text>
-      </div>
-      <BackTop
-        target={() => document.getElementById('back-top-scroll-panel')}
-        visibilityHeight={80}
-        aria-label='回到容器顶部'
-      >
-        容器顶部
-      </BackTop>
-    </div>
-  )
-}
-`" />
+<code src="../demos/back-top-2.tsx"></code>
 
 ## 可访问性
 

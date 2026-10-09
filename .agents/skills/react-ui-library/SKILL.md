@@ -45,7 +45,7 @@ This skill teaches you how to contribute to the `react-ui-library` codebase, a T
 **Command:** `/add-component-docs`
 
 1. Create or update one or more markdown files in `docs/components/`.
-2. Optionally update `docs/.vitepress/config.ts` to register new docs or categories.
+2. Optionally update `docs/.dumirc.ts` to register new docs or categories.
 3. Optionally update `docs/components/overview.md` or related index files.
 
 **Example:**
@@ -101,7 +101,7 @@ export { Button } from './button'
 
 1. Update one or more component files in `packages/ui/src/components/` to improve accessibility (ARIA attributes, keyboard support, etc.).
 2. Update or add accessibility documentation in `docs/guide/accessibility.md`.
-3. Optionally update `docs/.vitepress/config.ts` if new guide pages are added.
+3. Optionally update `docs/.dumirc.ts` if new guide pages are added.
 
 **Example:**
 ```typescript

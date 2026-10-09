@@ -1,20 +1,12 @@
-# Steps 步骤条
+---
+title: Steps 步骤条
+---
 
 引导用户按照流程完成任务的步骤条。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Steps items={[
-      { key: '1', title: '创建' },
-      { key: '2', title: '审核' },
-      { key: '3', title: '完成' },
-    ]} current={1} />
-  )
-}
-`" />
+<code src="../demos/steps-1.tsx"></code>
 
 ## 可访问性
 

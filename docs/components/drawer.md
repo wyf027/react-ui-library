@@ -1,25 +1,12 @@
-# Drawer 抽屉
+---
+title: Drawer 抽屉
+---
 
 屏幕边缘滑出的浮层面板。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  const [open, setOpen] = React.useState(false)
-  return (
-    <>
-      <Button onClick={() => setOpen(true)}>打开抽屉</Button>
-      <Drawer open={open} onClose={() => setOpen(false)} title='抽屉标题'>
-        <div className='space-y-3'>
-          <Text>抽屉内容</Text>
-          <Button>抽屉内操作</Button>
-        </div>
-      </Drawer>
-    </>
-  )
-}
-`" />
+<code src="../demos/drawer-1.tsx"></code>
 
 ## API
 

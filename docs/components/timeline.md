@@ -1,37 +1,16 @@
-# Timeline 时间轴
+---
+title: Timeline 时间轴
+---
 
 垂直展示的时间流信息。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Timeline items={[
-      { key: '1', title: '创建项目', timestamp: '09:00' },
-      { key: '2', title: '开发完成', timestamp: '10:30', color: 'success' },
-      { key: '3', title: '发布上线', timestamp: '14:00', color: 'success' },
-    ]} />
-  )
-}
-`" />
+<code src="../demos/timeline-1.tsx"></code>
 
 ### 反向展示
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Timeline
-      reverse
-      items={[
-        { key: '1', title: '提交申请', timestamp: '09:00' },
-        { key: '2', title: '审核通过', timestamp: '10:30', color: 'success' },
-        { key: '3', title: '完成归档', timestamp: '14:00', color: 'success' },
-      ]}
-    />
-  )
-}
-`" />
+<code src="../demos/timeline-2.tsx"></code>
 
 ## API
 

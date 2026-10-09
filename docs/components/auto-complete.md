@@ -1,27 +1,12 @@
-# AutoComplete 自动完成
+---
+title: AutoComplete 自动完成
+---
 
 输入框自动完成功能，对齐 Ant Design AutoComplete。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Space direction='vertical' size={8}>
-      <AutoComplete
-        placeholder='输入搜索'
-        options={[
-          { value: 'React' },
-          { value: 'Vue' },
-          { value: 'Angular' },
-          { value: 'Svelte' },
-        ]}
-        allowClear
-      />
-    </Space>
-  )
-}
-`" />
+<code src="../demos/auto-complete-1.tsx"></code>
 
 ## API
 

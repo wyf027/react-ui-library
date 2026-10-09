@@ -6,13 +6,13 @@ Use dumi 2 and the community dumi-theme-antd theme to replace VitePress for dail
 
 ## Architecture
 
-The docs workspace owns dumi configuration and the documentation theme. Markdown examples become dumi React demos with explicit imports and default-exported components. The standalone playground retains react-live for local code editing. A docs-only demo wrapper synchronizes Nova UI with the site theme; no dumi API enters the published component package. Custom layout markup uses Tailwind CSS; disable Tailwind preflight in the documentation stylesheet to avoid resetting the Antd theme.
+The docs workspace owns dumi configuration and the documentation theme. Markdown examples become dumi React demos with explicit imports and default-exported components. All examples, including the standalone playground, use dumi's native live compiler and source editor. A docs-only demo wrapper synchronizes Nova UI with the site theme; no dumi API enters the published component package. Custom layout markup uses Tailwind CSS; disable Tailwind preflight in the documentation stylesheet to avoid resetting the Antd theme.
 
 Use dumi's base/publicPath and static export support for GitHub Pages. Register legacy .html routes alongside canonical routes so direct loads and navigation both work. Update the deployment artifact directory to docs/dist. Development imports the UI source directly, avoiding a prerequisite UI build; production CI still performs its existing UI build.
 
 ## Completeness and boundaries
 
-Carry over API tables, accessibility notes and every example. No new component APIs, redesign of library components, package version change, new tests or local builds. Preserve the docs' editable workflow through the playground and evaluate the theme previewer's editing integration before finalizing per-example controls. Existing external demo image URLs remain unchanged.
+Carry over API tables, accessibility notes and every example. No new component APIs, redesign of library components, package version change, new tests or local builds. Preserve the editable workflow on every demo with dumi's source editor. Existing external demo image URLs remain unchanged.
 
 ## Verification
 

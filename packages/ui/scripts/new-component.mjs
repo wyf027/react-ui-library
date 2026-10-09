@@ -90,7 +90,7 @@ Brief description of ${name}.
 
 ## Docs
 
-- VitePress: \`docs/components/<slug>.md\` (add a page and sidebar entry).
+- dumi: \`docs/components/<slug>.md\` (add a page and sidebar entry).
 
 ## Public API
 

@@ -1,19 +1,12 @@
-# Anchor 锚点
+---
+title: Anchor 锚点
+---
 
 锚点导航组件。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Anchor items={[
-      { key: 'a1', href: '#section-a', title: 'Section A' },
-      { key: 'a2', href: '#section-b', title: 'Section B' },
-    ]} />
-  )
-}
-`" />
+<code src="../demos/anchor-1.tsx"></code>
 
 ## API
 

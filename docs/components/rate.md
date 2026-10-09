@@ -1,19 +1,12 @@
-# Rate 评分
+---
+title: Rate 评分
+---
 
 评分组件。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Space direction='vertical' size={8}>
-      <Rate defaultValue={3} />
-      <Rate defaultValue={4} count={10} />
-    </Space>
-  )
-}
-`" />
+<code src="../demos/rate-1.tsx"></code>
 
 ## 键盘操作
 

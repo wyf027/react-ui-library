@@ -1,83 +1,20 @@
-# Container 布局容器
+---
+title: Container 布局容器
+---
 
 用于包裹页面内容，提供与 Ant Design 内容区/断点习惯相近的**最大宽度**、**内边距**与**语义化根节点**能力；与 [Layout 页面骨架](./layout.md) 组合时负责内容区「版心」。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Container>
-      <div
-        style={{
-          background: 'var(--vp-c-bg-alt)',
-          padding: '16px',
-          borderRadius: '8px',
-          border: '1px solid var(--vp-c-divider)',
-        }}
-      >
-        默认容器（居中、有最大宽度）
-      </div>
-    </Container>
-  )
-}
-`" />
+<code src="../demos/container-1.tsx"></code>
 
 ### 最大宽度与全宽
 
-<LivePlayground :code="`
-() => {
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-      <Container maxWidth='md' padding='md'>
-        <div
-          style={{
-            background: 'var(--vp-c-bg-soft)',
-            padding: 12,
-            borderRadius: 8,
-            border: '1px solid var(--vp-c-divider)',
-          }}
-        >
-          maxWidth=&quot;md&quot;
-        </div>
-      </Container>
-      <Container fluid padding='md'>
-        <div
-          style={{
-            background: 'var(--vp-c-bg-alt)',
-            padding: 12,
-            borderRadius: 8,
-            border: '1px dashed var(--vp-c-divider)',
-          }}
-        >
-          fluid：取消版心最大宽度
-        </div>
-      </Container>
-    </div>
-  )
-}
-`" />
+<code src="../demos/container-2.tsx"></code>
 
 ### 语义化根节点（如 `main`）
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Container component='main' verticalPadding='md' aria-label='页面主体'>
-      <div
-        style={{
-          background: 'var(--vp-c-bg-soft)',
-          padding: 12,
-          borderRadius: 8,
-          border: '1px solid var(--vp-c-divider)',
-        }}
-      >
-        渲染为 &lt;main&gt;
-      </div>
-    </Container>
-  )
-}
-`" />
+<code src="../demos/container-3.tsx"></code>
 
 ## API
 

@@ -1,19 +1,12 @@
-# Notification 通知
+---
+title: Notification 通知
+---
 
 通知提醒框，用于展示不会打断当前流程的状态反馈，或在错误场景中提示需要立即关注的问题。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <div className='flex max-w-xl flex-col gap-3 rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900'>
-      <Notification type='success' title='发布成功' description='组件库已成功发布。' />
-      <Notification type='error' title='发布失败' description='请检查配置。' duration={4500} />
-    </div>
-  )
-}
-`" />
+<code src="../demos/notification-1.tsx"></code>
 
 ## 可访问性
 

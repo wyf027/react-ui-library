@@ -1,19 +1,12 @@
-# Toast 轻提示
+---
+title: Toast 轻提示
+---
 
 全局轻提示消息。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <div className='flex flex-col gap-3'>
-      <Toast open status='success' duration={0} className='static'>操作成功</Toast>
-      <Toast open status='error' duration={0} className='static'>操作失败</Toast>
-    </div>
-  )
-}
-`" />
+<code src="../demos/toast-1.tsx"></code>
 
 ## 可访问性
 

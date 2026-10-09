@@ -1,28 +1,12 @@
-# Table 表格
+---
+title: Table 表格
+---
 
 展示行列数据。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Table
-      columns={[
-        { key: 'name', title: '姓名', sorter: (a, b) => String(a.name).localeCompare(String(b.name)) },
-        { key: 'role', title: '角色', filters: [{ text: 'Admin', value: 'Admin' }, { text: 'Editor', value: 'Editor' }] },
-      ]}
-      dataSource={[
-        { name: 'Alice', role: 'Admin' },
-        { name: 'Bob', role: 'Editor' },
-      ]}
-      title='用户表'
-      searchable
-      rowKey='name'
-    />
-  )
-}
-`" />
+<code src="../demos/table-1.tsx"></code>
 
 ## 可访问性
 

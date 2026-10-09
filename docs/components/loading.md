@@ -1,20 +1,12 @@
-# Loading 加载中
+---
+title: Loading 加载中
+---
 
 加载状态指示器。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Space>
-      <Loading size='sm' text='加载中...' />
-      <Loading size='md' />
-      <Loading size='lg' text='请稍候' />
-    </Space>
-  )
-}
-`" />
+<code src="../demos/loading-1.tsx"></code>
 
 ## 可访问性
 

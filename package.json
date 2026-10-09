@@ -2,7 +2,7 @@
   "name": "nova-ui-workspace",
   "private": true,
   "version": "1.0.0",
-  "description": "Enterprise React component library and VitePress docs",
+  "description": "Enterprise React component library and dumi docs",
   "workspaces": [
     "packages/*",
     "docs"

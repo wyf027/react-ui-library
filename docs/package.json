@@ -4,20 +4,24 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vitepress dev .",
-    "build": "vitepress build .",
-    "preview": "vitepress preview ."
+    "dev": "dumi dev",
+    "build": "dumi build",
+    "preview": "dumi preview",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@wuyangfan/nova-ui": "file:../packages/ui",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-live": "^4.1.8"
+    "antd": "^5.29.3"
   },
   "devDependencies": {
     "@types/react": "^18.3.23",
     "@types/react-dom": "^18.3.7",
-    "@vitejs/plugin-react": "^4.4.1",
-    "vitepress": "^1.6.4"
+    "dumi": "2.4.50",
+    "dumi-theme-antd": "0.4.4",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.9.3",
+    "postcss-import": "^16.1.1"
   }
 }

@@ -15,7 +15,7 @@ Standard feature implementation workflow
 ## Common Files
 
 - `docs/components/*`
-- `docs/.vitepress/*`
+- `docs/.dumi/*`
 - `packages/ui/src/components/data/*`
 
 ## Suggested Sequence

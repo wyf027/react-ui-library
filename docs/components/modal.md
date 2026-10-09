@@ -1,22 +1,12 @@
-# Modal 对话框
+---
+title: Modal 对话框
+---
 
 模态对话框。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  const [open, setOpen] = React.useState(false)
-  return (
-    <>
-      <Button onClick={() => setOpen(true)}>打开对话框</Button>
-      <Modal open={open} onClose={() => setOpen(false)} title='对话框标题'>
-        <Text>对话框内容</Text>
-      </Modal>
-    </>
-  )
-}
-`" />
+<code src="../demos/modal-1.tsx"></code>
 
 ## API
 

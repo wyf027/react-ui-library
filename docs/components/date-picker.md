@@ -1,16 +1,12 @@
-# DatePicker 日期选择
+---
+title: DatePicker 日期选择
+---
 
 基于原生 `<input type="date">` 的日期选择；值为 **`YYYY-MM-DD` 字符串**，与 `<input type="date">` 的 `value` 格式一致。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <DatePicker aria-label='选择日期' />
-  )
-}
-`" />
+<code src="../demos/date-picker-1.tsx"></code>
 
 ## 可访问性
 

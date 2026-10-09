@@ -1,20 +1,12 @@
-# Avatar 头像
+---
+title: Avatar 头像
+---
 
 用户头像组件。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Space>
-      <Avatar name='Alice' />
-      <Avatar name='Bob' size={48} />
-      <Avatar src='https://i.pravatar.cc/40' alt='Demo user' />
-    </Space>
-  )
-}
-`" />
+<code src="../demos/avatar-1.tsx"></code>
 
 ## 可访问性
 

@@ -10,5 +10,7 @@
 - Skills: brainstorming and writing-plans scope incorporated into project documentation. pickup/handoff skills were searched but unavailable; Git checkpoints and this task card provide recovery state.
 - Publication: prior explicit instruction to publish ongoing UI changes remains applicable; use PR CI and Pages workflow after source review.
 - Verification: source completeness, docs/UI type checks, lint, development-server route probes and representative screenshots; CI for production output.
-- State: dependencies and source migration in progress.
-- Next action: install compatible documentation dependencies and convert native React demos.
+- State: source migration complete; dev server ready on localhost:8000/react-ui-library/. No active file mutations before browser handoff.
+- Verification passed: docs noEmit, UI noEmit, UI lint, git diff --check; 81 docs, 86 valid native demo references, 81 canonical routes + 80 legacy .html aliases, no dependency README routes. Dev webpack compilation passed.
+- Next action: inspect representative live developer pages, editing and theme changes in Chrome.
+- Checkpoint: Git commit after source conversion; development listener belongs to this worktree and remains running solely for visual verification.

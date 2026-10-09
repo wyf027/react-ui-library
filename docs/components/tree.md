@@ -1,25 +1,12 @@
-# Tree 树形控件
+---
+title: Tree 树形控件
+---
 
 树形数据展示组件。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Tree
-      aria-label='Project files'
-      data={[
-        { key: 'root', title: 'src', children: [
-          { key: 'cmp', title: 'components' },
-          { key: 'util', title: 'utils' },
-        ]},
-      ]}
-      defaultExpandedKeys={['root']}
-    />
-  )
-}
-`" />
+<code src="../demos/tree-1.tsx"></code>
 
 ## 可访问性
 

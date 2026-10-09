@@ -1,16 +1,12 @@
-# Slider 滑动条
+---
+title: Slider 滑动条
+---
 
 滑动输入条。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Slider aria-label='音量' defaultValue={30} />
-  )
-}
-`" />
+<code src="../demos/slider-1.tsx"></code>
 
 ## API
 
