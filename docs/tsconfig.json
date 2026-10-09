@@ -29,6 +29,7 @@
     ".dumirc.ts",
     ".dumi/plugins/**/*.ts",
     ".dumi/theme/**/*.tsx",
-    "demos/**/*.tsx"
+    "demos/**/*.tsx",
+    ".dumi/*.tsx"
   ]
 }

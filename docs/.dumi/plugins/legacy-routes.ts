@@ -1,4 +1,5 @@
 import type { IApi } from 'dumi'
+import path from 'node:path'
 
 export default function legacyRoutes(api: IApi) {
   api.modifyRoutes({
@@ -10,9 +11,16 @@ export default function legacyRoutes(api: IApi) {
           delete routes[route.id]
           continue
         }
-        if (route.file?.endsWith('.md') && route.absPath !== '/') {
+        if (route.file?.endsWith('.md')) {
           const id = `${route.id}-legacy-html`
-          routes[id] = { ...route, id, path: `${route.path}.html`, absPath: `${route.absPath}.html` }
+          const legacyPath = route.absPath === '/' ? '/index.html' : `${route.absPath}.html`
+          routes[id] = {
+            id,
+            parentId: route.parentId,
+            path: legacyPath.slice(1),
+            absPath: legacyPath,
+            file: path.join(api.cwd, '.dumi/LegacyRedirect.tsx'),
+          }
         }
       }
       return routes

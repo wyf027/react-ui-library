@@ -50,7 +50,6 @@ export default defineConfig({
   ],
   "/components": [
     {
-      "title": "概览",
       "children": [
         {
           "title": "概览",
