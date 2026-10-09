@@ -36,19 +36,6 @@ function resolveEnableTypeScript(lang: string): boolean {
   return key === 'tsx' || key === 'ts'
 }
 
-/** 文档里曾用 () => { return ( <JSX/> ) }；react-live 已会用 return 包裹，剥离后编辑器只展示组件模板。 */
-function unwrapLiveTemplate(code: string): string {
-  const s = code.trim()
-  if (!/^\(\)\s*=>\s*\{/.test(s)) {
-    return s
-  }
-
-  let inner = s.replace(/^\(\)\s*=>\s*\{\s*/, '').replace(/^return\s*\(\s*/, '')
-  inner = inner.replace(/\s*\)\s*\}\s*$/, '')
-
-  return inner.trim()
-}
-
 const ReactLiveMount = defineComponent({
   name: 'ReactLiveMount',
   props: {
@@ -75,13 +62,13 @@ const ReactLiveMount = defineComponent({
         root = createRoot(containerRef.value)
       }
 
-      const liveCode = unwrapLiveTemplate(props.code)
+      const liveCode = props.code.trim()
       const prismLanguage = resolvePrismLanguage(props.language)
 
       root.render(
         React.createElement(
           NovaUI.Flex,
-          { className: 'live-wrap', vertical: true },
+          { className: 'live-wrap w-full min-w-0', vertical: true },
           React.createElement(
             LiveProvider,
             {
@@ -90,7 +77,7 @@ const ReactLiveMount = defineComponent({
               language: prismLanguage,
               enableTypeScript: resolveEnableTypeScript(props.language),
             },
-            React.createElement(NovaUI.Flex, { className: 'live-pane live-preview' }, React.createElement(LivePreview, null)),
+            React.createElement(NovaUI.Flex, { className: 'live-pane live-preview w-full min-w-0' }, React.createElement(LivePreview, { className: 'vp-raw w-full min-w-0' })),
             React.createElement(NovaUI.Flex, { className: 'live-pane live-editor', vertical: true }, React.createElement(LiveCodeEditor, null)),
             React.createElement(LiveError, { className: 'live-error' }),
           ),

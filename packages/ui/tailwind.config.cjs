@@ -4,6 +4,7 @@ module.exports = {
   content: [
     './src/**/*.{ts,tsx}',
     '../../docs/*.md',
+    '../../docs/.vitepress/theme/**/*.{ts,tsx,vue}',
     '../../docs/components/**/*.md',
     '../../docs/guide/**/*.md',
   ],

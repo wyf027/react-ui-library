@@ -7,7 +7,7 @@
 <LivePlayground :code="`
 () => {
   return (
-    <QRCode value='https://leno23.github.io/react-ui-library/' aria-label='Scan to open Nova UI docs' />
+    <QRCode value='https://wyf027.github.io/react-ui-library/' aria-label='Scan to open Nova UI docs' />
   )
 }
 `" />

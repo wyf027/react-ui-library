@@ -45,7 +45,7 @@ npm run build
 
 1. push 到 `main` 后会自动构建并发布 `docs`。
 2. 在 GitHub 仓库设置中打开 `Settings -> Pages -> Source: GitHub Actions`。
-3. 发布地址为：`https://leno23.github.io/react-ui-library/`。
+3. 发布地址为：`https://wyf027.github.io/react-ui-library/`。
 
 ## 包使用方式
 

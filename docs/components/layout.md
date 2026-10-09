@@ -7,7 +7,7 @@
 <LivePlayground :code="`
 () => {
   return (
-    <Layout>
+    <Layout className='min-h-0 h-80'>
       <LayoutHeader>
         <span className='text-sm font-medium text-slate-800 dark:text-slate-100'>顶栏</span>
       </LayoutHeader>
@@ -38,7 +38,7 @@
 <LivePlayground :code="`
 () => {
   return (
-    <Layout>
+    <Layout className='min-h-0 h-80'>
       <LayoutHeader>
         <span className='text-sm font-medium'>顶栏</span>
       </LayoutHeader>

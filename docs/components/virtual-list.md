@@ -21,5 +21,5 @@
 | --- | --- | --- | --- |
 | items | 数据列表 | `any[]` | - |
 | itemHeight | 每项高度 | `number` | `36` |
-| height | 容器高度 | `number` | `300` |
+| height | 容器高度 | `number` | `240` |
 | renderItem | 渲染函数 | `(item) => ReactNode` | - |
