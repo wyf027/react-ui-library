@@ -1,18 +1,10 @@
-import { forwardRef, type HTMLAttributes } from 'react'
+import { forwardRef, type HTMLAttributes, useMemo } from 'react'
+import qrcode from 'qrcode-generator'
 import { cn } from '../../../utils/cn'
 
 export interface QRCodeProps extends HTMLAttributes<HTMLDivElement> {
   value: string
   size?: number
-}
-
-function hashValue(input: string): number {
-  let hash = 0
-  for (let i = 0; i < input.length; i += 1) {
-    hash = (hash << 5) - hash + input.charCodeAt(i)
-    hash |= 0
-  }
-  return Math.abs(hash)
 }
 
 export const QRCode = forwardRef<HTMLDivElement, QRCodeProps>(function QRCode(
@@ -27,8 +19,16 @@ export const QRCode = forwardRef<HTMLDivElement, QRCodeProps>(function QRCode(
   },
   ref,
 ) {
-  const matrixSize = 21
-  const seed = hashValue(value)
+  const matrix = useMemo(() => {
+    const code = qrcode(0, 'M')
+    // Pass UTF-8 bytes without changing the encoder's shared string conversion.
+    const bytes = Array.from(new TextEncoder().encode(value), (byte) => String.fromCharCode(byte)).join('')
+    code.addData(bytes, 'Byte')
+    code.make()
+    return code
+  }, [value])
+  const modules = matrix.getModuleCount()
+  const matrixSize = modules + 8
   const accessibleLabel = ariaLabelledBy ? ariaLabel : (ariaLabel ?? 'QR code')
 
   return (
@@ -38,23 +38,26 @@ export const QRCode = forwardRef<HTMLDivElement, QRCodeProps>(function QRCode(
       aria-label={accessibleLabel}
       aria-labelledby={ariaLabelledBy}
       className={cn(
-        'grid overflow-hidden rounded border border-slate-300 bg-white p-2 dark:border-slate-700',
+        'grid shrink-0 overflow-hidden bg-white',
         className,
       )}
       style={{
         width: size,
         height: size,
+        gridTemplateRows: `repeat(${matrixSize}, minmax(0, 1fr))`,
         gridTemplateColumns: `repeat(${matrixSize}, minmax(0, 1fr))`,
       }}
       {...props}
     >
       {Array.from({ length: matrixSize * matrixSize }, (_, index) => {
-        const fill = ((index * 31 + seed) % 7) < 3
+        const row = Math.floor(index / matrixSize) - 4
+        const col = index % matrixSize - 4
+        const fill = row >= 0 && col >= 0 && row < modules && col < modules && matrix.isDark(row, col)
         return (
           <span
             key={index}
             aria-hidden="true"
-            className={fill ? 'bg-slate-900' : 'bg-white'}
+            className={fill ? 'bg-black' : 'bg-white'}
           />
         )
       })}

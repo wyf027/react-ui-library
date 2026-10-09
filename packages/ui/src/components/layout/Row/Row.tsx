@@ -12,9 +12,9 @@ export interface RowProps extends HTMLAttributes<HTMLDivElement> {
   wrap?: boolean
 }
 
-function gapToStyle(gap: RowGap): Pick<CSSProperties, 'gap'> {
+function gapToStyle(gap: RowGap): Pick<CSSProperties, 'gap'> & { '--nova-row-gap': string } {
   const [horizontal, vertical] = Array.isArray(gap) ? gap : [gap, gap]
-  return { gap: `${vertical}px ${horizontal}px` }
+  return { gap: `${vertical}px ${horizontal}px`, '--nova-row-gap': `${horizontal}px` }
 }
 
 export const Row = forwardRef<HTMLDivElement, RowProps>(function Row(

@@ -15,8 +15,8 @@ export const Col = forwardRef<HTMLDivElement, ColProps>(function Col(
   { className, span = 12, offset = 0, flex, order, style, ...props },
   ref,
 ) {
-  const width = `${(span / 12) * 100}%`
-  const marginLeft = `${(offset / 12) * 100}%`
+  const width = `calc(${(span / 12) * 100}% - ${(12 - span) / 12} * var(--nova-row-gap, 0px))`
+  const marginLeft = `calc(${(offset / 12) * 100}% + ${offset / 12} * var(--nova-row-gap, 0px))`
 
   const flexStyle =
     flex !== undefined

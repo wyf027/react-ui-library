@@ -154,7 +154,7 @@ export default defineConfig({
       ],
     },
     socialLinks: [
-      { icon: "github", link: "https://github.com/your-org/nova-ui" },
+      { icon: "github", link: "https://github.com/wyf027/react-ui-library" },
     ],
   },
   vite: {

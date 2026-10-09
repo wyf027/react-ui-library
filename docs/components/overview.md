@@ -1,13 +1,13 @@
 # 组件概览
 
-Nova UI 提供覆盖中后台常见场景的 React 组件，按能力分为 **6 大类，80+ 组件**。你可以从下方分类卡片快速进入。
+Nova UI 提供覆盖中后台常见场景的 React 组件，按能力分为 **6 大类，74 个组件文档页**。你可以从下方分类卡片快速进入。
 
 每个组件目录下的 `packages/ui/src/components/.../{Name}/README.md` 中有简短说明与设计约束；完整示例与 API 表仍以本站文档为准。
 
 <div class="comp-overview-grid">
-  <a class="comp-overview-card" href="/react-ui-library/components/container">
+  <a class="comp-overview-card" href="/react-ui-library/components/layout">
     <h3>布局 Layout</h3>
-    <p>8 个组件</p>
+    <p>9 个组件</p>
     <code>Layout / Container / Row / Col / Grid / Flex / Space / Divider / SplitPane</code>
   </a>
   <a class="comp-overview-card" href="/react-ui-library/components/button">
