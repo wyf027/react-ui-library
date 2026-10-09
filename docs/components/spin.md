@@ -1,23 +1,12 @@
-# Spin 加载动画
+---
+title: Spin 加载动画
+---
 
 全局加载动画组件，对齐 Ant Design Spin，可包裹子元素。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <div className='flex flex-col gap-4'>
-      <Spin tip='加载中...' delay={200} />
-      <Spin spinning={true} delay={200}>
-        <div className='rounded-lg border border-slate-200 bg-white p-4 text-sm text-slate-700 shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200'>
-          被 Spin 包裹的内容区域
-        </div>
-      </Spin>
-    </div>
-  )
-}
-`" />
+<code src="../demos/spin-1.tsx"></code>
 
 ## 可访问性
 

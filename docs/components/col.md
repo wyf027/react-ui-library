@@ -1,49 +1,12 @@
-# Col 列
+---
+title: Col 列
+---
 
 配合 Row 使用的栅格列组件，12列栅格。
 
 ## 示例
 
-<LivePlayground :code="`
-<Row gap={8}>
-  <Col span={4}>
-    <div
-      style={{
-        background: 'var(--vp-c-bg-soft)',
-        padding: '8px',
-        border: '1px solid var(--vp-c-divider)',
-        borderRadius: 4,
-      }}
-    >
-      span=4
-    </div>
-  </Col>
-  <Col span={4}>
-    <div
-      style={{
-        background: 'var(--vp-c-bg-alt)',
-        padding: '8px',
-        border: '1px solid var(--vp-c-divider)',
-        borderRadius: 4,
-      }}
-    >
-      span=4
-    </div>
-  </Col>
-  <Col span={4}>
-    <div
-      style={{
-        background: 'var(--vp-c-bg-soft)',
-        padding: '8px',
-        border: '1px solid var(--vp-c-divider)',
-        borderRadius: 4,
-      }}
-    >
-      span=4
-    </div>
-  </Col>
-</Row>
-`" />
+<code src="../demos/col-1.tsx"></code>
 
 ## API
 

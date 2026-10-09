@@ -1,48 +1,12 @@
-# Flex 弹性布局
+---
+title: Flex 弹性布局
+---
 
 基于 CSS Flexbox 的弹性布局容器组件，类似 Ant Design Flex。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Space direction='vertical' size={12}>
-      <Flex gap={8} align='center'>
-        <Button>按钮 A</Button>
-        <Button variant='outline'>按钮 B</Button>
-        <Button variant='ghost'>按钮 C</Button>
-      </Flex>
-      <Flex vertical gap={8}>
-        <div
-          style={{
-            background: 'var(--vp-c-bg-soft)',
-            padding: '8px',
-            borderRadius: '4px',
-            border: '1px solid var(--vp-c-divider)',
-          }}
-        >
-          垂直排列 1
-        </div>
-        <div
-          style={{
-            background: 'var(--vp-c-bg-alt)',
-            padding: '8px',
-            borderRadius: '4px',
-            border: '1px solid var(--vp-c-divider)',
-          }}
-        >
-          垂直排列 2
-        </div>
-      </Flex>
-      <Flex justify='between' align='center'>
-        <Text>左侧内容</Text>
-        <Button size='sm'>右侧按钮</Button>
-      </Flex>
-    </Space>
-  )
-}
-`" />
+<code src="../demos/flex-1.tsx"></code>
 
 ## API
 

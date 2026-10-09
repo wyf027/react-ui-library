@@ -1,20 +1,12 @@
-# Tabs 标签页
+---
+title: Tabs 标签页
+---
 
 选项卡切换组件。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Tabs items={[
-      { key: 'tab1', label: '标签 1', content: '内容 1' },
-      { key: 'tab2', label: '标签 2', content: '内容 2' },
-      { key: 'tab3', label: '标签 3', content: '内容 3' },
-    ]} />
-  )
-}
-`" />
+<code src="../demos/tabs-1.tsx"></code>
 
 ## API
 

@@ -1,21 +1,12 @@
-# ImagePreview 图片预览
+---
+title: ImagePreview 图片预览
+---
 
 图片预览组件。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <div className='inline-flex rounded-lg bg-slate-50 p-3 dark:bg-slate-900'>
-      <ImagePreview
-        src='https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600'
-        alt='Mountain landscape'
-      />
-    </div>
-  )
-}
-`" />
+<code src="../demos/image-preview-1.tsx"></code>
 
 ## API
 

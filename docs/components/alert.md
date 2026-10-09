@@ -1,28 +1,12 @@
-# Alert 警告提示
+---
+title: Alert 警告提示
+---
 
 警告提示组件，对齐 Ant Design Alert。`type` 对应的背景/边框/文字色由 `packages/ui/src/theme/componentTokens.ts` 中的 `alertTypeSurfaceClass` 统一维护，避免在组件内散落色板 class。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <div className='flex flex-col gap-2'>
-      <Alert type='info' message='提示信息' description='这是一条信息提示。' />
-      <Alert type='success' message='操作成功' closable />
-      <Alert type='warning' message='警告信息' showIcon />
-      <Alert
-        type='error'
-        message='错误信息'
-        description='请检查后重试。'
-        closable
-        closeIcon='关闭'
-        closeAriaLabel='关闭错误提示'
-      />
-    </div>
-  )
-}
-`" />
+<code src="../demos/alert-1.tsx"></code>
 
 ## 可访问性
 

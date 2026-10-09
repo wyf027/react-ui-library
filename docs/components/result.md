@@ -1,16 +1,12 @@
-# Result 结果
+---
+title: Result 结果
+---
 
 结果状态页组件。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Result status='success' title='操作成功' subTitle='一切正常。' />
-  )
-}
-`" />
+<code src="../demos/result-1.tsx"></code>
 
 ## API
 

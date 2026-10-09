@@ -1,23 +1,12 @@
-# Segmented 分段控制器
+---
+title: Segmented 分段控制器
+---
 
 分段控制器组件。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Segmented
-      options={[
-        { label: '日', value: 'day' },
-        { label: '周', value: 'week' },
-        { label: '月', value: 'month' },
-      ]}
-      defaultValue='day'
-    />
-  )
-}
-`" />
+<code src="../demos/segmented-1.tsx"></code>
 
 ## 键盘操作
 

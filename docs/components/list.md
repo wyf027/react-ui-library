@@ -1,27 +1,12 @@
-# List 列表
+---
+title: List 列表
+---
 
 通用列表组件，对齐 Ant Design List。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <div className='space-y-4'>
-      <List
-        header='用户列表'
-        dataSource={[
-          { key: '1', title: 'Alice', description: '管理员' },
-          { key: '2', title: 'Bob', description: '编辑者' },
-          { key: '3', title: 'Charlie', description: '访客' },
-        ]}
-        footer='共 3 人'
-      />
-      <List header='加载中' loading aria-label='用户列表加载状态' />
-    </div>
-  )
-}
-`" />
+<code src="../demos/list-1.tsx"></code>
 
 ## API
 

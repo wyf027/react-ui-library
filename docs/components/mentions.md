@@ -1,21 +1,12 @@
-# Mentions 提及
+---
+title: Mentions 提及
+---
 
 提及组件，输入 @ 触发。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <div className='max-w-sm'>
-      <Mentions
-        aria-label='团队提及'
-        options={[{ value: 'alice' }, { value: 'bob' }, { value: 'charlie' }]}
-      />
-    </div>
-  )
-}
-`" />
+<code src="../demos/mentions-1.tsx"></code>
 
 ## 可访问性
 

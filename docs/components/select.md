@@ -1,35 +1,12 @@
-# Select 选择器
+---
+title: Select 选择器
+---
 
 基于原生 `<select>` 的下拉选择；支持标签、`placeholder`（首项空值选项）、尺寸、反馈说明与插槽类名。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Space direction='vertical' size={8}>
-      <Select
-        label='角色'
-        helperText='请选择当前用户的权限角色'
-        options={[
-          { label: 'Admin', value: 'admin' },
-          { label: 'Editor', value: 'editor' },
-          { label: 'Viewer', value: 'viewer' },
-        ]}
-      />
-      <Select
-        label='状态'
-        error='请选择状态'
-        placeholder='请选择状态'
-        options={[
-          { label: '启用', value: 'enabled' },
-          { label: '停用', value: 'disabled' },
-        ]}
-      />
-    </Space>
-  )
-}
-`" />
+<code src="../demos/select-1.tsx"></code>
 
 ## 可访问性
 

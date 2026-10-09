@@ -1,20 +1,12 @@
-# TimePicker 时间选择
+---
+title: TimePicker 时间选择
+---
 
 时间选择器组件，对齐 Ant Design TimePicker。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Space direction='vertical' size={8}>
-      <TimePicker aria-label='开始时间' placeholder='选择时间' />
-      <TimePicker aria-label='结束时间' defaultValue='14:30' />
-      <TimePicker aria-label='禁用时间' disabled placeholder='禁用状态' />
-    </Space>
-  )
-}
-`" />
+<code src="../demos/time-picker-1.tsx"></code>
 
 ## 可访问性
 

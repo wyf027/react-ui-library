@@ -1,16 +1,12 @@
-# ColorPicker 颜色选择
+---
+title: ColorPicker 颜色选择
+---
 
 颜色选择器组件。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <ColorPicker aria-label='品牌色' />
-  )
-}
-`" />
+<code src="../demos/color-picker-1.tsx"></code>
 
 ## API
 

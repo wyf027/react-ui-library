@@ -1,22 +1,12 @@
-# Transfer 穿梭框
+---
+title: Transfer 穿梭框
+---
 
 双栏穿梭选择框。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Transfer
-      dataSource={[
-        { key: '1', title: '选项 A' },
-        { key: '2', title: '选项 B' },
-        { key: '3', title: '选项 C' },
-      ]}
-    />
-  )
-}
-`" />
+<code src="../demos/transfer-1.tsx"></code>
 
 ## API
 

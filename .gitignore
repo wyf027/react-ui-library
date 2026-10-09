@@ -4,5 +4,6 @@ node_modules
 */node_modules
 packages/ui/dist
 packages/ui/coverage
-docs/.vitepress/dist
-docs/.vitepress/cache
+docs/dist
+docs/.dumi/tmp
+docs/.dumi/tmp-production

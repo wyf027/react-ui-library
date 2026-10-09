@@ -1,18 +1,12 @@
-# Image 图片
+---
+title: Image 图片
+---
 
 图片组件，对齐 Ant Design Image，支持预览和失败占位。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Space>
-      <Image src='https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=200' width={120} height={80} alt='风景' />
-    </Space>
-  )
-}
-`" />
+<code src="../demos/image-1.tsx"></code>
 
 ## 可访问性
 

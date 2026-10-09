@@ -10,12 +10,12 @@ Use this workflow when working on **add-or-update-component-documentation** in `
 
 ## Goal
 
-Adds or updates documentation pages for UI components, typically in VitePress markdown format, often including API tables and playground examples.
+Adds or updates documentation pages for UI components, typically in dumi markdown format, often including API tables and playground examples.
 
 ## Common Files
 
 - `docs/components/*.md`
-- `docs/.vitepress/config.ts`
+- `docs/.dumirc.ts`
 - `docs/components/overview.md`
 
 ## Suggested Sequence
@@ -28,7 +28,7 @@ Adds or updates documentation pages for UI components, typically in VitePress ma
 ## Typical Commit Signals
 
 - Create or update one or more markdown files in docs/components/
-- Optionally update docs/.vitepress/config.ts to register new docs or categories
+- Optionally update docs/.dumirc.ts to register new docs or categories
 - Optionally update docs/components/overview.md or related index files
 
 ## Notes

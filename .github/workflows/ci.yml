@@ -28,6 +28,9 @@ jobs:
       - name: Typecheck UI
         run: npm run typecheck:ui
 
+      - name: Typecheck docs
+        run: npm run typecheck --workspace @wuyangfan/nova-ui-docs
+
       - name: Test UI
         run: npm run test:ui
 

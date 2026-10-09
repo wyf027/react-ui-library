@@ -1,16 +1,12 @@
-# Popover 气泡卡片
+---
+title: Popover 气泡卡片
+---
 
 点击/悬停弹出气泡卡片。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Popover trigger={<Button variant='outline'>点击弹出</Button>} content='气泡卡片内容' />
-  )
-}
-`" />
+<code src="../demos/popover-1.tsx"></code>
 
 ## API
 

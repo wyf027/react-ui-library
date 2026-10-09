@@ -1,42 +1,12 @@
-# SplitPane 分栏
+---
+title: SplitPane 分栏
+---
 
 左右分栏布局组件。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <SplitPane
-      ratio='1fr 2fr'
-      left={
-        <div
-          style={{
-            background: 'var(--vp-c-bg-soft)',
-            padding: '12px',
-            border: '1px solid var(--vp-c-divider)',
-            borderRadius: 8,
-          }}
-        >
-          左侧面板
-        </div>
-      }
-      right={
-        <div
-          style={{
-            background: 'var(--vp-c-bg-alt)',
-            padding: '12px',
-            border: '1px solid var(--vp-c-divider)',
-            borderRadius: 8,
-          }}
-        >
-          右侧面板
-        </div>
-      }
-    />
-  )
-}
-`" />
+<code src="../demos/split-pane-1.tsx"></code>
 
 ## API
 

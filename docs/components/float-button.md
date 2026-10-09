@@ -1,23 +1,12 @@
-# FloatButton 悬浮按钮
+---
+title: FloatButton 悬浮按钮
+---
 
 固定在页面角落的悬浮按钮，对齐 Ant Design FloatButton。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <div className='relative h-32 rounded-lg border border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-900'>
-      <FloatButton
-        tooltip='添加'
-        aria-label='添加项目'
-        className='!absolute'
-        position={{ right: 16, bottom: 16 }}
-      />
-    </div>
-  )
-}
-`" />
+<code src="../demos/float-button-1.tsx"></code>
 
 ## 可访问性
 

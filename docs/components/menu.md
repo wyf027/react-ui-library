@@ -1,20 +1,12 @@
-# Menu 菜单
+---
+title: Menu 菜单
+---
 
 菜单导航组件。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Menu mode='horizontal' items={[
-      { key: 'home', label: '首页' },
-      { key: 'docs', label: '文档' },
-      { key: 'about', label: '关于' },
-    ]} />
-  )
-}
-`" />
+<code src="../demos/menu-1.tsx"></code>
 
 ## API
 

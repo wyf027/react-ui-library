@@ -1,19 +1,12 @@
-# Pagination 分页
+---
+title: Pagination 分页
+---
 
 分页组件。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <div className='flex flex-col gap-4'>
-      <Pagination total={100} />
-      <Pagination defaultCurrent={3} total={100} />
-    </div>
-  )
-}
-`" />
+<code src="../demos/pagination-1.tsx"></code>
 
 ## 可访问性
 

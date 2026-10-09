@@ -1,47 +1,12 @@
-# Grid 网格
+---
+title: Grid 网格
+---
 
 CSS Grid 网格布局组件。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Grid cols={3} gap={8}>
-      <div
-        style={{
-          background: 'var(--vp-c-bg-soft)',
-          padding: '12px',
-          border: '1px solid var(--vp-c-divider)',
-          borderRadius: 8,
-        }}
-      >
-        A
-      </div>
-      <div
-        style={{
-          background: 'var(--vp-c-bg-alt)',
-          padding: '12px',
-          border: '1px solid var(--vp-c-divider)',
-          borderRadius: 8,
-        }}
-      >
-        B
-      </div>
-      <div
-        style={{
-          background: 'var(--vp-c-bg-soft)',
-          padding: '12px',
-          border: '1px solid var(--vp-c-divider)',
-          borderRadius: 8,
-        }}
-      >
-        C
-      </div>
-    </Grid>
-  )
-}
-`" />
+<code src="../demos/grid-1.tsx"></code>
 
 ## API
 

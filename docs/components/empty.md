@@ -1,26 +1,16 @@
-# Empty 空状态
+---
+title: Empty 空状态
+---
 
 空状态占位组件，补充属性对齐 Ant Design `Empty`。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Empty description='暂无数据' />
-  )
-}
-`" />
+<code src="../demos/empty-1.tsx"></code>
 
 ### 轻量样式（simple）
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Empty simple description='无内容' image={<span style={{fontSize:28}}>📄</span>} imageStyle={{ opacity: 0.85 }} />
-  )
-}
-`" />
+<code src="../demos/empty-2.tsx"></code>
 
 ## API
 

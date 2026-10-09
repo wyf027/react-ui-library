@@ -1,20 +1,12 @@
-# Skeleton 骨架屏
+---
+title: Skeleton 骨架屏
+---
 
 加载占位组件，对齐 Ant Design Skeleton。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <Space direction='vertical' size={12}>
-      <Skeleton />
-      <Skeleton avatar />
-      <Skeleton title paragraph={{ rows: 2 }} />
-    </Space>
-  )
-}
-`" />
+<code src="../demos/skeleton-1.tsx"></code>
 
 ## 可访问性
 

@@ -1,23 +1,12 @@
-# TreeSelect 树选择
+---
+title: TreeSelect 树选择
+---
 
 树形选择器。
 
 ## 示例
 
-<LivePlayground :code="`
-() => {
-  return (
-    <TreeSelect
-      data={[
-        { key: 'root', title: '根节点', children: [
-          { key: 'child1', title: '子节点 1' },
-          { key: 'child2', title: '子节点 2' },
-        ]},
-      ]}
-    />
-  )
-}
-`" />
+<code src="../demos/tree-select-1.tsx"></code>
 
 ## 选择行为
 

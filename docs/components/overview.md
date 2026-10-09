@@ -1,41 +1,12 @@
-# 组件概览
+---
+title: 组件概览
+---
 
 Nova UI 提供覆盖中后台常见场景的 React 组件，按能力分为 **6 大类，74 个组件文档页**。你可以从下方分类卡片快速进入。
 
 每个组件目录下的 `packages/ui/src/components/.../{Name}/README.md` 中有简短说明与设计约束；完整示例与 API 表仍以本站文档为准。
 
-<div class="comp-overview-grid">
-  <a class="comp-overview-card" href="/react-ui-library/components/layout">
-    <h3>布局 Layout</h3>
-    <p>9 个组件</p>
-    <code>Layout / Container / Row / Col / Grid / Flex / Space / Divider / SplitPane</code>
-  </a>
-  <a class="comp-overview-card" href="/react-ui-library/components/button">
-    <h3>基础 Basic</h3>
-    <p>3 个组件</p>
-    <code>Button / Icon / Typography</code>
-  </a>
-  <a class="comp-overview-card" href="/react-ui-library/components/input">
-    <h3>表单 Form</h3>
-    <p>20 个组件</p>
-    <code>Input / Select / Form / Upload / DatePicker / ...</code>
-  </a>
-  <a class="comp-overview-card" href="/react-ui-library/components/alert">
-    <h3>反馈 Feedback</h3>
-    <p>13 个组件</p>
-    <code>Alert / Modal / Drawer / Tooltip / Notification / ...</code>
-  </a>
-  <a class="comp-overview-card" href="/react-ui-library/components/table">
-    <h3>数据展示 Data Display</h3>
-    <p>18 个组件</p>
-    <code>Table / Card / List / Timeline / QRCode / ...</code>
-  </a>
-  <a class="comp-overview-card" href="/react-ui-library/components/tabs">
-    <h3>导航 Navigation</h3>
-    <p>11 个组件</p>
-    <code>Tabs / Menu / Steps / Tree / Anchor / ...</code>
-  </a>
-</div>
+<ComponentOverview></ComponentOverview>
 
 ## 全量组件清单
 
