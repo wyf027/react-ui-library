@@ -16,3 +16,7 @@
 - Independent read-only review: no release blocker found at ffc213a; browser findings fixed in f5bc83f.
 - Next action: push the migration branch and create a reviewable PR; inspect CI before merging and Pages publication.
 - Checkpoint: Git commit after source conversion; development listener belongs to this worktree and remains running solely for visual verification.
+
+- Publication: PR #99 merged as 167c97a; PR CI and Pages run 37888500814 passed. All 162 canonical/legacy HTTP probes passed.
+- Full screenshot audit found React #306 in Row/Col: three JSX-element default exports need component-function exports. Correcting within the same task/branch/worktree; component implementation unchanged.
+- Next action: typecheck the three corrected demos, push a follow-up PR and use CI/Pages; recapture affected and unsettled pages after release.
