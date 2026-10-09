@@ -1,7 +1,7 @@
 import React from 'react'
 import { Col, Row } from '@wuyangfan/nova-ui'
 
-export default <Row gap={8}>
+export default () => (<Row gap={8}>
   <Col span={6}>
     <div
       style={{
@@ -27,3 +27,4 @@ export default <Row gap={8}>
     </div>
   </Col>
 </Row>
+)
